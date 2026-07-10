@@ -93,35 +93,39 @@ export function DemoSection() {
   )
 }
 
-/* ═══ PODERES ═════════════════════════════════════════════════════════════════ */
+/* ═══ PODERES — fichas de poder estilo in-game ════════════════════════════════ */
 const POWERS = [
-  { I: Bomb, n: 'BOMBA', d: 'Explota una celda y todas sus vecinas', c: '#FF6600' },
-  { I: Zap, n: 'RAYO', d: 'Borra una fila completa al instante', c: '#FFDD00' },
-  { I: Palette, n: 'DESTRUCTOR', d: 'Elimina todas las gemas de un color', c: '#FF0088' },
-  { I: Undo2, n: 'RETROCESO', d: 'Deshaz tu última jugada', c: '#00FFCC' },
-  { I: Shuffle, n: 'MEZCLA', d: 'Cambia tus piezas por otras nuevas', c: '#8800FF' },
+  { I: Bomb, n: 'BOMBA', d: 'Explota una celda y todas sus vecinas', c: '#FF6600', qty: 3 },
+  { I: Zap, n: 'RAYO', d: 'Borra una fila completa al instante', c: '#FFC400', qty: 3 },
+  { I: Palette, n: 'DESTRUCTOR', d: 'Elimina todas las gemas de un color', c: '#FF2E88', qty: 2 },
+  { I: Undo2, n: 'RETROCESO', d: 'Deshaz tu última jugada', c: '#12E0C4', qty: 3 },
+  { I: Shuffle, n: 'MEZCLA', d: 'Cambia tus piezas por otras nuevas', c: '#9A5CFF', qty: 5 },
 ]
 
 export function Powers() {
   return (
-    <section id="poderes" style={{ background: 'rgba(0,0,0,.15)' }}>
+    <section id="poderes" className="sec-powers">
       <div className="wrap">
         <Reveal>
           <span className="kicker">Cuando el tablero se pone feo</span>
           <h2 className="display">5 PODERES <span className="shimmer" style={{ color: 'var(--yellow)' }}>ÉPICOS</span></h2>
+          <p className="sub">Guárdalos para el momento justo y dale la vuelta a la partida.</p>
         </Reveal>
         <div className="powers-grid">
           {POWERS.map((p, i) => (
-            <Reveal key={p.n} delay={i * 0.08}>
+            <Reveal key={p.n} delay={i * 0.07}>
               <motion.div
-                className="card power-card"
-                whileHover={{ scale: 1.09, rotate: i % 2 ? 2.5 : -2.5, borderColor: p.c, boxShadow: `0 0 44px ${p.c}66, 0 22px 44px rgba(0,0,0,.45)` }}
+                className="power-card"
+                style={{ '--c': p.c }}
+                whileHover={{ y: -12, rotate: i % 2 ? 2 : -2 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 14 }}
               >
-                <motion.span className="power-icon" style={{ color: p.c }} whileHover={{ scale: 1.3, rotate: 10 }}>
-                  <p.I size={52} strokeWidth={2.2} />
-                </motion.span>
-                <div className="power-name" style={{ color: p.c }}>{p.n}</div>
+                <p.I className="power-ghost" size={130} strokeWidth={1.6} aria-hidden />
+                <motion.div className="power-token" whileHover={{ rotate: [0, -8, 8, 0], scale: 1.08 }} transition={{ duration: 0.5 }}>
+                  <p.I size={38} strokeWidth={2.4} />
+                  <span className="power-badge">×{p.qty}</span>
+                </motion.div>
+                <div className="power-name">{p.n}</div>
                 <div className="power-desc">{p.d}</div>
               </motion.div>
             </Reveal>
@@ -171,17 +175,17 @@ export function Modes() {
   )
 }
 
-/* ═══ PROGRESIÓN ══════════════════════════════════════════════════════════════ */
+/* ═══ PROGRESIÓN — tarjetas de recompensa con color propio ═════════════════════ */
 const PROGS = [
-  { I: Medal, n: 'PASE DE TEMPORADA', d: '30 niveles de recompensas gratis y premium cada temporada' },
-  { I: PiggyBank, n: 'ALCANCÍA', d: 'Acumula monedas mientras juegas y rómpela cuando esté llena' },
-  { I: CalendarDays, n: 'MISIONES DIARIAS', d: 'Retos nuevos cada día con cofres y monedas' },
-  { I: Crown, n: 'VIP', d: 'Sin anuncios, monedas diarias y marco exclusivo' },
+  { I: Medal, n: 'PASE DE TEMPORADA', d: '30 niveles de recompensas gratis y premium cada temporada', c: '#FFC93C', chip: 'GRATIS + PREMIUM' },
+  { I: PiggyBank, n: 'ALCANCÍA', d: 'Acumula monedas mientras juegas y rómpela cuando esté llena', c: '#FF5D8F', chip: 'HASTA 2000' },
+  { I: CalendarDays, n: 'MISIONES DIARIAS', d: 'Retos nuevos cada día con cofres y monedas', c: '#4EA1FF', chip: 'CADA DÍA' },
+  { I: Crown, n: 'VIP', d: 'Sin anuncios, monedas diarias y marco exclusivo', c: '#B388FF', chip: 'EXCLUSIVO', vip: true },
 ]
 
 export function Progression() {
   return (
-    <section id="progresion" style={{ background: 'rgba(0,0,0,.15)' }}>
+    <section id="progresion" className="sec-prog">
       <div className="wrap">
         <Reveal>
           <span className="kicker">Siempre hay algo que ganar</span>
@@ -190,12 +194,18 @@ export function Progression() {
         <div className="prog-grid">
           {PROGS.map((p, i) => (
             <Reveal key={p.n} delay={i * 0.09}>
-              <motion.div className="card" whileHover={{ y: -10, scale: 1.03 }} style={{ textAlign: 'center' }}>
-                <motion.span className="prog-icon" whileHover={{ scale: 1.35, rotate: -8 }}>
-                  <p.I size={42} strokeWidth={2.2} />
+              <motion.div
+                className={`prog-card${p.vip ? ' prog-vip' : ''}`}
+                style={{ '--c': p.c }}
+                whileHover={{ y: -10 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 16 }}
+              >
+                <motion.span className="prog-badge" whileHover={{ scale: 1.12, rotate: -8 }}>
+                  <p.I size={34} strokeWidth={2.2} />
                 </motion.span>
-                <div className="prog-name" style={{ color: 'var(--yellow)' }}>{p.n}</div>
+                <div className="prog-name">{p.n}</div>
                 <div className="prog-desc">{p.d}</div>
+                <span className="prog-chip">{p.chip}</span>
               </motion.div>
             </Reveal>
           ))}
