@@ -215,25 +215,31 @@ export function Progression() {
   )
 }
 
-/* ═══ SCREENSHOTS ═════════════════════════════════════════════════════════════ */
+/* ═══ SCREENSHOTS — escaparate de 2 filas opuestas ════════════════════════════ */
+const ShotCard = ({ n }) => (
+  <div className="shot-card">
+    <img src={`/media/shot_${n}.jpg`} alt={`Captura ${n} de Blokku`} loading="lazy" />
+  </div>
+)
+
 export function Shots() {
   const shots = [1, 2, 3, 4, 5, 6, 7, 8]
-  const track = [...shots, ...shots]
+  const rowA = [...shots, ...shots]
+  const rowB = [...shots].reverse()
+  const rowBdup = [...rowB, ...rowB]
   return (
-    <section id="capturas" style={{ paddingBottom: 40 }}>
+    <section id="capturas" className="sec-shots">
       <div className="wrap">
         <Reveal>
           <span className="kicker">Directo del juego</span>
           <h2 className="display">ASÍ SE <span className="shimmer" style={{ color: 'var(--blue)' }}>VE</span></h2>
+          <p className="sub">Gráficos coloridos, animaciones jugosas y una interfaz que entra por los ojos.</p>
         </Reveal>
       </div>
-      <Reveal delay={0.1} style={{ marginTop: 50 }}>
-        <div className="marquee">
-          <div className="marquee-track shots-track" style={{ animationDuration: '38s' }}>
-            {track.map((n, i) => (
-              <motion.img key={i} src={`/media/shot_${n}.jpg`} alt={`Captura ${n} de Blokku`} loading="lazy" whileHover={{ scale: 1.07, rotate: i % 2 ? 2 : -2 }} />
-            ))}
-          </div>
+      <Reveal delay={0.1} style={{ marginTop: 52 }}>
+        <div className="shots-viewport">
+          <div className="shots-row">{rowA.map((n, i) => <ShotCard key={`a${i}`} n={n} />)}</div>
+          <div className="shots-row rev">{rowBdup.map((n, i) => <ShotCard key={`b${i}`} n={n} />)}</div>
         </div>
       </Reveal>
     </section>
