@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Play, Plus, Heart, Bot } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
+import { Terminos, Privacidad, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
@@ -9,7 +11,7 @@ const FAQS = [
   ['¿Necesito internet?', 'No. Blokku funciona completamente offline — perfecto para el metro, el avión o donde sea.'],
   ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…), 3 modos de juego, pase de temporada, misiones diarias y un feel de arrastre ultra pulido.'],
   ['¿Para qué edades es?', 'Para todos. Fácil de aprender en 10 segundos, difícil de dominar.'],
-  ['¿Cuándo sale?', 'Muy pronto en Google Play. Mientras tanto puedes jugar la demo aquí arriba. 😉'],
+  ['¿Cuándo sale?', 'Muy pronto en Google Play. Mientras tanto puedes jugar la demo aquí arriba.'],
 ]
 
 function Faq() {
@@ -27,7 +29,9 @@ function Faq() {
               <div className="card faq-item">
                 <button className="faq-q" onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
                   <span>{q}</span>
-                  <motion.span animate={{ rotate: open === i ? 45 : 0 }} style={{ fontSize: 26, color: 'var(--yellow)', lineHeight: 1 }}>+</motion.span>
+                  <motion.span animate={{ rotate: open === i ? 45 : 0 }} style={{ color: 'var(--yellow)', lineHeight: 0 }}>
+                    <Plus size={24} strokeWidth={3} />
+                  </motion.span>
                 </button>
                 <AnimatePresence>
                   {open === i && (
@@ -66,16 +70,16 @@ function FinalCta() {
           <div style={{ display: 'flex', gap: 18, justifyContent: 'center', flexWrap: 'wrap', marginTop: 40 }}>
             <motion.a
               className="btn3d"
-              href="#"
+              href="#descargar"
               style={{ fontSize: 24, padding: '22px 52px' }}
               animate={{ scale: [1, 1.07, 1], boxShadow: ['0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)', '0 6px 0 #2c9a45, 0 0 80px rgba(67,217,163,.7)', '0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)'] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              ▶ DESCÁRGALO GRATIS
+              <Play size={24} strokeWidth={3} fill="currentColor" /> DESCÁRGALO GRATIS
             </motion.a>
           </div>
-          <p style={{ color: 'var(--muted)', marginTop: 22, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14 }}>
-            🤖 Muy pronto en <strong style={{ color: '#fff' }}>Google Play</strong> · gratis · sin internet
+          <p style={{ color: 'var(--muted)', marginTop: 22, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <Bot size={17} /> Muy pronto en <strong style={{ color: '#fff' }}>Google Play</strong> · gratis · sin internet
           </p>
         </Reveal>
       </div>
@@ -83,8 +87,8 @@ function FinalCta() {
   )
 }
 
-/* ═══ APP ═════════════════════════════════════════════════════════════════════ */
-export default function App() {
+/* ═══ LANDING ═════════════════════════════════════════════════════════════════ */
+function Landing() {
   return (
     <>
       <Hero />
@@ -99,14 +103,34 @@ export default function App() {
       <footer>
         <div className="wrap">
           <strong style={{ color: 'var(--yellow)', fontFamily: 'var(--display)', letterSpacing: 1 }}>BLOKKU</strong>
-          <p style={{ marginTop: 8 }}>© 2026 DUSA Solutions · Hecho con 💙 en México</p>
+          <p style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            © 2026 DUSA Solutions · Hecho con <Heart size={14} fill="var(--blue)" color="var(--blue)" /> en México
+          </p>
           <div className="links">
-            <a href="#">Términos y condiciones</a>
-            <a href="#">Aviso de privacidad</a>
-            <a href="#">Soporte</a>
+            <a href="#/terminos">Términos y condiciones</a>
+            <a href="#/privacidad">Aviso de privacidad</a>
+            <a href="#/soporte">Soporte</a>
           </div>
         </div>
       </footer>
     </>
   )
+}
+
+/* ═══ APP + ROUTER (hash) ═════════════════════════════════════════════════════ */
+const ROUTES = {
+  '#/terminos': Terminos,
+  '#/privacidad': Privacidad,
+  '#/soporte': Soporte,
+}
+
+export default function App() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  const Page = ROUTES[hash]
+  return Page ? <Page /> : <Landing />
 }

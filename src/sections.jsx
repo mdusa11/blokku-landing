@@ -1,4 +1,9 @@
 import { motion } from 'framer-motion'
+import {
+  Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
+  Bomb, Palette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
+  PiggyBank, CalendarDays, Crown,
+} from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
 
@@ -22,15 +27,15 @@ export function Hero() {
           </motion.p>
           <motion.div className="hero-ctas" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, type: 'spring' }}>
             <motion.a className="btn3d" href="#descargar" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
-              ▶ JUGAR GRATIS
+              <Play size={20} strokeWidth={3} fill="currentColor" /> JUGAR GRATIS
             </motion.a>
-            <a className="btn3d blue" href="#demo">🎮 Probar la demo</a>
+            <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
           </motion.div>
           <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
-            <span className="tag">🆓 GRATIS</span>
-            <span className="tag">📶 SIN INTERNET</span>
-            <span className="tag">🎮 3 MODOS</span>
-            <span className="tag">⚡ 5 PODERES</span>
+            <span className="tag"><Gift size={15} /> GRATIS</span>
+            <span className="tag"><WifiOff size={15} /> SIN INTERNET</span>
+            <span className="tag"><LayoutGrid size={15} /> 3 MODOS</span>
+            <span className="tag"><Zap size={15} /> 5 PODERES</span>
           </motion.div>
         </div>
 
@@ -50,14 +55,18 @@ export function Hero() {
 
 /* ═══ MARQUEE ═════════════════════════════════════════════════════════════════ */
 export function MarqueeStrip() {
-  const items = ['🧩 ARRASTRA', '💥 REVIENTA', '🔥 COMBOS', '⚡ PODERES', '🏆 RÉCORDS', '🎁 RECOMPENSAS']
+  const items = [
+    [Puzzle, 'ARRASTRA'], [Sparkles, 'REVIENTA'], [Flame, 'COMBOS'],
+    [Zap, 'PODERES'], [Trophy, 'RÉCORDS'], [Gift, 'RECOMPENSAS'],
+  ]
   const track = [...items, ...items]
+  const colors = ['var(--blue)', 'var(--pink)', 'var(--yellow)', 'var(--green)', 'var(--purple)', '#fff']
   return (
     <div className="marquee" style={{ padding: '22px 0', borderTop: '1px solid var(--stroke)', borderBottom: '1px solid var(--stroke)', background: 'rgba(0,0,0,.18)' }}>
       <div className="marquee-track">
-        {track.map((t, i) => (
-          <span key={i} className="marquee-item" style={{ color: ['var(--blue)', 'var(--pink)', 'var(--yellow)', 'var(--green)', 'var(--purple)', '#fff'][i % 6] }}>
-            {t}
+        {track.map(([Icon, t], i) => (
+          <span key={i} className="marquee-item" style={{ color: colors[i % 6] }}>
+            <Icon size={24} strokeWidth={2.5} /> {t}
           </span>
         ))}
       </div>
@@ -86,11 +95,11 @@ export function DemoSection() {
 
 /* ═══ PODERES ═════════════════════════════════════════════════════════════════ */
 const POWERS = [
-  { e: '💣', n: 'BOMBA', d: 'Explota una celda y todas sus vecinas', c: '#FF6600' },
-  { e: '⚡', n: 'RAYO', d: 'Borra una fila completa al instante', c: '#FFDD00' },
-  { e: '🎨', n: 'DESTRUCTOR', d: 'Elimina todas las gemas de un color', c: '#FF0088' },
-  { e: '↩️', n: 'RETROCESO', d: 'Deshaz tu última jugada', c: '#00FFCC' },
-  { e: '🔀', n: 'MEZCLA', d: 'Cambia tus piezas por otras nuevas', c: '#8800FF' },
+  { I: Bomb, n: 'BOMBA', d: 'Explota una celda y todas sus vecinas', c: '#FF6600' },
+  { I: Zap, n: 'RAYO', d: 'Borra una fila completa al instante', c: '#FFDD00' },
+  { I: Palette, n: 'DESTRUCTOR', d: 'Elimina todas las gemas de un color', c: '#FF0088' },
+  { I: Undo2, n: 'RETROCESO', d: 'Deshaz tu última jugada', c: '#00FFCC' },
+  { I: Shuffle, n: 'MEZCLA', d: 'Cambia tus piezas por otras nuevas', c: '#8800FF' },
 ]
 
 export function Powers() {
@@ -109,7 +118,9 @@ export function Powers() {
                 whileHover={{ scale: 1.09, rotate: i % 2 ? 2.5 : -2.5, borderColor: p.c, boxShadow: `0 0 44px ${p.c}66, 0 22px 44px rgba(0,0,0,.45)` }}
                 transition={{ type: 'spring', stiffness: 320, damping: 14 }}
               >
-                <motion.span className="power-emoji" whileHover={{ scale: 1.35, rotate: 12 }}>{p.e}</motion.span>
+                <motion.span className="power-icon" style={{ color: p.c }} whileHover={{ scale: 1.3, rotate: 10 }}>
+                  <p.I size={52} strokeWidth={2.2} />
+                </motion.span>
                 <div className="power-name" style={{ color: p.c }}>{p.n}</div>
                 <div className="power-desc">{p.d}</div>
               </motion.div>
@@ -123,9 +134,9 @@ export function Powers() {
 
 /* ═══ MODOS ═══════════════════════════════════════════════════════════════════ */
 const MODES = [
-  { n: 'CLÁSICO', d: 'Sin fin · cada línea cuenta para tu récord', i: '♾️', bg: 'linear-gradient(160deg, #6fc4ff, #2b6ce0)' },
-  { n: 'CONTRA RELOJ', d: '90 segundos · máxima puntuación · pura adrenalina', i: '⏱️', bg: 'linear-gradient(160deg, #ff7ba6, #e0335f)' },
-  { n: 'ZEN', d: 'Sin game over · solo tú y las piezas · relájate', i: '🧘', bg: 'linear-gradient(160deg, #ffd76f, #e09a2b)' },
+  { n: 'CLÁSICO', d: 'Sin fin · cada línea cuenta para tu récord', I: InfinityIcon, bg: 'linear-gradient(160deg, #6fc4ff, #2b6ce0)' },
+  { n: 'CONTRA RELOJ', d: '90 segundos · máxima puntuación · pura adrenalina', I: Timer, bg: 'linear-gradient(160deg, #ff7ba6, #e0335f)' },
+  { n: 'ZEN', d: 'Sin game over · solo tú y las piezas · relájate', I: Leaf, bg: 'linear-gradient(160deg, #ffd76f, #e09a2b)' },
 ]
 
 export function Modes() {
@@ -147,7 +158,7 @@ export function Modes() {
                 transition={{ type: 'spring', stiffness: 280, damping: 15 }}
               >
                 <motion.span className="mode-icon" animate={{ y: [0, -8, 0], rotate: [0, 6, 0] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}>
-                  {m.i}
+                  <m.I size={52} strokeWidth={2.4} />
                 </motion.span>
                 <div className="mode-name">{m.n}</div>
                 <div className="mode-desc">{m.d}</div>
@@ -162,10 +173,10 @@ export function Modes() {
 
 /* ═══ PROGRESIÓN ══════════════════════════════════════════════════════════════ */
 const PROGS = [
-  { e: '🏅', n: 'PASE DE TEMPORADA', d: '30 niveles de recompensas gratis y premium cada temporada' },
-  { e: '🐷', n: 'ALCANCÍA', d: 'Acumula monedas mientras juegas y rómpela cuando esté llena' },
-  { e: '📆', n: 'MISIONES DIARIAS', d: 'Retos nuevos cada día con cofres y monedas' },
-  { e: '👑', n: 'VIP', d: 'Sin anuncios, monedas diarias y marco exclusivo' },
+  { I: Medal, n: 'PASE DE TEMPORADA', d: '30 niveles de recompensas gratis y premium cada temporada' },
+  { I: PiggyBank, n: 'ALCANCÍA', d: 'Acumula monedas mientras juegas y rómpela cuando esté llena' },
+  { I: CalendarDays, n: 'MISIONES DIARIAS', d: 'Retos nuevos cada día con cofres y monedas' },
+  { I: Crown, n: 'VIP', d: 'Sin anuncios, monedas diarias y marco exclusivo' },
 ]
 
 export function Progression() {
@@ -180,7 +191,9 @@ export function Progression() {
           {PROGS.map((p, i) => (
             <Reveal key={p.n} delay={i * 0.09}>
               <motion.div className="card" whileHover={{ y: -10, scale: 1.03 }} style={{ textAlign: 'center' }}>
-                <motion.span className="prog-emoji" style={{ display: 'inline-block' }} whileHover={{ scale: 1.4, rotate: -10 }}>{p.e}</motion.span>
+                <motion.span className="prog-icon" whileHover={{ scale: 1.35, rotate: -8 }}>
+                  <p.I size={42} strokeWidth={2.2} />
+                </motion.span>
                 <div className="prog-name" style={{ color: 'var(--yellow)' }}>{p.n}</div>
                 <div className="prog-desc">{p.d}</div>
               </motion.div>

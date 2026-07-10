@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Trophy, RotateCcw, Play, Download } from 'lucide-react'
 import { COLORS, rng } from './bits.jsx'
 
 /* ═══ DEMO JUGABLE — mini Blokku en el navegador ══════════════════════════════
@@ -193,12 +194,12 @@ export default function DemoGame() {
       {/* HUD */}
       <div className="demo-hud">
         <div className="demo-score">
-          <span className="demo-score-label">🏆 RÉCORD {best.toLocaleString('es-MX')}</span>
+          <span className="demo-score-label"><Trophy size={13} /> RÉCORD {best.toLocaleString('es-MX')}</span>
           <motion.span key={score} className="demo-score-num display" initial={{ scale: 1.35 }} animate={{ scale: 1 }}>
             {score.toLocaleString('es-MX')}
           </motion.span>
         </div>
-        <button className="btn3d ghost demo-reset" onClick={reset}>↻ Reiniciar</button>
+        <button className="btn3d ghost demo-reset" onClick={reset}><RotateCcw size={16} /> Reiniciar</button>
       </div>
 
       {/* Tablero */}
@@ -271,8 +272,8 @@ export default function DemoGame() {
                 ¡SE ACABÓ!
               </motion.div>
               <div className="demo-over-score">{score.toLocaleString('es-MX')} puntos</div>
-              <button className="btn3d" onClick={reset}>▶ OTRA VEZ</button>
-              <a className="btn3d blue" href="#descargar">Descarga el juego completo</a>
+              <button className="btn3d" onClick={reset}><Play size={17} strokeWidth={3} fill="currentColor" /> OTRA VEZ</button>
+              <a className="btn3d blue" href="#descargar" onClick={() => setOver(false)}><Download size={17} /> Descarga el juego completo</a>
             </motion.div>
           )}
         </AnimatePresence>
@@ -306,7 +307,7 @@ export default function DemoGame() {
         </div>
       )}
 
-      <p className="demo-hint">Arrastra las piezas al tablero · completa filas o columnas para reventarlas 💥</p>
+      <p className="demo-hint">Arrastra las piezas al tablero · completa filas o columnas para reventarlas</p>
     </div>
   )
 }
