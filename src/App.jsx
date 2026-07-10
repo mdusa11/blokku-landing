@@ -4,6 +4,7 @@ import { Play, Plus, Heart, Bot } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
+import { HowToPlay, PlayBadge } from './extras.jsx'
 import { Terminos, Privacidad, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
@@ -79,8 +80,11 @@ function FinalCta() {
               <Play size={24} strokeWidth={3} fill="currentColor" /> DESCÁRGALO GRATIS
             </motion.a>
           </div>
-          <p style={{ color: 'var(--muted)', marginTop: 22, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <Bot size={17} /> Muy pronto en <strong style={{ color: '#fff' }}>Google Play</strong> · gratis · sin internet
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 26 }}>
+            <PlayBadge />
+          </div>
+          <p style={{ color: 'var(--muted)', marginTop: 20, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <Bot size={17} /> Muy pronto · gratis · sin internet
           </p>
         </Reveal>
       </div>
@@ -98,6 +102,7 @@ function Landing() {
       <Hero />
       <MarqueeStrip />
       <Stats />
+      <HowToPlay />
       <DemoSection />
       <Powers />
       <Modes />

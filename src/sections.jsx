@@ -45,7 +45,7 @@ export function Hero() {
           transition={{ delay: 0.5, type: 'spring', stiffness: 130, damping: 15 }}
         >
           <motion.div className="phone" animate={{ y: [0, -14, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
-            <video src="/media/gameplay.mp4" autoPlay muted loop playsInline />
+            <video src="/media/gameplay.mp4" poster="/media/hero-poster.jpg" autoPlay muted loop playsInline preload="metadata" />
           </motion.div>
         </motion.div>
       </div>
@@ -138,9 +138,9 @@ export function Powers() {
 
 /* ═══ MODOS ═══════════════════════════════════════════════════════════════════ */
 const MODES = [
-  { n: 'CLÁSICO', d: 'Sin fin · cada línea cuenta para tu récord', I: InfinityIcon, bg: 'linear-gradient(160deg, #6fc4ff, #2b6ce0)' },
-  { n: 'CONTRA RELOJ', d: '90 segundos · máxima puntuación · pura adrenalina', I: Timer, bg: 'linear-gradient(160deg, #ff7ba6, #e0335f)' },
-  { n: 'ZEN', d: 'Sin game over · solo tú y las piezas · relájate', I: Leaf, bg: 'linear-gradient(160deg, #ffd76f, #e09a2b)' },
+  { n: 'CLÁSICO', d: 'Sin fin · cada línea cuenta para tu récord', I: InfinityIcon, chip: 'SIN FIN', bg: 'linear-gradient(160deg, #6fc4ff, #2b6ce0)' },
+  { n: 'CONTRA RELOJ', d: '90 segundos · máxima puntuación · pura adrenalina', I: Timer, chip: '90 SEGUNDOS', bg: 'linear-gradient(160deg, #ff7ba6, #e0335f)' },
+  { n: 'ZEN', d: 'Sin game over · solo tú y las piezas · relájate', I: Leaf, chip: 'CERO ESTRÉS', bg: 'linear-gradient(160deg, #ffd76f, #e09a2b)' },
 ]
 
 export function Modes() {
@@ -161,11 +161,13 @@ export function Modes() {
                 whileHover={{ y: -14, scale: 1.04, rotate: i === 1 ? 0 : i ? 1.5 : -1.5 }}
                 transition={{ type: 'spring', stiffness: 280, damping: 15 }}
               >
+                <m.I className="mode-ghost" size={150} strokeWidth={1.4} aria-hidden />
                 <motion.span className="mode-icon" animate={{ y: [0, -8, 0], rotate: [0, 6, 0] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}>
                   <m.I size={52} strokeWidth={2.4} />
                 </motion.span>
                 <div className="mode-name">{m.n}</div>
                 <div className="mode-desc">{m.d}</div>
+                <span className="mode-chip">{m.chip}</span>
               </motion.div>
             </Reveal>
           ))}
