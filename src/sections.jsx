@@ -82,7 +82,7 @@ export function DemoSection() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Sin descargar nada</span>
-          <h2 className="display">PRUÉBALO <span style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
+          <h2 className="display">PRUÉBALO <span className="shimmer" style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
           <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae poderes, misiones, pase de temporada y mucho más.</p>
         </Reveal>
         <Reveal delay={0.15} style={{ marginTop: 54 }}>
@@ -108,7 +108,7 @@ export function Powers() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Cuando el tablero se pone feo</span>
-          <h2 className="display">5 PODERES <span style={{ color: 'var(--yellow)' }}>ÉPICOS</span></h2>
+          <h2 className="display">5 PODERES <span className="shimmer" style={{ color: 'var(--yellow)' }}>ÉPICOS</span></h2>
         </Reveal>
         <div className="powers-grid">
           {POWERS.map((p, i) => (
@@ -146,7 +146,7 @@ export function Modes() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Para cada mood</span>
-          <h2 className="display">3 MODOS <span style={{ color: 'var(--green)' }}>DE JUEGO</span></h2>
+          <h2 className="display">3 MODOS <span className="shimmer" style={{ color: 'var(--green)' }}>DE JUEGO</span></h2>
         </Reveal>
         <div className="modes-grid">
           {MODES.map((m, i) => (
@@ -185,7 +185,7 @@ export function Progression() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Siempre hay algo que ganar</span>
-          <h2 className="display">PROGRESA <span style={{ color: 'var(--purple)' }}>TODOS LOS DÍAS</span></h2>
+          <h2 className="display">PROGRESA <span className="shimmer" style={{ color: 'var(--purple)' }}>TODOS LOS DÍAS</span></h2>
         </Reveal>
         <div className="prog-grid">
           {PROGS.map((p, i) => (
@@ -214,7 +214,7 @@ export function Shots() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Directo del juego</span>
-          <h2 className="display">ASÍ SE <span style={{ color: 'var(--blue)' }}>VE</span></h2>
+          <h2 className="display">ASÍ SE <span className="shimmer" style={{ color: 'var(--blue)' }}>VE</span></h2>
         </Reveal>
       </div>
       <Reveal delay={0.1} style={{ marginTop: 50 }}>

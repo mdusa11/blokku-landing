@@ -17,26 +17,33 @@ export function Gem({ color, size, style }) {
   )
 }
 
-/* Lluvia de gemas de fondo — parallax infinito */
-export function FallingGems({ count = 16, opacity = 0.16 }) {
+/* Lluvia de gemas de fondo — 100% CSS (hilo compositor, no bloquea el JS).
+   Reemplaza el loop de framer-motion que trababa en móvil. */
+export function FallingGems({ count = 14, opacity = 0.16 }) {
   return (
-    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }} aria-hidden>
+    <div className="fgems" aria-hidden>
       {Array.from({ length: count }, (_, i) => {
-        const size = 26 + rng(i + 1) * 64
+        const size = 26 + rng(i + 1) * 62
         const left = rng(i * 3.7 + 2) * 100
-        const dur = 9 + rng(i * 5.1 + 1) * 14
+        const dur = 11 + rng(i * 5.1 + 1) * 13
         const delay = -rng(i * 7.3 + 3) * dur
-        const rot = rng(i * 9 + 4) * 360
+        const rot = Math.round(rng(i * 9 + 4) * 360)
         return (
-          <motion.div
+          <span
             key={i}
-            initial={{ y: '-15vh', rotate: rot }}
-            animate={{ y: '115vh', rotate: rot + 220 }}
-            transition={{ duration: dur, delay, repeat: Infinity, ease: 'linear' }}
-            style={{ position: 'absolute', left: `${left}%`, top: 0, opacity }}
-          >
-            <Gem color={COLORS[i % COLORS.length]} size={size} />
-          </motion.div>
+            className="fgem"
+            style={{
+              left: `${left}%`,
+              width: size,
+              height: size,
+              opacity,
+              background: `linear-gradient(160deg, ${COLORS[i % COLORS.length]}, ${COLORS[i % COLORS.length]}bb)`,
+              '--r0': `${rot}deg`,
+              '--r1': `${rot + 200}deg`,
+              animationDuration: `${dur}s`,
+              animationDelay: `${delay}s`,
+            }}
+          />
         )
       })}
     </div>

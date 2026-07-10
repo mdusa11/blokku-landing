@@ -275,3 +275,98 @@ footer a:hover { color: #fff; }
 .legal-body li { margin: 7px 0; }
 .legal-body a { color: var(--blue); font-weight: 600; }
 .legal-body em { font-style: normal; color: var(--yellow); }
+
+/* ═══ PERF + MÁS DISEÑO (v2) ═══════════════════════════════════════════════════ */
+
+/* ── Lluvia de gemas: CSS puro, corre en el compositor (no traba el JS) ── */
+.fgems { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.fgem {
+  position: absolute; top: 0; border-radius: 24%;
+  will-change: transform;
+  animation-name: fgfall; animation-timing-function: linear; animation-iteration-count: infinite;
+  box-shadow: inset 0 4px 6px rgba(255,255,255,.35), 0 4px 10px rgba(0,0,0,.3);
+}
+@keyframes fgfall {
+  from { transform: translate3d(0, -18vh, 0) rotate(var(--r0)); }
+  to   { transform: translate3d(0, 120vh, 0) rotate(var(--r1)); }
+}
+
+/* ── Aurora de fondo: 2 blobs de gradiente que derivan (GPU, sin blur costoso) ── */
+.aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.aurora span {
+  position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%;
+  will-change: transform; opacity: .5;
+}
+.aurora .a1 {
+  top: -20%; left: -15%;
+  background: radial-gradient(circle at center, rgba(78,161,255,.28), transparent 62%);
+  animation: drift1 26s ease-in-out infinite;
+}
+.aurora .a2 {
+  bottom: -25%; right: -15%;
+  background: radial-gradient(circle at center, rgba(255,93,143,.22), transparent 62%);
+  animation: drift2 32s ease-in-out infinite;
+}
+@keyframes drift1 { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(8vw,6vh,0) scale(1.15); } }
+@keyframes drift2 { 0%,100% { transform: translate3d(0,0,0) scale(1.1); } 50% { transform: translate3d(-7vw,-5vh,0) scale(1); } }
+
+/* ── Shimmer en títulos ── */
+.shimmer {
+  background: linear-gradient(100deg, currentColor 30%, #fff 50%, currentColor 70%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 4.5s linear infinite;
+}
+@keyframes shimmer { to { background-position: -220% 0; } }
+
+/* ── Sweep de brillo en botones (pseudo, GPU) ── */
+.btn3d { position: relative; overflow: hidden; }
+.btn3d::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 45%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform: skewX(-20deg); animation: sweep 3.4s ease-in-out infinite;
+}
+@keyframes sweep { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+
+/* ── Shine en cards al hover ── */
+.card::before, .mode-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(130deg, rgba(255,255,255,.14), transparent 42%);
+  opacity: 0; transition: opacity .3s;
+}
+.card:hover::before, .mode-card:hover::before { opacity: 1; }
+
+/* ── Barra de progreso de scroll ── */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 60; background: rgba(255,255,255,.06); }
+.scroll-progress-bar {
+  height: 100%; width: 100%; transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--blue), var(--pink), var(--yellow), var(--green));
+}
+
+/* ── Nav sticky ── */
+.stickynav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 55;
+  background: rgba(14,22,58,.82); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--stroke);
+}
+.stickynav-inner { display: flex; align-items: center; gap: 20px; padding-top: 12px; padding-bottom: 12px; }
+.stickynav-logo { text-decoration: none; line-height: 0; }
+.stickynav-links { display: flex; gap: 22px; margin-left: auto; }
+.stickynav-links a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 15px; transition: color .15s; }
+.stickynav-links a:hover { color: #fff; }
+.stickynav-cta { font-size: 15px !important; padding: 9px 22px !important; box-shadow: 0 4px 0 #2c9a45, 0 8px 18px rgba(0,0,0,.35) !important; }
+@media (max-width: 640px) { .stickynav-links { display: none; } .stickynav-cta { margin-left: auto; } }
+
+/* ── Stats ── */
+.stats-sec { padding: 60px 0; border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); background: rgba(0,0,0,.14); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+@media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 12px; } }
+.stat { text-align: center; }
+.stat-num { font-size: clamp(42px, 6vw, 62px); background: linear-gradient(180deg, #fff, var(--blue)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
+.stat-label { color: var(--muted); font-weight: 600; font-size: 14px; margin-top: 6px; }
+
+/* ── Reduced motion: apagar lo decorativo ── */
+@media (prefers-reduced-motion: reduce) {
+  .fgem, .aurora span, .shimmer, .btn3d::after { animation: none !important; }
+  .fgem { display: none; }
+}

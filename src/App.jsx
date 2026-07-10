@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Play, Plus, Heart, Bot } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
+import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
 import { Terminos, Privacidad, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
@@ -21,7 +22,7 @@ function Faq() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Dudas rápidas</span>
-          <h2 className="display">PREGUNTAS <span style={{ color: 'var(--pink)' }}>FRECUENTES</span></h2>
+          <h2 className="display">PREGUNTAS <span className="shimmer" style={{ color: 'var(--pink)' }}>FRECUENTES</span></h2>
         </Reveal>
         <div className="faq">
           {FAQS.map(([q, a], i) => (
@@ -91,8 +92,12 @@ function FinalCta() {
 function Landing() {
   return (
     <>
+      <div className="aurora" aria-hidden><span className="a1" /><span className="a2" /></div>
+      <ScrollProgress />
+      <StickyNav />
       <Hero />
       <MarqueeStrip />
+      <Stats />
       <DemoSection />
       <Powers />
       <Modes />
