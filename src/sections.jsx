@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import {
   Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
   Bomb, Palette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
-  PiggyBank, CalendarDays, Crown,
+  CalendarDays, TrendingUp, Ban,
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
@@ -83,7 +83,7 @@ export function DemoSection() {
         <Reveal>
           <span className="kicker">Sin descargar nada</span>
           <h2 className="display">PRUÉBALO <span className="shimmer" style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
-          <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae poderes, misiones, pase de temporada y mucho más.</p>
+          <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae 3 modos, 5 poderes, reto diario y logros — todo gratis.</p>
         </Reveal>
         <Reveal delay={0.15} style={{ marginTop: 54 }}>
           <DemoGame />
@@ -179,10 +179,10 @@ export function Modes() {
 
 /* ═══ PROGRESIÓN — tarjetas de recompensa con color propio ═════════════════════ */
 const PROGS = [
-  { I: Medal, n: 'PASE DE TEMPORADA', d: '30 niveles de recompensas gratis y premium cada temporada', c: '#FFC93C', chip: 'GRATIS + PREMIUM' },
-  { I: PiggyBank, n: 'ALCANCÍA', d: 'Acumula monedas mientras juegas y rómpela cuando esté llena', c: '#FF5D8F', chip: 'HASTA 2000' },
-  { I: CalendarDays, n: 'MISIONES DIARIAS', d: 'Retos nuevos cada día con cofres y monedas', c: '#4EA1FF', chip: 'CADA DÍA' },
-  { I: Crown, n: 'VIP', d: 'Sin anuncios, monedas diarias y marco exclusivo', c: '#B388FF', chip: 'EXCLUSIVO', vip: true },
+  { I: Medal, n: 'LOGROS', d: 'Desbloquea decenas de medallas conforme mejoras', c: '#FFC93C', chip: 'COLECCIÓNALAS' },
+  { I: TrendingUp, n: 'NIVELES', d: 'Sube de rango y récord con cada partida', c: '#FF5D8F', chip: 'SIN TECHO' },
+  { I: CalendarDays, n: 'RETO DIARIO', d: 'Un puzzle nuevo cada día, con su racha', c: '#4EA1FF', chip: 'CADA DÍA' },
+  { I: Ban, n: 'SIN ANUNCIOS', d: 'Un pago único opcional y cero anuncios para siempre', c: '#B388FF', chip: 'OPCIONAL', vip: true },
 ]
 
 export function Progression() {
@@ -191,7 +191,7 @@ export function Progression() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Siempre hay algo que ganar</span>
-          <h2 className="display">PROGRESA <span className="shimmer" style={{ color: 'var(--purple)' }}>TODOS LOS DÍAS</span></h2>
+          <h2 className="display">PROGRESA <span className="shimmer" style={{ color: 'var(--purple)' }}>A TU RITMO</span></h2>
         </Reveal>
         <div className="prog-grid">
           {PROGS.map((p, i) => (

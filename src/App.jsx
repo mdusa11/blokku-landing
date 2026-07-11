@@ -9,9 +9,9 @@ import { Terminos, Privacidad, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
-  ['¿Blokku es gratis?', 'Sí, 100% gratis. Tiene compras opcionales (monedas, pase de temporada, VIP) pero puedes jugar todo sin pagar un peso.'],
+  ['¿Blokku es gratis?', 'Sí, 100% gratis con anuncios. La única compra opcional es "Sin Anuncios": un pago único que los quita para siempre. Nada de suscripciones ni monedas.'],
   ['¿Necesito internet?', 'No. Blokku funciona completamente offline — perfecto para el metro, el avión o donde sea.'],
-  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…), 3 modos de juego, pase de temporada, misiones diarias y un feel de arrastre ultra pulido.'],
+  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 3 modos de juego, reto diario y un feel de arrastre ultra pulido.'],
   ['¿Para qué edades es?', 'Para todos. Fácil de aprender en 10 segundos, difícil de dominar.'],
   ['¿Cuándo sale?', 'Muy pronto en Google Play. Mientras tanto puedes jugar la demo aquí arriba.'],
 ]
