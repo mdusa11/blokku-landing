@@ -45,7 +45,7 @@ export function Hero() {
           transition={{ delay: 0.5, type: 'spring', stiffness: 130, damping: 15 }}
         >
           <motion.div className="phone" animate={{ y: [0, -14, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
-            <video src="/media/gameplay.mp4" poster="/media/hero-poster.jpg" autoPlay muted loop playsInline preload="metadata" />
+            <video src={`${import.meta.env.BASE_URL}media/gameplay.mp4`} poster={`${import.meta.env.BASE_URL}media/hero-poster.jpg`} autoPlay muted loop playsInline preload="metadata" />
           </motion.div>
         </motion.div>
       </div>
@@ -220,7 +220,7 @@ export function Progression() {
 /* ═══ SCREENSHOTS — escaparate de 2 filas opuestas ════════════════════════════ */
 const ShotCard = ({ n }) => (
   <div className="shot-card">
-    <img src={`/media/shot_${n}.jpg`} alt={`Captura ${n} de Blokku`} loading="lazy" />
+    <img src={`${import.meta.env.BASE_URL}media/shot_${n}.jpg`} alt={`Captura ${n} de Blokku`} loading="lazy" />
   </div>
 )
 

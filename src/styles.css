@@ -1,8 +1,8 @@
 /* ═══ BLOKKU LANDING — design system candy ═══════════════════════════════════ */
 /* Fuentes auto-hospedadas (sin CDN → carga más rápida, sin parpadeo FOUT) */
-@font-face { font-family: 'Luckiest Guy'; src: url('/fonts/luckiestguy.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-@font-face { font-family: 'Fredoka'; src: url('/fonts/fredoka.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
-@font-face { font-family: 'Nunito'; src: url('/fonts/nunito.woff2') format('woff2'); font-weight: 700 800; font-display: swap; }
+@font-face { font-family: 'Luckiest Guy'; src: url('./fonts/luckiestguy.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Fredoka'; src: url('./fonts/fredoka.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./fonts/nunito.woff2') format('woff2'); font-weight: 700 800; font-display: swap; }
 
 :root {
   --bg-top: #1b3072;
