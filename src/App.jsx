@@ -5,7 +5,7 @@ import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
 import { HowToPlay, PlayBadge } from './extras.jsx'
-import { Terminos, Privacidad, Soporte } from './legal.jsx'
+import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
@@ -119,6 +119,7 @@ function Landing() {
           <div className="links">
             <a href="#/terminos">Términos y condiciones</a>
             <a href="#/privacidad">Aviso de privacidad</a>
+            <a href="#/eliminar-datos">Eliminar mis datos</a>
             <a href="#/soporte">Soporte</a>
           </div>
         </div>
@@ -131,6 +132,7 @@ function Landing() {
 const ROUTES = {
   '#/terminos': Terminos,
   '#/privacidad': Privacidad,
+  '#/eliminar-datos': EliminarDatos,
   '#/soporte': Soporte,
 }
 

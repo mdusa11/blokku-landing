@@ -1,0 +1,9 @@
+# Sitio de Blokku (blokku.online) en Cloudflare.
+# Vite compila a ./dist con `npm run build`; aquí solo se declara qué carpeta
+# publicar, para no depender de los campos del panel.
+name = "blokku"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"

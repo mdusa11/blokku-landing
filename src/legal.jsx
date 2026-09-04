@@ -3,9 +3,8 @@ import { motion } from 'framer-motion'
 import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 
-// ⚠️ Cambia este correo si prefieres uno dedicado (ej. soporte de dominio propio)
-export const SUPPORT_EMAIL = 'vegetta211@gmail.com'
-const UPDATED = '10 de julio de 2026'
+export const SUPPORT_EMAIL = 'mdusa1104@gmail.com'
+const UPDATED = '4 de septiembre de 2026'
 
 function LegalLayout({ title, children }) {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -48,51 +47,44 @@ export function Terminos() {
       </p>
 
       <h3>3. Compras dentro de la App</h3>
-      <p>La App es gratuita y ofrece compras opcionales procesadas por Google Play:</p>
+      <p>
+        La App es gratuita y completa: todos los modos, poderes y desbloqueables están disponibles sin pagar.
+        Existe <strong>una sola compra opcional</strong>, procesada por Google Play:
+      </p>
       <ul>
-        <li><strong>Monedas</strong> (consumibles) para hechizos y cosméticos.</li>
-        <li><strong>Sin Anuncios</strong> y <strong>Pase de Temporada</strong> (compras únicas).</li>
-        <li><strong>VIP</strong> (suscripción mensual con renovación automática).</li>
+        <li><strong>Sin Anuncios</strong> — pago único que elimina la publicidad para siempre.</li>
       </ul>
       <p>
-        Los precios se muestran antes de confirmar cada compra. Las monedas y beneficios virtuales no tienen valor
-        monetario real, no son transferibles y no son reembolsables una vez consumidos, salvo lo dispuesto por la
-        política de reembolsos de Google Play o la ley aplicable.
+        No hay suscripciones, monedas virtuales ni consumibles de ningún tipo. El precio se muestra antes de
+        confirmar la compra, y los reembolsos se rigen por la política de Google Play y la ley aplicable.
       </p>
 
-      <h3>4. Suscripción VIP</h3>
-      <p>
-        La suscripción VIP se renueva automáticamente cada mes hasta que la canceles. Puedes cancelarla en cualquier
-        momento desde Google Play → Suscripciones; conservarás los beneficios hasta el final del periodo pagado.
-        La gestión de cobro, renovación y reembolsos corresponde a Google Play.
-      </p>
-
-      <h3>5. Progreso y datos de juego</h3>
+      <h3>4. Progreso y datos de juego</h3>
       <p>
         El progreso se guarda localmente en tu dispositivo. Desinstalar la App o borrar sus datos puede eliminar tu
-        progreso de forma permanente. Las compras duraderas (Sin Anuncios, Pase) pueden restaurarse con
-        "Restaurar compras" dentro de la tienda de la App.
+        progreso de forma permanente. La compra "Sin Anuncios" se puede recuperar con
+        <em>"Restaurar compras"</em> en la pantalla Sin Ads de la App.
       </p>
 
-      <h3>6. Conducta</h3>
+      <h3>5. Conducta</h3>
       <p>
         No está permitido usar trampas, exploits, herramientas de automatización o modificaciones de la App, ni
         interferir con su funcionamiento. Podemos suspender el acceso a funciones en caso de abuso o fraude.
       </p>
 
-      <h3>7. Propiedad intelectual</h3>
+      <h3>6. Propiedad intelectual</h3>
       <p>
         Blokku, su nombre, logotipos, diseño, arte, música y código son propiedad de DUSA Solutions y están
         protegidos por las leyes de propiedad intelectual. Todos los derechos reservados.
       </p>
 
-      <h3>8. Anuncios</h3>
+      <h3>7. Anuncios</h3>
       <p>
         La versión gratuita muestra anuncios de terceros (Google AdMob). Los anuncios recompensados son siempre
-        opcionales. Puedes eliminar los anuncios con la compra "Sin Anuncios" o la suscripción VIP.
+        opcionales. Puedes eliminar los anuncios con la compra única "Sin Anuncios".
       </p>
 
-      <h3>9. Limitación de responsabilidad</h3>
+      <h3>8. Limitación de responsabilidad</h3>
       <p>
         La App se ofrece "tal cual", sin garantías de ningún tipo. En la máxima medida permitida por la ley, DUSA
         Solutions no será responsable por daños indirectos, pérdida de datos o de progreso, ni por interrupciones
@@ -184,6 +176,72 @@ export function Privacidad() {
   )
 }
 
+/* ═══ ELIMINACIÓN DE DATOS ════════════════════════════════════════════════════ */
+// Google Play exige una ruta para solicitar el borrado de datos que funcione
+// SIN tener la app instalada. De ahí que esta página exista y se enlace desde
+// la ficha de la tienda.
+export function EliminarDatos() {
+  return (
+    <LegalLayout title="ELIMINAR MIS DATOS">
+      <p>
+        Blokku <strong>no tiene cuentas de usuario</strong>: no hay registro, correo ni contraseña. Tu progreso
+        (puntuación, récord, nivel, logros y cosméticos) se guarda <strong>solo en tu dispositivo</strong>.
+      </p>
+
+      <h3><Gamepad2 size={18} /> Borrar desde la app</h3>
+      <p>Es inmediato y no requiere pedirnos nada:</p>
+      <ol>
+        <li>Abre Blokku y entra a <strong>Ajustes</strong> (el engrane del menú).</li>
+        <li>Baja hasta <strong>Datos y privacidad</strong>.</li>
+        <li>Toca <strong>Eliminar mis datos</strong> y confirma.</li>
+      </ol>
+      <p>
+        Eso borra de forma permanente todo tu progreso local y el estado de la compra en ese dispositivo.
+        <strong> No se puede deshacer.</strong>
+      </p>
+
+      <h3><Mail size={18} /> Solicitarlo por correo</h3>
+      <p>
+        Si ya desinstalaste la app o quieres que borremos los datos que están fuera de tu dispositivo, escríbenos a{' '}
+        <a href={`mailto:${SUPPORT_EMAIL}?subject=Eliminar%20mis%20datos%20-%20Blokku`}>{SUPPORT_EMAIL}</a> desde el
+        correo asociado a tus compras. Respondemos en un plazo máximo de <strong>30 días</strong>.
+      </p>
+
+      <h3><ShoppingCart size={18} /> Qué pasa con tu compra</h3>
+      <ul>
+        <li>
+          <strong>Sin Anuncios</strong> es un pago único ligado a tu cuenta de Google Play. Borrar tus datos
+          <strong> no la reembolsa</strong>, y puedes recuperarla con <em>"Restaurar compras"</em> si reinstalas.
+        </li>
+        <li>
+          Los reembolsos los gestiona{' '}
+          <a href="https://support.google.com/googleplay/answer/2479637" target="_blank" rel="noopener noreferrer">Google Play</a>,
+          no nosotros.
+        </li>
+        <li>
+          El identificador anónimo que RevenueCat asocia a tu compra se elimina si lo pides por correo.
+        </li>
+      </ul>
+
+      <h3><Bug size={18} /> Datos que gestionan terceros</h3>
+      <ul>
+        <li>
+          <strong>Google Play Games:</strong> si iniciaste sesión, tu perfil y partidas en la nube los administra Google
+          desde tu{' '}
+          <a href="https://myaccount.google.com/" target="_blank" rel="noopener noreferrer">Cuenta de Google</a>.
+        </li>
+        <li>
+          <strong>Identificador de publicidad:</strong> puedes restablecerlo o borrarlo en los ajustes de Android,
+          en Privacidad → Anuncios.
+        </li>
+        <li>
+          Google Play conserva los registros mínimos de transacción que le exige la ley fiscal, aunque borres el resto.
+        </li>
+      </ul>
+    </LegalLayout>
+  )
+}
+
 /* ═══ SOPORTE ═════════════════════════════════════════════════════════════════ */
 export function Soporte() {
   return (
@@ -203,8 +261,7 @@ export function Soporte() {
 
       <h3><ShoppingCart size={18} /> Problemas con compras</h3>
       <ul>
-        <li><strong>No llegó mi compra:</strong> abre la Tienda dentro del juego y toca <em>"Restaurar compras"</em>. Si no aparece, espera unos minutos y reinicia la App.</li>
-        <li><strong>Cancelar el VIP:</strong> Google Play → tu perfil → <em>Pagos y suscripciones</em> → <em>Suscripciones</em> → Blokku VIP → Cancelar.</li>
+        <li><strong>No llegó mi compra:</strong> abre <em>Sin Ads</em> en el menú y toca <em>"Restaurar compras"</em>. Si no aparece, espera unos minutos y reinicia la App.</li>
         <li><strong>Reembolsos:</strong> se gestionan a través de <a href="https://support.google.com/googleplay/answer/2479637" target="_blank" rel="noopener noreferrer">Google Play</a>.</li>
       </ul>
 
