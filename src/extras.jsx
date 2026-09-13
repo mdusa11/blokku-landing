@@ -3,13 +3,16 @@ import { motion } from 'framer-motion'
 import { Hand, Grid3x3, ArrowRight } from 'lucide-react'
 import { Reveal } from './bits.jsx'
 
-/* Badge "Disponible en Google Play" — lookalike propio (sin asset de marca). */
+/* Badge de Google Play — lookalike propio (sin asset de marca).
+   Dice PRÓXIMAMENTE, no DISPONIBLE: la app aún no está publicada y
+   afirmarlo sería falso. Al publicar, cambiar el texto y apuntar href a la
+   URL real de la ficha. */
 export function PlayBadge({ href = '#descargar' }) {
   return (
-    <a className="playbadge" href={href} aria-label="Disponible en Google Play">
+    <a className="playbadge" href={href} aria-label="Próximamente en Google Play">
       <span className="pb-tri" aria-hidden />
       <span className="pb-txt">
-        <span className="pb-small">DISPONIBLE EN</span>
+        <span className="pb-small">PRÓXIMAMENTE EN</span>
         <span className="pb-big">Google Play</span>
       </span>
     </a>

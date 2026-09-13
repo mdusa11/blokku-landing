@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Plus, Heart, Bot } from 'lucide-react'
+import { Play, Plus, Heart, Bot, Rocket } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
@@ -77,7 +77,7 @@ function FinalCta() {
               animate={{ scale: [1, 1.07, 1], boxShadow: ['0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)', '0 6px 0 #2c9a45, 0 0 80px rgba(67,217,163,.7)', '0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)'] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <Play size={24} strokeWidth={3} fill="currentColor" /> DESCÁRGALO GRATIS
+              <Rocket size={24} strokeWidth={3} /> PRÓXIMAMENTE
             </motion.a>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 26 }}>
