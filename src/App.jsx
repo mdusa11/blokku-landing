@@ -13,7 +13,7 @@ const FAQS = [
   ['¿Necesito internet?', 'No. Blokku funciona completamente offline — perfecto para el metro, el avión o donde sea.'],
   ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 3 modos de juego, reto diario y un feel de arrastre ultra pulido.'],
   ['¿Para qué edades es?', 'Para todos. Fácil de aprender en 10 segundos, difícil de dominar.'],
-  ['¿Cuándo sale?', 'Muy pronto en Google Play. Mientras tanto puedes jugar la demo aquí arriba.'],
+  ['¿Cuándo sale?', 'En menos de un mes estará disponible en Google Play. Mientras tanto puedes jugar la demo aquí arriba.'],
 ]
 
 function Faq() {
@@ -84,7 +84,7 @@ function FinalCta() {
             <PlayBadge />
           </div>
           <p style={{ color: 'var(--muted)', marginTop: 20, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <Bot size={17} /> Muy pronto · gratis · sin internet
+            <Bot size={17} /> En menos de un mes en Google Play · gratis · sin internet
           </p>
         </Reveal>
       </div>

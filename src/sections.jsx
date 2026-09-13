@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import {
   Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
   Bomb, Palette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
-  CalendarDays, TrendingUp, Ban,
+  CalendarDays, TrendingUp, Ban, Rocket,
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
@@ -31,6 +31,16 @@ export function Hero() {
             </motion.a>
             <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
           </motion.div>
+          {/* Aviso de lanzamiento: va en el hero porque es lo primero que se
+              ve sin hacer scroll. Repetido en la FAQ y en el CTA final. */}
+          <motion.p
+            className="hero-soon"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.25 }}
+          >
+            <Rocket size={15} /> En menos de un mes en Google Play
+          </motion.p>
           <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
             <span className="tag"><Gift size={15} /> GRATIS</span>
             <span className="tag"><WifiOff size={15} /> SIN INTERNET</span>

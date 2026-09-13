@@ -556,3 +556,20 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
   font-family: var(--utility); font-weight: 800; font-size: 12px; letter-spacing: 1px;
   background: rgba(0,0,0,.28); color: #fff; border-radius: 100px; padding: 6px 15px;
 }
+
+/* Aviso de lanzamiento del hero. Discreto a propósito: informa sin competir
+   con los botones, que son la acción principal. */
+.hero-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .07);
+  color: var(--yellow);
+  font-family: var(--utility);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .3px;
+}
