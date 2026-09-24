@@ -114,7 +114,7 @@ function Landing() {
         <div className="wrap">
           <strong style={{ color: 'var(--yellow)', fontFamily: 'var(--display)', letterSpacing: 1 }}>BLOKKU</strong>
           <p style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            © 2026 DUSA Solutions · Hecho con <Heart size={14} fill="var(--blue)" color="var(--blue)" /> en México
+            © 2026 <a className="brand-link" href="https://www.instagram.com/dusasolutions/" target="_blank" rel="noopener noreferrer">DUSA Solutions</a> · Hecho con <Heart size={14} fill="var(--blue)" color="var(--blue)" /> en México
           </p>
           <div className="links">
             <a href="#/terminos">Términos y condiciones</a>

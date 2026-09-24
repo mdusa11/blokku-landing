@@ -243,6 +243,7 @@ footer { padding: 46px 0 60px; text-align: center; color: #8fa0d8; font-size: 14
 footer .links { display: flex; gap: 22px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
 footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: #fff; }
+footer .brand-link { color: inherit; }
 
 /* progression */
 .prog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; margin-top: 54px; }
