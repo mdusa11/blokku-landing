@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
+import { PLAY_URL } from './extras.jsx'
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
 export function Hero() {
@@ -26,7 +27,7 @@ export function Hero() {
             Fácil de aprender, imposible de soltar.
           </motion.p>
           <motion.div className="hero-ctas" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, type: 'spring' }}>
-            <motion.a className="btn3d" href="#descargar" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
+            <motion.a className="btn3d" href={PLAY_URL} target="_blank" rel="noopener noreferrer" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
               <Play size={20} strokeWidth={3} fill="currentColor" /> JUGAR GRATIS
             </motion.a>
             <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
@@ -39,7 +40,7 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.25 }}
           >
-            <Rocket size={15} /> En menos de un mes en Google Play
+            <Rocket size={15} /> ¡Ya disponible en Google Play!
           </motion.p>
           <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
             <span className="tag"><Gift size={15} /> GRATIS</span>

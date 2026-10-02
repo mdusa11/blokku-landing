@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Play } from 'lucide-react'
 import { Logo } from './bits.jsx'
+import { PLAY_URL } from './extras.jsx'
 
 /* Barra de progreso de scroll — transform scaleX en compositor (barato). */
 export function ScrollProgress() {
@@ -52,7 +53,7 @@ export function StickyNav() {
           <a href="#modos">Modos</a>
           <a href="#faq">FAQ</a>
         </div>
-        <a href="#descargar" className="btn3d stickynav-cta">
+        <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" className="btn3d stickynav-cta">
           <Play size={15} strokeWidth={3} fill="currentColor" /> Jugar
         </a>
       </div>

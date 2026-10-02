@@ -3,16 +3,16 @@ import { motion } from 'framer-motion'
 import { Hand, Grid3x3, ArrowRight } from 'lucide-react'
 import { Reveal } from './bits.jsx'
 
-/* Badge de Google Play — lookalike propio (sin asset de marca).
-   Dice PRÓXIMAMENTE, no DISPONIBLE: la app aún no está publicada y
-   afirmarlo sería falso. Al publicar, cambiar el texto y apuntar href a la
-   URL real de la ficha. */
-export function PlayBadge({ href = '#descargar' }) {
+// Publicada en producción el 2-oct-2026. En Android abre directo la app de Play.
+export const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.dusasolutions.blokku'
+
+/* Badge de Google Play — lookalike propio (sin asset de marca). */
+export function PlayBadge({ href = PLAY_URL }) {
   return (
-    <a className="playbadge" href={href} aria-label="Próximamente en Google Play">
+    <a className="playbadge" href={href} target="_blank" rel="noopener noreferrer" aria-label="Disponible en Google Play">
       <span className="pb-tri" aria-hidden />
       <span className="pb-txt">
-        <span className="pb-small">PRÓXIMAMENTE EN</span>
+        <span className="pb-small">DISPONIBLE EN</span>
         <span className="pb-big">Google Play</span>
       </span>
     </a>

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trophy, RotateCcw, Play, Download } from 'lucide-react'
 import { COLORS, rng } from './bits.jsx'
+import { PLAY_URL } from './extras.jsx'
 
 /* ═══ DEMO JUGABLE — mini Blokku en el navegador ══════════════════════════════
    Drag & drop real: la pieza flota ELEVADA sobre el dedo/cursor (como en la
@@ -273,7 +274,7 @@ export default function DemoGame() {
               </motion.div>
               <div className="demo-over-score">{score.toLocaleString('es-MX')} puntos</div>
               <button className="btn3d" onClick={reset}><Play size={17} strokeWidth={3} fill="currentColor" /> OTRA VEZ</button>
-              <a className="btn3d blue" href="#descargar" onClick={() => setOver(false)}><Download size={17} /> Descarga el juego completo</a>
+              <a className="btn3d blue" href={PLAY_URL} target="_blank" rel="noopener noreferrer" onClick={() => setOver(false)}><Download size={17} /> Descarga el juego completo</a>
             </motion.div>
           )}
         </AnimatePresence>
