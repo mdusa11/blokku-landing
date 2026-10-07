@@ -3,7 +3,11 @@
 # publicar, para no depender de los campos del panel.
 name = "blokku"
 compatibility_date = "2026-09-01"
+# Worker solo para /play y /p (enlace corto de los QR); lo demás son assets.
+main = "worker.js"
 
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
+binding = "ASSETS"
+run_worker_first = ["/play", "/play/", "/p", "/p/"]

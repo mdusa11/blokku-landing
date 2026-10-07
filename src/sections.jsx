@@ -40,7 +40,7 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.25 }}
           >
-            <Rocket size={15} /> ¡Ya disponible en Google Play!
+            <Rocket size={15} /> ¡Ya disponible en Google Play! · Por ahora solo para Android
           </motion.p>
           <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
             <span className="tag"><Gift size={15} /> GRATIS</span>
