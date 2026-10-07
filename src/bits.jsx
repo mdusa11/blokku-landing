@@ -76,21 +76,16 @@ export function Logo({ size = 64 }) {
   )
 }
 
-/* Ícono de la app (4 gemas) */
+/* Ícono de la app (el mismo PNG del launcher) */
 export function AppIcon({ size = 84 }) {
-  const g = size * 0.09
-  const s = (size - g * 3) / 2
-  const cs = [THEME.blue, THEME.pink, THEME.yellow, THEME.green]
   return (
-    <div
-      style={{
-        width: size, height: size, borderRadius: size * 0.24, background: '#101d4e',
-        display: 'grid', gridTemplateColumns: `${s}px ${s}px`, gap: g, padding: g,
-        boxShadow: '0 14px 34px rgba(0,0,0,.5), inset 0 2px 4px rgba(255,255,255,.12)',
-      }}
-    >
-      {cs.map((c, i) => <Gem key={i} color={c} size={s} />)}
-    </div>
+    <img
+      src="/icon-512.png"
+      alt="Blokku"
+      width={size}
+      height={size}
+      style={{ width: size, height: size, borderRadius: size * 0.24, boxShadow: '0 14px 34px rgba(0,0,0,.5)', display: 'block' }}
+    />
   )
 }
 
