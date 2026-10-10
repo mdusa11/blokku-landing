@@ -4,7 +4,7 @@ import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 
 export const SUPPORT_EMAIL = 'mdusa1104@gmail.com'
-const UPDATED = '4 de septiembre de 2026'
+const UPDATED = '9 de octubre de 2026'
 
 function LegalLayout({ title, children }) {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -121,6 +121,7 @@ export function Privacidad() {
         <li><strong>Identificadores de dispositivo y publicidad</strong> (ej. Advertising ID) — usados por nuestros proveedores de anuncios y para prevenir fraude.</li>
         <li><strong>Datos de compras</strong> — Google Play y RevenueCat procesan tus compras; recibimos confirmaciones de transacción (no vemos ni almacenamos datos de tarjetas).</li>
         <li><strong>Datos técnicos y de uso</strong> — modelo de dispositivo, versión del sistema, métricas de rendimiento y eventos de juego agregados.</li>
+        <li><strong>Registros de fallos y diagnóstico</strong> — si la App se cierra por un error, se envía un informe técnico (qué falló, modelo y sistema del dispositivo) para poder corregirlo. No incluye datos personales.</li>
         <li><strong>Progreso de juego</strong> — se guarda localmente en tu dispositivo; no lo subimos a servidores propios.</li>
       </ul>
       <p>No recopilamos tu nombre, dirección, contactos ni ubicación precisa.</p>
@@ -138,6 +139,7 @@ export function Privacidad() {
         <li><strong>Google AdMob</strong> (anuncios) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>Google Play Billing / Play Games Services</strong> — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>RevenueCat</strong> (gestión de compras y suscripciones) — <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
+        <li><strong>Firebase Crashlytics</strong> (informes de fallos) — <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">privacidad y seguridad en Firebase</a></li>
       </ul>
 
       <h3>4. Consentimiento de anuncios</h3>
