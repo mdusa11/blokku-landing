@@ -17,10 +17,6 @@ const WEB = 'https://blokku.online/?utm_source=sticker&utm_medium=qr';
 
 // SHA-256 de la clave del panel. La clave en texto NO está en el repo.
 const ADMIN_HASH = 'f7d4036c137d75e0a4d04223cdffad8a2e59df73cabf2890e1ef42c80ad3d6af';
-// TODO: crear el secreto ADMIN_SECRET (Workers > blokku > Settings > Variables and Secrets)
-// con un valor aleatorio largo. Mientras no exista, la firma de la cookie se
-// deriva del hash, que es público en el repo: la clave sigue siendo necesaria
-// para el login, pero con ADMIN_SECRET las sesiones no se podrían falsificar.
 const COOKIE = 'bk_admin';
 const SESSION_SECS = 60 * 60 * 24 * 7;
 const MAX_FAILS = 5;
@@ -47,7 +43,10 @@ async function sha256Hex(s) {
 }
 
 async function hmac(env, msg) {
-  const secret = env.ADMIN_SECRET || 'blokku-admin-session:' + ADMIN_HASH;
+  // Sin secreto propio no hay sesiones: una llave derivada de datos públicos
+  // (el repo es público) permitiría falsificarlas.
+  const secret = env.ADMIN_SECRET;
+  if (!secret || secret.length < 32) throw new Error('ADMIN_SECRET missing');
   const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return b64u(await crypto.subtle.sign('HMAC', key, enc.encode(msg)));
 }
@@ -159,6 +158,7 @@ async function saveDoc(env, current, next) {
 async function handleAdminApi(request, env, pathname) {
   const method = request.method;
   const ip = request.headers.get('cf-connecting-ip') || 'local';
+  if (!env.ADMIN_SECRET || env.ADMIN_SECRET.length < 32) return json({ error: 'sin_secreto' }, 503);
 
   if (pathname === '/api/admin/login' && method === 'POST') {
     const st = await rateState(env, ip);
@@ -252,6 +252,7 @@ export default {
     if (pathname === '/admin' || pathname.startsWith('/admin/')) {
       if (request.method !== 'GET' && request.method !== 'HEAD') return new Response(null, { status: 405, headers: baseHeaders });
       if (pathname !== '/admin' && pathname !== '/admin/') return html(LOGIN_HTML, 404);
+      if (!env.ADMIN_SECRET || env.ADMIN_SECRET.length < 32) return html(LOGIN_HTML, 503);
       return html((await validSession(request, env)) ? APP_HTML : LOGIN_HTML);
     }
 

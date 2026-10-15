@@ -14,9 +14,11 @@ button:active{transform:translateY(2px);box-shadow:0 2px 0 #2b6fc0}#e{color:#FF5
 <input id="k" type="password" placeholder="Clave" autocomplete="current-password" autofocus required>
 <button>Entrar</button><div id="e"></div></form>
 <script>
+var MSG='Falta configurar ADMIN_SECRET en Cloudflare';
+fetch('/api/admin/data').then(function(r){if(r.status===503)document.getElementById('e').textContent=MSG}).catch(function(){});
 document.getElementById('f').onsubmit=async function(ev){ev.preventDefault();var e=document.getElementById('e');e.textContent='';
 try{var r=await fetch('/api/admin/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key:document.getElementById('k').value})});
 if(r.ok){location.reload();return}
-e.textContent=r.status===429?'Demasiados intentos. Espera unos minutos.':'Clave incorrecta.';document.getElementById('k').value=''}
+e.textContent=r.status===503?MSG:r.status===429?'Demasiados intentos. Espera unos minutos.':'Clave incorrecta.';document.getElementById('k').value=''}
 catch(x){e.textContent='Sin conexión.'}};
 </script></body></html>
