@@ -6,7 +6,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { COSM, VERS, LOGOS } from './admin-images.mjs';
-import { webcrypto as crypto } from 'node:crypto';
+import { webcrypto as crypto, createHash } from 'node:crypto';
+import { homedir } from 'node:os';
 import { SEED } from '../admin/seed.js';
 
 const key = process.env.ADMIN_KEY;
@@ -37,7 +38,36 @@ for (const [k, c] of Object.entries(LOGOS)) if (existsSync(c.file)) spec.push({ 
 const py = execFileSync('python3', [fileURLToPath(new URL('./prep-images.py', import.meta.url))], { input: JSON.stringify(spec), maxBuffer: 1 << 28 });
 const IMGS = JSON.parse(py.toString());
 console.log('imágenes:', Object.keys(IMGS).length, 'JPEG:', Math.round(Object.values(IMGS).reduce((n, u) => n + u.length, 0) / 1024), 'KB (base64)');
-const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\n';
+// Códigos de canje: se leen del CSV privado (fuera del repo) y viajan SOLO dentro
+// del contenido cifrado. Cada uno lleva su sha256 (h): el documento guarda
+// estado y notas por ese hash, nunca el código.
+const CSV = process.env.CODES_CSV || `${homedir()}/Desktop/Blokku/04-Seguridad-NO-COMPARTIR/codigos-canje.csv`;
+function parseCsv(t) {
+  const rows = []; let r = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { r.push(f); f = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && t[i + 1] === '\n') i++; r.push(f); f = ''; if (r.length > 1 || r[0]) rows.push(r); r = []; }
+    else f += c;
+  }
+  if (f || r.length) { r.push(f); rows.push(r); }
+  return rows;
+}
+const RAR = { common: 'Común', comun: 'Común', rare: 'Raro', raro: 'Raro', epic: 'Épico', epico: 'Épico', legendary: 'Legendario', legendario: 'Legendario', mythic: 'Mítico', mitico: 'Mítico', mitica: 'Mítico' };
+let CODES = [];
+if (existsSync(CSV)) {
+  const [head, ...rest] = parseCsv(readFileSync(CSV, 'utf8'));
+  const ix = Object.fromEntries(head.map((h, i) => [h.trim(), i]));
+  const norm = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  CODES = rest.filter((r) => r[ix.codigo]).map((r) => {
+    const c = r[ix.codigo].trim();
+    return { h: createHash('sha256').update(c).digest('hex'), c, i: r[ix.cosmetico_id].trim(), n: r[ix.nombre].trim(), r: RAR[norm(r[ix.rareza])] || r[ix.rareza], t: r[ix.tipo].trim() };
+  });
+  console.log('códigos de canje:', CODES.length, '(maestros:', CODES.filter((c) => c.i === '*').length + ')');
+} else console.warn('sin CSV de códigos:', CSV);
+const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CODES=' + JSON.stringify(CODES) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\n';
 app = app.replace('/*INJECT*/', () => inject);
 
 const enc = new TextEncoder();
@@ -51,11 +81,12 @@ const b64 = (u) => Buffer.from(u).toString('base64');
 
 const page = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Blokku · Admin</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0E1A46;color:#EEF3FF;font-family:system-ui,sans-serif}
-form{background:linear-gradient(180deg,#24408F,#1C3378);padding:28px 24px;border-radius:20px;box-shadow:inset 0 -5px 0 #0F1F55,0 20px 40px #030C2B90;width:min(340px,90vw);display:grid;gap:14px}
-h1{margin:0;font-size:22px}input{padding:12px;border-radius:12px;border:0;background:#0E1A46;color:#fff;font-size:16px}
-button{padding:12px;border:0;border-radius:12px;font-weight:800;color:#0A1433;background:#FFC93C;box-shadow:inset 0 -4px 0 #C99410;font-size:16px}#e{color:#FF8FA8;min-height:1em;font-size:14px}</style></head>
-<body><form id="f"><h1>Blokku · Admin</h1><input id="k" type="password" autocomplete="current-password" placeholder="Clave" required><button>Entrar</button><div id="e"></div></form>
+<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#fff;color:#1f2937;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px}
+form{width:100%;max-width:320px;display:grid;gap:14px}
+h1{margin:0;font-size:22px;font-weight:600}p{margin:-8px 0 0;color:#6b7280;font-size:14px}
+input{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:6px;font:inherit;color:#1f2937;background:#fff}input:focus{outline:2px solid #bfdbfe;border-color:#2563EB}
+button{padding:11px;border:0;border-radius:6px;font:inherit;font-weight:600;color:#fff;background:#2563EB;cursor:pointer}button:hover{background:#1d4ed8}#e{color:#DC2626;min-height:1.3em;font-size:14px}</style></head>
+<body><form id="f"><h1>Blokku</h1><p>Panel privado</p><input id="k" type="password" autocomplete="current-password" placeholder="Clave" required><button>Entrar</button><div id="e"></div></form>
 <script>
 var D={s:"${b64(salt)}",i:"${b64(iv)}",c:"${b64(ct)}",n:${ITER}};
 function u(b){return Uint8Array.from(atob(b),function(c){return c.charCodeAt(0)})}
@@ -64,7 +95,7 @@ var a=await crypto.subtle.deriveKey({name:'PBKDF2',salt:u(D.s),iterations:D.n,ha
 var h=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u(D.i)},a,u(D.c)));document.open();document.write(h);document.close()}
 var saved=sessionStorage.getItem('bk_k');if(saved)open_(saved).catch(function(){sessionStorage.removeItem('bk_k')});
 document.getElementById('f').onsubmit=async function(ev){ev.preventDefault();var k=document.getElementById('k').value;document.getElementById('e').textContent='Abriendo…';
-try{await open_(k);sessionStorage.setItem('bk_k',k)}catch(x){document.getElementById('e').textContent='Clave incorrecta.'}};
+try{sessionStorage.setItem('bk_k',k);await open_(k)}catch(x){sessionStorage.removeItem('bk_k');document.getElementById('e').textContent='Clave incorrecta.'}};
 </script></body></html>`;
 mkdirSync(new URL('../public/admin/', import.meta.url), { recursive: true });
 writeFileSync(new URL('../public/admin/index.html', import.meta.url), page);

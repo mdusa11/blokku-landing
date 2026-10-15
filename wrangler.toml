@@ -11,11 +11,12 @@ main = "worker.js"
 directory = "./dist"
 not_found_handling = "single-page-application"
 binding = "ASSETS"
-run_worker_first = ["/play", "/play/", "/p", "/p/", "/admin", "/admin/"]
+run_worker_first = ["/play", "/play/", "/p", "/p/", "/admin", "/admin/", "/api/admin/*"]
 
-# Almacenamiento del panel /admin. Crear el namespace en Cloudflare (Storage &
-# Databases > KV), poner aquí su id y descomentar. Sin esto el panel queda en
-# modo lectura con los datos semilla.
+# Guardado en la nube del panel /admin (API en worker.js). Pasos: Cloudflare >
+# Storage & Databases > KV > Create, nombre `blokku-admin`; pegar su ID abajo,
+# descomentar y desplegar. Sin el binding la API responde 503 {error:'sin_kv'}
+# y el panel guarda solo en el navegador (localStorage).
 # [[kv_namespaces]]
 # binding = "ADMIN_KV"
-# id = "PENDIENTE"
+# id = "PENDIENTE_ID"
