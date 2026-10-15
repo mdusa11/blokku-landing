@@ -11,7 +11,7 @@ main = "worker.js"
 directory = "./dist"
 not_found_handling = "single-page-application"
 binding = "ASSETS"
-run_worker_first = ["/play", "/play/", "/p", "/p/", "/admin", "/admin/*", "/api/admin/*"]
+run_worker_first = ["/play", "/play/", "/p", "/p/", "/admin", "/admin/"]
 
 # Almacenamiento del panel /admin. Crear el namespace en Cloudflare (Storage &
 # Databases > KV), poner aquí su id y descomentar. Sin esto el panel queda en
