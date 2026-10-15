@@ -23,7 +23,7 @@ export default {
     // Panel privado: página estática CIFRADA (scripts/build-admin.mjs). Sin la
     // clave de Manuel solo se ve el formulario; no hay sesiones ni secretos.
     if (pathname === '/admin' || pathname === '/admin/') {
-      const res = await env.ASSETS.fetch(new Request(new URL('/admin/index.html', request.url), request));
+      const res = await env.ASSETS.fetch(request);
       const h = new Headers(res.headers);
       h.set('Cache-Control', 'no-store');
       h.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
