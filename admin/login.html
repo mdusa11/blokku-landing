@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Blokku HQ</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 30% 10%,#1a2f63,#0a1330 60%);font-family:system-ui,sans-serif;color:#eaf1ff;padding:16px}
+form{width:100%;max-width:340px;padding:28px;border-radius:22px;background:linear-gradient(160deg,#1b2d5c,#0f1d42);box-shadow:0 20px 50px #0008,inset 0 1px 0 #fff2,inset 0 -3px 0 #0006}
+h1{margin:0 0 4px;font-size:22px}p{margin:0 0 18px;color:#9fb3e0;font-size:14px}
+input{width:100%;padding:14px;border-radius:14px;border:2px solid #2c437f;background:#0a1330;color:#fff;font-size:16px}
+input:focus{outline:none;border-color:#4EA1FF}
+button{margin-top:14px;width:100%;padding:14px;border:0;border-radius:14px;font-weight:700;font-size:16px;color:#06122e;background:linear-gradient(#6db4ff,#4EA1FF);box-shadow:0 4px 0 #2b6fc0}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #2b6fc0}#e{color:#FF5D8F;font-size:14px;min-height:20px;margin-top:10px}
+</style></head><body>
+<form id="f"><h1>Blokku HQ</h1><p>Panel privado</p>
+<input id="k" type="password" placeholder="Clave" autocomplete="current-password" autofocus required>
+<button>Entrar</button><div id="e"></div></form>
+<script>
+document.getElementById('f').onsubmit=async function(ev){ev.preventDefault();var e=document.getElementById('e');e.textContent='';
+try{var r=await fetch('/api/admin/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key:document.getElementById('k').value})});
+if(r.ok){location.reload();return}
+e.textContent=r.status===429?'Demasiados intentos. Espera unos minutos.':'Clave incorrecta.';document.getElementById('k').value=''}
+catch(x){e.textContent='Sin conexión.'}};
+</script></body></html>
