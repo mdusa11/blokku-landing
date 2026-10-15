@@ -2,7 +2,10 @@
 // de la clave de Manuel con PBKDF2). El repo solo guarda el cifrado; sin la
 // clave no se puede leer. No necesita servidor ni secretos en Cloudflare.
 // Uso: ADMIN_KEY='bk-…' node scripts/build-admin.mjs
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { COSM, VERS, LOGOS } from './admin-images.mjs';
 import { webcrypto as crypto } from 'node:crypto';
 import { SEED } from '../admin/seed.js';
 
@@ -10,21 +13,32 @@ const key = process.env.ADMIN_KEY;
 if (!key) { console.error('Falta ADMIN_KEY'); process.exit(1); }
 
 let app = readFileSync(new URL('../admin/app.html', import.meta.url), 'utf8');
-// Sin servidor: los datos salen del documento incrustado y los cambios se
-// guardan en este navegador (localStorage). Exportar/importar para respaldar.
-const local = `
-var LS='blokku_admin_doc';
-async function api(method,url,body){
-  if(url.endsWith('/history'))return {status:200,j:{history:[]}};
-  if(method==='GET'){var d=null;try{d=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}return {status:200,j:{doc:d||SEED_DOC,readonly:false}}}
-  var d;try{d=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}d=d||JSON.parse(JSON.stringify(SEED_DOC));
-  if(body&&body.doc)d=body.doc;else{var sec=url.split('/').pop();d[sec]=body.value}
-  d.version=(d.version||1)+1;try{localStorage.setItem(LS,JSON.stringify(d))}catch(e){}
-  return {status:200,j:{doc:d}};
-}`;
-app = app.replace(/async function api\(method,url,body\)\{[\s\S]*?\n\}\n/, local + '\n');
-app = app.replace("logout:async function(){await fetch('/api/admin/logout',{method:'POST'});location.reload()}", "logout:function(){sessionStorage.removeItem('bk_k');location.reload()}");
-app = app.replace('<script>', '<script>var SEED_DOC=' + JSON.stringify(SEED) + ';\n');
+
+// Imágenes: se reducen con Pillow a JPEG (~360 px) y van como data URI DENTRO
+// del documento cifrado, así no quedan públicas.
+const spec = [];
+const MAPA = {}; const CAPS = {};
+for (const [id, c] of Object.entries(COSM)) {
+  if (!existsSync(c.file)) { console.warn('sin render:', id); continue; }
+  spec.push({ key: id, file: c.file, crop: c.crop });
+  MAPA[id] = { img: id };
+  if (c.big) { spec.push({ key: id + '_b', file: c.file, w: 300 }); MAPA[id].big = id + '_b'; }
+}
+for (const [vid, list] of Object.entries(VERS)) {
+  CAPS[vid] = [];
+  list.forEach((c, i) => {
+    if (!existsSync(c.file)) { console.warn('sin captura:', c.file); return; }
+    const key = `${vid}_${i}`;
+    spec.push({ key, file: c.file, crop: c.crop, w: c.w || 280 });
+    CAPS[vid].push({ k: key, l: c.l, g: c.g });
+  });
+}
+for (const [k, c] of Object.entries(LOGOS)) if (existsSync(c.file)) spec.push({ key: k, ...c });
+const py = execFileSync('python3', [fileURLToPath(new URL('./prep-images.py', import.meta.url))], { input: JSON.stringify(spec), maxBuffer: 1 << 28 });
+const IMGS = JSON.parse(py.toString());
+console.log('imágenes:', Object.keys(IMGS).length, 'JPEG:', Math.round(Object.values(IMGS).reduce((n, u) => n + u.length, 0) / 1024), 'KB (base64)');
+const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\n';
+app = app.replace('/*INJECT*/', () => inject);
 
 const enc = new TextEncoder();
 const salt = crypto.getRandomValues(new Uint8Array(16));

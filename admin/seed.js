@@ -6,6 +6,7 @@ const p = (id, nombre, tipo, rareza, gana, detalle, estado = 'estreno programado
 
 export const SEED = {
   version: 1,
+  seedRev: 2,
   actualizado: '2026-10-15',
   timeline: [
     { id: 't-104', titulo: 'Blokku 1.0.4', tipo: 'version', inicio: '2026-10-13', fin: '', estado: 'publicada', notas: 'Android publicada. iOS en revisión desde el 14-oct (build 5).', premios: [] },
@@ -28,7 +29,7 @@ export const SEED = {
         { t: 'Símbolos de Crashlytics (firebase-tools)', d: false }, { t: 'iOS: enviada a revisión (14-oct)', d: true }, { t: 'iOS: privacidad de la app en ASC', d: false },
         { t: 'iOS: RevenueCat (llave .p8 y key appl_)', d: false }, { t: 'iOS: mensajes GDPR/ATT en AdMob', d: false }, { t: 'W-8BEN (dirección Zapopan)', d: false },
       ] },
-    { id: 'v-105', version: '1.0.5', android: 'lista', ios: 'lista', rama: 'dev/1.0.5', contenido: 'Logros por escalones (48 + 3 secretos), rarezas, vitrina, cofre y ¡NUEVO!\nNiveles hasta el 100 con rangos\nRuta de nivel y ruta del reto diario\nColecciones Retro y Dusa\nEfectos Supernova, Agujero Negro, Pixeles, Medusas y Portal\nTemas Oro Vivo, Eclipse, Aurora, Fénix, Pradera, Arcade, Papel picado, Fakturo y Cumplegratis\nWidget de racha en Android e iOS\nVideo de Cumplegratis en la vida extra\nArrastre más fluido, tríos variados, bandeja pareja y optimización de animaciones',
+    { id: 'v-105', version: '1.0.5', android: 'lista', ios: 'lista', espera: 'AdMob y Apple', rama: 'dev/1.0.5', contenido: 'Logros por escalones (48 + 3 secretos), rarezas, vitrina, cofre y ¡NUEVO!\nNiveles hasta el 100 con rangos\nRuta de nivel y ruta del reto diario\nColecciones Retro y Dusa\nEfectos Supernova, Agujero Negro, Pixeles, Medusas y Portal\nTemas Oro Vivo, Eclipse, Aurora, Fénix, Pradera, Arcade, Papel picado, Fakturo y Cumplegratis\nWidget de racha en Android e iOS\nVideo de Cumplegratis en la vida extra\nArrastre más fluido, tríos variados, bandeja pareja y optimización de animaciones',
       checklist: [
         { t: 'AdMob aprueba la cuenta', d: false }, { t: 'Apple publica la 1.0.4 de iOS', d: false },
         { t: 'Apple Developer: App Group group.com.dusasolutions.blokku', d: false }, { t: 'App ID com.dusasolutions.blokku con App Groups', d: false },
@@ -88,13 +89,13 @@ export const SEED = {
     { id: 'e-mue27', nombre: 'Día de Muertos 2027', inicio: '2027-10-25', fin: '2027-11-02', premio: 'Muertos 2027', meta: 'Por definir', noVuelve: true, estado: 'idea', notas: 'Otro diseño distinto al de 2026.' },
   ],
   cupones: [
-    { id: 'c1', codigo: 'BLOKKU-DUSA-2026', da: 'Piezas Dusa', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c2', codigo: 'BLOKKU-MX', da: 'Marco Hecho en México', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c3', codigo: 'BLOKKU-FAKTURO', da: 'Tema Fakturo', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c4', codigo: 'BLOKKU-FIESTA', da: 'Tema Cumplegratis', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c5', codigo: 'BLOKKU-DUSA-TODO', da: 'Los cuatro de Dusa y Medusas', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c6', codigo: 'BLOKKU-MEDUSA', da: 'Efecto Medusas', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
-    { id: 'c7', codigo: 'BLOKKU-PORTAL', da: 'Efecto Portal', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c1', premios: ['p-dusa'], codigo: 'BLOKKU-DUSA-2026', da: 'Piezas Dusa', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c2', premios: ['p-mx'], codigo: 'BLOKKU-MX', da: 'Marco Hecho en México', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c3', premios: ['p-fakturo'], codigo: 'BLOKKU-FAKTURO', da: 'Tema Fakturo', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c4', premios: ['p-fiesta'], codigo: 'BLOKKU-FIESTA', da: 'Tema Cumplegratis', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c5', premios: ['p-fakturo','p-fiesta','p-dusa','p-mx','p-medusas'], codigo: 'BLOKKU-DUSA-TODO', da: 'Los cuatro de Dusa y Medusas', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c6', premios: ['p-medusas'], codigo: 'BLOKKU-MEDUSA', da: 'Efecto Medusas', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
+    { id: 'c7', premios: ['p-portal'], codigo: 'BLOKKU-PORTAL', da: 'Efecto Portal', tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' },
   ],
   pendientes: [
     { id: 'k1', titulo: 'AdMob: esperar aprobación de la cuenta', col: 'curso', quien: 'Manuel', bloqueo: 'espera aprobación AdMob', notas: 'app-ads.txt ya publicado en blokku.online.' },
@@ -114,10 +115,34 @@ export const SEED = {
     { id: 'k15', titulo: 'Bio de @blokku.online y publicar según 2-PUBLICACIONES', col: 'todo', quien: 'Manuel', bloqueo: '', notas: '' },
     { id: 'k16', titulo: 'Llevar los 37 stickers a imprimir', col: 'todo', quien: 'Manuel', bloqueo: '', notas: 'ZIP en agencia/marca/stickers.' },
     { id: 'k17', titulo: 'Post «Llegó la 1.0.4» al salir en Play', col: 'todo', quien: 'Claude', bloqueo: 'espera 1.0.4 en Play', notas: '' },
-    { id: 'k18', titulo: 'Panel /admin de Blokku', col: 'curso', quien: 'Claude', bloqueo: 'falta crear el KV ADMIN_KV', notas: 'Modo lectura hasta conectar el almacenamiento.' },
+    { id: 'k18', titulo: 'Panel /admin de Blokku (cifrado, con imágenes)', col: 'hecho', quien: 'Claude', bloqueo: '', notas: 'Estático y cifrado; tus cambios viven en este navegador. Respalda con Exportar.', _forzar: ['col', 'bloqueo', 'notas', 'titulo'] },
+    { id: 'k22', titulo: 'Tablet (SM-T970): escalar la bandeja de piezas', col: 'todo', quien: 'Claude', bloqueo: '', notas: 'En vertical se ve chica frente al tablero. Celda de bandeja ~70 % de la del tablero.' },
+    { id: 'k23', titulo: 'iOS: publicar la 1.0.4 cuando Apple apruebe', col: 'todo', quien: 'Manuel', bloqueo: 'espera revisión de Apple', notas: 'Publicación manual en App Store Connect. Después se puede subir la 1.0.5.' },
+    { id: 'k24', titulo: '1.0.5: widget de racha (probar en A17 y App Group en iOS)', col: 'todo', quien: 'Claude', bloqueo: 'espera App Group', notas: '' },
     { id: 'k19', titulo: 'Auditoría 1.0.4, logo nuevo y landing', col: 'hecho', quien: 'Claude', bloqueo: '', notas: '' },
     { id: 'k20', titulo: '1.0.4 iOS enviada a revisión', col: 'hecho', quien: 'Manuel', bloqueo: '', notas: '14-oct 11:40.' },
     { id: 'k21', titulo: '14 videos y 37 stickers en estilo gema', col: 'hecho', quien: 'Claude', bloqueo: '', notas: '' },
+  ],
+  logros: [
+    { id: 'l-lin', familia: 'Líneas totales', niveles: ['250', '2.000', '12.000', '50.000', '250.000'], premio: 'p-diam' },
+    { id: 'l-par', familia: 'Partidas', niveles: ['20', '75', '300', '1.000', '3.000'], premio: 'p-leyenda' },
+    { id: 'l-com', familia: 'Combo en una partida', niveles: ['×5', '×6', '×7', '×8', '×10'], premio: 'p-super' },
+    { id: 'l-pun', familia: 'Puntos en una partida', niveles: ['130K', '350K', '700K', '1,2M', '2,5M'], premio: 'p-oro' },
+    { id: 'l-rac', familia: 'Racha de días', niveles: ['3', '7', '30', '100', '365'], premio: 'p-fenix' },
+    { id: 'l-per', familia: 'Tableros perfectos', niveles: ['1', '3', '10', '40', '5 en una partida'], premio: 'p-aur' },
+    { id: 'l-ret', familia: 'Retos diarios', niveles: ['1', '7', '30', '100', '30 seguidos'], premio: '' },
+    { id: 'l-crl', familia: 'Contra reloj (90 s)', niveles: ['45K', '60K', '80K', '110K', '160K'], premio: 'p-rel' },
+    { id: 'l-sin', familia: 'Sin poderes (Clásico)', niveles: ['30K', '100K', '300K', '800K', '2M'], premio: 'p-obs' },
+  ],
+  rutaNivel: [
+    { id: 'n5', nivel: 5, premio: 'p-8bit' }, { id: 'n10', nivel: 10, premio: 'p-arcade' }, { id: 'n15', nivel: 15, premio: 'p-cartucho' },
+    { id: 'n20', nivel: 20, premio: 'p-bloque' }, { id: 'n25', nivel: 25, premio: 'p-pradera' }, { id: 'n30', nivel: 30, premio: 'p-pixeles' },
+    { id: 'n40', nivel: 40, premio: 'p-obs' }, { id: 'n50', nivel: 50, premio: 'p-aur' }, { id: 'n60', nivel: 60, premio: 'p-diam' },
+    { id: 'n70', nivel: 70, premio: 'p-rel' }, { id: 'n80', nivel: 80, premio: 'p-fenix' }, { id: 'n90', nivel: 90, premio: 'p-leyenda' },
+    { id: 'n100', nivel: 100, premio: 'p-corona' },
+  ],
+  rutaReto: [
+    { id: 'r3', dias: 3, premio: '' }, { id: 'r7', dias: 7, premio: '' }, { id: 'r14', dias: 14, premio: '' }, { id: 'r30', dias: 30, premio: '' },
   ],
   decisiones: [
     { id: 'd1', fecha: '2026-10-13', texto: 'Todo el plan de progresión va en la 1.0.5, sin prisa y sin fecha; por bloques, probando cada uno en el A17.' },
@@ -144,3 +169,10 @@ export const SEED = {
     { id: 'i10', texto: 'Tarjeta propia (autopromo De Dusa Solutions) en el banner sin anuncio', prioridad: 'baja', votos: 0 },
   ],
 };
+
+const PAL = {
+  'p-puro': ['#3a4a7a', '#8fd0ff'], 'p-maestro': ['#6a3df0', '#ffc93c'], 'p-inq': ['#ff5d8f', '#6a1038'], 'p-sec1': ['#16275a', '#9c6bff'],
+  'p-sec2': ['#16275a', '#43d9a3'], 'p-sec3': ['#16275a', '#ffc93c'], 'p-pionero': ['#ff5d8f', '#ffc93c'], 'p-top1': ['#ff5d8f', '#9c6bff'],
+  'p-nav26': ['#43d9a3', '#c0392b'], 'p-ny27': ['#ffc93c', '#4ea1ff'], 'p-val27': ['#ff5d8f', '#ffb3c8'], 'p-mue27': ['#ff9a1f', '#6a1038'],
+};
+SEED.premios.forEach((x) => { if (PAL[x.id]) x.pal = PAL[x.id]; });
