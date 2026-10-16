@@ -1,6 +1,6 @@
 /* ================= núcleo: utilidades, íconos, fechas, capas ================= */
 var S = {
-  route: 'inicio', qs: {}, ro: false, missing: {}, booted: false,
+  route: 'inicio', qs: {}, ro: false, missing: {}, newSql: {}, booted: false,
   f: {}, open: {}, reveal: {}, view: {}
 };
 var A = {}, C = {}, I = {};

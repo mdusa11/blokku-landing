@@ -88,6 +88,7 @@ function paintBanners() {
       (S.missing.panel ? 'Mientras tanto ves tus datos, pero <b style="display:inline">no se guardan cambios</b> de pendientes, notas ni versiones.' : 'Hasta entonces esa parte del panel no funciona.') +
       '<div class="acts"><button class="btn sm" data-a="sqlretry">' + ic('refresh') + 'Ya lo corrí, revisar otra vez</button></div></div></div>';
   }
+  if (avSqlOld()) h += '<div class="ban bad">' + ic('warn') + '<div class="tx"><b>Los avisos nuevos necesitan actualizar Supabase</b>Vuelve a correr <span class="path">2-remoto.sql</span> y <span class="path">3-panel.sql</span> (están en tu Escritorio › Blokku › 02-Documentos › Supabase): ábrelos, copia todo el texto, pégalo en Supabase › SQL Editor y presiona <b style="display:inline">Run</b>, uno y luego el otro. Mientras tanto el diseñador de avisos (formato, botones, imagen y color) <b style="display:inline">no guarda</b>; los avisos de antes se ven y funcionan igual.<div class="acts"><button class="btn sm" data-a="sqlretry2">' + ic('refresh') + 'Ya lo corrí, revisar otra vez</button></div></div></div>';
   if (S.view.seedMsg) h += '<div class="ban info">' + ic('spark') + '<div class="tx"><b>Datos nuevos</b>' + esc(S.view.seedMsg) + '</div><button class="btn ghost ic sm" data-a="seedok" aria-label="Cerrar">' + ic('x') + '</button></div>';
   $('#banners').innerHTML = h;
 }
@@ -180,7 +181,7 @@ function palItems() {
     items('ideas').forEach(function (i) { out.push({ g: 'Ideas', t: i.texto, s: 'Prioridad ' + i.prioridad, ic: 'bulb', run: function () { go('proyecto/ideas'); } }); });
   }
   rows('codigos').forEach(function (c) { out.push({ g: 'Códigos rotativos', t: c.mostrar, s: (c.etiqueta ? c.etiqueta + ' · ' : '') + (c.cosmeticos || []).map(cname).join(' + '), ic: 'zap', mono: 1, run: function () { go('codigos/rotativos'); setTimeout(function () { codeDrawer(c.id); }, 30); } }); });
-  rows('avisos').forEach(function (a) { out.push({ g: 'Avisos', t: ml(a.titulo) || 'Aviso sin título', s: (a.tipo === 'drop' ? 'Drop' : 'Tarjeta') + ' · ' + EST_L[avEst(a)], ic: 'bell', run: function () { go('vivo/avisos'); setTimeout(function () { avForm(a); }, 30); } }); });
+  rows('avisos').forEach(function (a) { out.push({ g: 'Avisos', t: ml(a.titulo) || 'Aviso sin título', s: (AV_FMT[avFmt(a)]) + ' · ' + EST_L[avEst(a)], ic: 'bell', run: function () { go('vivo/avisos'); setTimeout(function () { avForm(a); }, 30); } }); });
   rows('eventos').forEach(function (e) { out.push({ g: 'Eventos', t: ml(e.nombre) || e.id, s: e.id + ' · ' + fdt(e.inicio, 1) + ' → ' + fdt(e.fin, 1), ic: 'cal', run: function () { go('vivo/eventos'); setTimeout(function () { evForm(e); }, 30); } }); });
   var grp = {}; (typeof CODES !== 'undefined' ? CODES : []).forEach(function (c) { if (c.i !== '*' && !grp[c.i]) grp[c.i] = c; });
   Object.keys(grp).forEach(function (cid) { var c = grp[cid]; out.push({ g: 'Códigos únicos', t: c.n, s: 'Códigos únicos de este premio', ic: 'key', run: function () { S.f.uq = c.n; S.open['u_' + cid] = true; go('codigos/unicos'); } }); });

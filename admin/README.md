@@ -35,3 +35,7 @@ El panel viejo guardaba en `localStorage['blokku_admin_doc']`. Si Supabase no ti
 ## Worker
 
 `worker.js` solo atiende `/play` y `/p` (QR de los stickers) y sirve `/admin` con `no-store` y `noindex`. Ya no hay API en Cloudflare.
+
+## Diseñador de avisos
+
+En En vivo › Avisos y drops (`55-disenador.js`). Cada aviso tiene `formato` (`tarjeta` | `ventana` | `imagen` | `banner`; `tipo` se deriva: tarjeta/banner → `tarjeta`, ventana/imagen → `drop`), hasta 2 `botones` (`{texto:{es,en}, accion, destino, estilo}`), `imagen_id` (imagen subida desde el panel como `pub_…`, WebP ≤ 1080 px y < 300 KB, que la app lee con `imagen_aviso`) y `acento` (`#RRGGBB`). `accion`/`destino` se siguen llenando con el primer botón compatible (url, tienda, evento, canjear) para las apps viejas. Destino de «Abrir Personalizar»: `temas|piezas|efectos|marcos|insignias` o el `cid` de un premio. Si Supabase no tiene las columnas o `imagen_aviso`, el panel avisa que hay que volver a correr `2-remoto.sql` y `3-panel.sql` y no deja guardar.

@@ -19,11 +19,11 @@ function rpc(fn, p, o) {
         if (r.ok) { var f = FNF[fn] || (/^admin_(panel|guardar_seccion|historial|version_seccion|guardar_imagen|imagenes|borrar_imagen)$/.test(fn) ? 'panel' : ''); if (f && S.missing[f]) { delete S.missing[f]; paintBanners(); } return j; }
         var e = new Error((j && (j.message || j.error)) || ('Error ' + r.status));
         if (r.status === 404 || (j && j.code === 'PGRST202')) {
-          e.code = 'sin_sql'; var file = FNF[fn] || 'panel'; S.missing[file] = 1; paintBanners();
+          if (o.nomiss) { e.code = 'sin_sql'; throw e; } e.code = 'sin_sql'; var file = FNF[fn] || 'panel'; S.missing[file] = 1; paintBanners();
           if (fn === 'resumen_canjes') e.message = 'Falta correr ' + SQLF.canjes + ' en Supabase';
           else e.message = 'Falta correr ' + SQLF[file] + ' en Supabase';
         } else if (/no autorizado/i.test(e.message)) { e.code = 'auth'; e.message = 'La clave no está autorizada en Supabase'; }
-        else if (/version_menor|plataforma|repetir|avisos_accion|avisos_extra/.test(e.message)) { e.code = 'sql_viejo'; e.message = 'Falta volver a correr 2-remoto.sql en Supabase (columnas nuevas de avisos)'; }
+        else if (/version_menor|plataforma|repetir|avisos_accion|avisos_extra|formato|botones|imagen_id|acento/.test(e.message)) { e.code = 'sql_viejo'; S.newSql.remoto = true; paintBanners(); e.message = 'Falta volver a correr 2-remoto.sql (y 3-panel.sql) en Supabase: columnas nuevas de avisos'; }
         else if (r.status >= 500 || r.status === 0) e.code = 'red';
         else e.code = 'msg';
         throw e;

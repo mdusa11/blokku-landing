@@ -42,7 +42,7 @@ function alertsList() {
   });
   rows('avisos').forEach(function (a) {
     var b = new Date(a.fin).getTime(), s = new Date(a.inicio).getTime();
-    if (a.activo && s <= now && b > now && b - now < 864e5) out.push({ c: 'info', i: 'bell', t: 'El aviso «' + (ml(a.titulo) || 'sin título') + '» termina ' + relT(a.fin), s: (a.tipo === 'drop' ? 'Drop' : 'Tarjeta') + ' · ' + nf(a.vistos) + ' vistos', open: 'av:' + a.id, r: 'vivo/avisos' });
+    if (a.activo && s <= now && b > now && b - now < 864e5) out.push({ c: 'info', i: 'bell', t: 'El aviso «' + (ml(a.titulo) || 'sin título') + '» termina ' + relT(a.fin), s: AV_FMT[avFmt(a)] + ' · ' + nf(a.vistos) + ' vistos', open: 'av:' + a.id, r: 'vivo/avisos' });
   });
   if (DB.ready) {
     items('timeline').forEach(function (x) { if (x.estado === 'idea' || x.tipo === 'estreno') return; var d = dn(x.inicio) - t; if (d === 0 || d === 1) out.push({ c: 'info', i: 'spark', t: x.titulo + ' ' + (d ? 'empieza mañana' : 'empieza hoy'), s: x.notas || '', open: 'tl:' + x.id, r: 'juego/temporadas' }); });

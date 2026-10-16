@@ -45,7 +45,7 @@ function winEst(on, ini, fin) { var n = Date.now(); if (!on) return 'inactivo'; 
 function avEst(a) { return winEst(a.activo, a.inicio, a.fin); }
 function evEst(e) { return winEst(e.activo, e.inicio, e.fin); }
 function cEst(c) { if (!c.activo) return 'desactivado'; if (c.usos_max != null && c.usos >= c.usos_max) return 'agotado'; if (c.caduca && new Date(c.caduca).getTime() <= Date.now()) return 'caducado'; return 'activo'; }
-function isUpd(a) { return a.accion === 'tienda'; }
+function isUpd(a) { return avBtns(a).some(function (b) { return b.accion === 'tienda'; }); }
 
 /* códigos fijos */
 var CODEA = null;
@@ -67,27 +67,53 @@ function cjAgg() {
 function lastDays(map, n) { var t = dn(todayS()), out = []; for (var i = n - 1; i >= 0; i--) { var s = iso(t - i); out.push({ d: s, v: map[s] || 0 }); } return out; }
 
 /* ---------- vista como la app (teléfono) ---------- */
-function noticeLabel(a, modal) {
-  var t = String(a.destino || '');
-  if (a.accion === 'tienda') return 'ACTUALIZAR';
-  if (a.accion === 'url' && t.indexOf('https://') === 0) return 'VER MÁS';
-  if (a.accion === 'evento' && t) return 'VER EVENTO';
-  if (a.accion === 'canjear' && t) return modal ? 'CANJEAR AHORA' : 'CANJEAR';
-  if (!a.accion && modal && t) return 'CANJEAR AHORA';
-  return null;
+var AV_FMT = { tarjeta: 'Tarjeta', ventana: 'Ventana', imagen: 'Imagen', banner: 'Banner' };
+var BT_ACC = [['url', 'Abrir link'], ['tienda', 'Ir a la tienda'], ['evento', 'Abrir evento'], ['canjear', 'Canjear código'], ['personalizar', 'Abrir Personalizar'], ['jugar', 'Jugar'], ['diario', 'Reto diario'], ['cerrar', 'Solo cerrar']];
+var BT_DEF = { url: ['Ver más', 'See more'], tienda: ['Actualizar', 'Update'], evento: ['Ver evento', 'View event'], canjear: ['Canjear', 'Redeem'], personalizar: ['Personalizar', 'Customize'], jugar: ['Jugar', 'Play'], diario: ['Reto diario', 'Daily challenge'], cerrar: ['Luego', 'Later'] };
+var PERS_TABS = [['temas', 'Temas'], ['piezas', 'Estilos de pieza'], ['efectos', 'Efectos de línea'], ['marcos', 'Marcos'], ['insignias', 'Insignias y títulos']];
+var ACENTOS = [['#FFC93C', 'Dorado'], ['#FF5D8F', 'Rosa'], ['#9C6BFF', 'Violeta'], ['#43D9A3', 'Menta'], ['#4EA1FF', 'Azul']];
+function avFmt(a) { var f = a && a.formato; return AV_FMT[f] ? f : (a && a.tipo === 'drop' ? 'ventana' : 'tarjeta'); }
+/* botones efectivos: los nuevos, o el botón viejo (accion/destino) convertido */
+function avBtns(a) {
+  var b = Array.isArray(a.botones) ? a.botones.filter(function (x) { return x && BT_DEF[x.accion]; }) : [];
+  if (b.length) return b.slice(0, 2);
+  var acc = a.accion || (a.tipo === 'drop' && a.destino ? 'canjear' : '');
+  if (acc && BT_DEF[acc]) return [{ texto: { es: BT_DEF[acc][0], en: BT_DEF[acc][1] }, accion: acc, destino: a.destino || '', estilo: 'primario' }];
+  return [];
+}
+function btLabel(b) { return ml(b.texto) || (BT_DEF[b.accion] || [''])[0]; }
+function avCode(a) { var b = avBtns(a).filter(function (x) { return x.accion === 'canjear' && x.destino; })[0]; return b ? b.destino : ''; }
+function avAcc(a) { var c = String(a.acento || ''); return /^#[0-9a-f]{6}$/i.test(c) ? c : ''; }
+function avImg(a) {
+  if (a.imagen_id) return imgSrc('img:' + a.imagen_id);
+  return isHttps(a.imagen) ? a.imagen : '';
 }
 function gem(glyph) { return '<div class="gem">' + ic(glyph || 'gift') + '</div>'; }
-function noticeArt(a, glyph) {
-  var p = a.premio && pc(a.premio);
+function pimgTag(u, fit) { return '<img alt="" style="width:100%;height:100%;object-fit:' + (fit || 'cover') + ';display:block" src="' + esc(u) + '" referrerpolicy="no-referrer" onerror="this.remove()">'; }
+function noticeArt(a, glyph, imgFirst) {
+  var p = a.premio && pc(a.premio), u = avImg(a);
+  if (imgFirst && u) return pimgTag(u);
   if (p) return thumb(p, '', true);
-  if (isHttps(a.imagen)) return '<div style="position:relative;width:100%;height:100%">' + gem(glyph) + '<img alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" src="' + esc(a.imagen) + '" referrerpolicy="no-referrer" onerror="this.remove()"></div>';
+  if (u) return '<div style="position:relative;width:100%;height:100%">' + gem(glyph) + '<div style="position:absolute;inset:0">' + pimgTag(u) + '</div></div>';
   if (isUpd(a)) return IMGS.icono ? '<img alt="" src="' + IMGS.icono + '">' : gem('rocket');
   return gem(glyph);
 }
+function btnPrev(b, cls) {
+  var sec = b.estilo === 'secundario';
+  return '<span class="' + cls + (sec ? ' s' : ' p') + '">' + esc(btLabel(b)) + '</span>';
+}
 function cardPrev(a) {
-  var t = ml(a.titulo), x = ml(a.texto), lb = noticeLabel(a, false);
+  var t = ml(a.titulo), x = ml(a.texto), bs = avBtns(a), u = a.imagen_id ? avImg(a) : '';
   if (!t && !x) return '<div class="gcard" style="opacity:.6"><div class="gtx"><p>La app no muestra tarjetas sin título ni texto.</p></div></div>';
-  return '<div class="gcard"><div class="ga">' + noticeArt(a, 'bell') + '</div><div class="gtx"><div class="gtt"><b>' + esc(t) + '</b><span class="gx">✕</span></div>' + (x ? '<p>' + esc(x) + '</p>' : '') + (lb ? '<span class="gbtn">' + lb + '</span>' : '') + '</div></div>';
+  var ac = avAcc(a), st = ac ? ' style="--edge:' + ac + '"' : '';
+  var body = (u ? '' : '<div class="ga">' + noticeArt(a, 'bell') + '</div>') + '<div class="gtx"><div class="gtt"><b>' + esc(t) + '</b><span class="gx">✕</span></div>' + (x ? '<p>' + esc(x) + '</p>' : '') +
+    (bs.length ? '<div class="gbs">' + bs.map(function (b) { return btnPrev(b, 'gbtn'); }).join('') + '</div>' : '') + '</div>';
+  if (u) return '<div class="gcard col' + (ac ? ' ac' : '') + '"' + st + '><div class="gimg">' + pimgTag(u) + '</div><div class="gin">' + body + '</div></div>';
+  return '<div class="gcard' + (ac ? ' ac' : '') + '"' + st + '>' + body + '</div>';
+}
+function bannerPrev(a) {
+  var t = ml(a.titulo) || ml(a.texto) || 'Título del banner', ac = avAcc(a), p = a.premio && pc(a.premio), u = avImg(a);
+  return '<div class="gban' + (ac ? ' ac' : '') + '"' + (ac ? ' style="--edge:' + ac + '"' : '') + '><span class="gbt">' + (u ? pimgTag(u) : p ? thumb(p, '', true) : gem('bell')) + '</span><span class="gbl">' + esc(t) + '</span><span class="gbc">›</span></div>';
 }
 function eventCardPrev(e) {
   var now = Date.now(), up = now < new Date(e.inicio).getTime(), days = Math.max(1, Math.ceil(((up ? new Date(e.inicio) : new Date(e.fin)).getTime() - now) / 864e5));
@@ -96,16 +122,28 @@ function eventCardPrev(e) {
   return '<div class="gcard"><div class="ga">' + (p ? thumb(p, '', true) : gem('gift')) + '</div><div class="gtx"><div class="ey">Evento</div><div class="gtt"><b>' + esc(ml(e.nombre) || e.id) + '</b><span class="gch">' + when + '</span></div>' +
     (up ? '<p>' + esc(goalTxt(e.meta, e.objetivo)) + '</p>' : '<div class="gpb"><span class="bar"><i style="width:0"></i></span>0/' + nf(e.objetivo) + '</div>') + '</div></div>';
 }
-function dropPrev(a) {
-  var p = a.premio && pc(a.premio), edge = p ? RHEX[p.rareza] || '#ffc93c' : '#ffc93c', t = ml(a.titulo), x = ml(a.texto), lb = noticeLabel(a, true);
-  var redeem = a.destino && (a.accion === 'canjear' || !a.accion);
-  return '<div class="pdim"><div class="gsurf" style="--edge:' + edge + '"><div class="gstk">' + esc(t || (isUpd(a) ? '¡Nueva versión!' : '¡Salió un código!')) + '</div><div class="gart">' + noticeArt(a, 'gift') + '</div>' +
-    (p ? rr(p.rareza) : '') + (x ? '<p>' + esc(x) + '</p>' : '') + (redeem ? '<div class="gcode">' + esc(a.destino) + '</div>' : '') + '</div>' +
-    '<div class="gbtns">' + (lb ? '<span class="gold">' + lb + '</span>' : '') + '<span class="gghost">' + (lb ? 'LUEGO' : '¡GENIAL!') + '</span></div></div>';
+function modalBtns(a) {
+  var bs = avBtns(a);
+  if (!bs.length) return '<div class="gbtns"><span class="gghost">¡GENIAL!</span></div>';
+  return '<div class="gbtns">' + bs.map(function (b) { return btnPrev(b, 'mb'); }).join('') + '</div>';
 }
-function phone(inner, overlay) {
+function dropPrev(a) {
+  var p = a.premio && pc(a.premio), ac = avAcc(a), edge = ac || (p ? RHEX[p.rareza] || '#ffc93c' : '#ffc93c'), t = ml(a.titulo), x = ml(a.texto), code = avCode(a);
+  return '<div class="pdim"><div class="gsurf" style="--edge:' + edge + '"><div class="gstk">' + esc(t || (isUpd(a) ? '¡Nueva versión!' : code ? '¡Salió un código!' : '')) + '</div><div class="gart">' + noticeArt(a, 'gift', true) + '</div>' +
+    (p ? rr(p.rareza) : '') + (x ? '<p>' + esc(x) + '</p>' : '') + (code ? '<div class="gcode">' + esc(code) + '</div>' : '') + '</div>' + modalBtns(a) + '</div>';
+}
+function imagenPrev(a) {
+  var t = ml(a.titulo), x = ml(a.texto), ac = avAcc(a), u = avImg(a), p = a.premio && pc(a.premio), code = avCode(a);
+  var art = u ? '<img alt="" src="' + esc(u) + '" referrerpolicy="no-referrer" onerror="this.remove()">' : p ? '<div class="gph">' + thumb(p, '', true) + '</div>' : '<div class="gph">' + gem('gift') + '<span>Sube tu imagen</span></div>';
+  return '<div class="pdim"><div class="gimgm" style="--edge:' + (ac || 'transparent') + '"><span class="gxx">✕</span>' + art +
+    (t || x || code ? '<div class="gcap">' + (t ? '<b>' + esc(t) + '</b>' : '') + (x ? '<p>' + esc(x) + '</p>' : '') + (code ? '<div class="gcode">' + esc(code) + '</div>' : '') + '</div>' : '') + '</div>' + modalBtns(a) + '</div>';
+}
+function phone(inner, overlay, top) {
   var d = new Date();
   return '<div class="phone" aria-hidden="true"><div class="scr"><div class="notch"></div><div class="sb"><span>' + z2(d.getHours()) + ':' + z2(d.getMinutes()) + '</span><span>●●● 5G</span></div>' +
-    '<div class="pm"><div class="pmh">' + (IMGS.icono ? '<img alt="" src="' + IMGS.icono + '">' : '') + '<b>Blokku</b><span>NIVEL 12</span></div><div class="pplay">JUGAR</div>' + inner + '<div class="pfake"></div><div class="pfake"></div></div>' + (overlay || '') + '</div></div>';
+    '<div class="pm">' + (top || '') + '<div class="pmh">' + (IMGS.icono ? '<img alt="" src="' + IMGS.icono + '">' : '') + '<b>Blokku</b><span>NIVEL 12</span></div><div class="pplay">JUGAR</div>' + inner + '<div class="pfake"></div><div class="pfake"></div></div>' + (overlay || '') + '</div></div>';
 }
-function avisoPhone(a) { return a.tipo === 'drop' ? phone('', dropPrev(a)) : phone(cardPrev(a)); }
+function avisoPhone(a) {
+  var f = avFmt(a);
+  return f === 'ventana' ? phone('', dropPrev(a)) : f === 'imagen' ? phone('', imagenPrev(a)) : f === 'banner' ? phone('', '', bannerPrev(a)) : phone(cardPrev(a));
+}
