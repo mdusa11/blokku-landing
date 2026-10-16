@@ -825,3 +825,19 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .f label.tog{display:inline-flex;font-size:14px;margin:0;color:var(--text)}
 .calist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .segr.col{max-width:100%;flex-wrap:wrap}.segr.col span{white-space:normal}
+
+/* ranking */
+.rk-fil{align-items:flex-end;gap:12px 16px}
+.rk-fil .fl{margin-bottom:0}
+.rk-pos{display:inline-block;min-width:26px;color:var(--muted);font-variant-numeric:tabular-nums}.rk-pos.pod{color:var(--accent-ink)}
+.rk-fl{font-size:18px;line-height:1;flex:none}
+.rk-m{display:none}
+.tbl tr.sus td{background:var(--warn-soft)}
+.tbl tr.dim td{opacity:.6}
+.rk-pt{flex:none;font-size:16px;font-variant-numeric:tabular-nums}
+.rk-s .r{flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:760px){.rk-up{display:none}.rk-m{display:block}.rk-s{flex-wrap:wrap}.rk-s .t{flex-basis:calc(100% - 140px)}.rk-s .r{flex-basis:100%;justify-content:flex-start}.rk-fil .seg{max-width:100%}.rk-fil>.col{width:100%}.rk-fil .sel{width:100%!important}}
+.kpis.k6{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:1560px){.kpis.k6{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media (max-width:760px){.kpis.k6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.li .t .chip{display:inline-flex}

@@ -3,7 +3,7 @@ var NAV = [
   { g: '', items: [['inicio', 'Inicio', 'home']] },
   { g: 'En vivo', k: 'vivo', ic: 'live', items: [['vivo/ahora', 'Ahora en la app', 'live'], ['vivo/avisos', 'Avisos y drops', 'bell'], ['vivo/eventos', 'Eventos', 'cal']] },
   { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/canjes', 'Canjes', 'chart']] },
-  { g: 'Juego', k: 'juego', ic: 'game', items: [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark']] },
+  { g: 'Juego', k: 'juego', ic: 'game', items: [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['juego/ranking', 'Ranking', 'trophy']] },
   { g: 'Proyecto', k: 'proyecto', ic: 'folder', items: [['proyecto/pendientes', 'Pendientes', 'tasks'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas y decisiones', 'bulb']] }
 ];
 var ROUTES = {}; NAV.forEach(function (g) { g.items.forEach(function (it) { ROUTES[it[0]] = { t: it[1], ic: it[2], g: g.g, k: g.k }; }); });
@@ -39,6 +39,7 @@ function logoImg(cls) { return IMGS.icono ? '<img class="' + (cls || '') + '" al
 function navCount(r) {
   if (r === 'proyecto/pendientes' && DB.ready) { var n = items('pendientes').filter(function (k) { return k.quien === 'Manuel' && k.col !== 'hecho' && !k.bloqueo; }).length; return n ? '<span class="ct">' + n + '</span>' : ''; }
   if (r === 'vivo/avisos') { var a = rows('avisos').filter(function (x) { return avEst(x) === 'activo'; }).length; return a ? '<span class="ct hot">' + a + '</span>' : ''; }
+  if (r === 'juego/ranking') { var rr = RM.rkres && RM.rkres.rows; return rr && rr.sospechosos ? '<span class="ct hot">' + rr.sospechosos + '</span>' : ''; }
   return '';
 }
 function paintShell() {
@@ -122,7 +123,7 @@ A.theme = function () { var d = !isDark(); document.documentElement.setAttribute
 function closeMore() { if (LAY.more) { LAY.more = null; drawerKill(); } }
 A.mclose = function () { setTimeout(closeMore, 0); };
 A.more = function () {
-  var list = [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['codigos/canjes', 'Canjes', 'chart'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas', 'bulb'], ['vivo/eventos', 'Eventos', 'cal'], ['codigos/unicos', 'Únicos fijos', 'key'], ['ajustes', 'Ajustes', 'sliders']];
+  var list = [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['codigos/canjes', 'Canjes', 'chart'], ['juego/ranking', 'Ranking', 'trophy'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas', 'bulb'], ['vivo/eventos', 'Eventos', 'cal'], ['codigos/unicos', 'Únicos fijos', 'key'], ['ajustes', 'Ajustes', 'sliders']];
   drawer({
     title: 'Más', auto: true, onClose: function () { LAY.more = null; },
     body: function () {

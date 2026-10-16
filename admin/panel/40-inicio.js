@@ -44,6 +44,8 @@ function alertsList() {
     var b = new Date(a.fin).getTime(), s = new Date(a.inicio).getTime();
     if (a.activo && s <= now && b > now && b - now < 864e5) out.push({ c: 'info', i: 'bell', t: 'El aviso «' + (ml(a.titulo) || 'sin título') + '» termina ' + relT(a.fin), s: AV_FMT[avFmt(a)] + ' · ' + nf(a.vistos) + ' vistos', open: 'av:' + a.id, r: 'vivo/avisos' });
   });
+  var rk = RM.rkres && RM.rkres.rows;
+  if (rk && rk.sospechosos > 0) out.push({ c: 'warn', i: 'flag', t: plural(rk.sospechosos, 'puntaje sospechoso', 'puntajes sospechosos') + ' en el ranking', s: 'Aprueba los legítimos y borra las trampas', open: 'rk:sosp', r: 'juego/ranking' });
   if (DB.ready) {
     items('timeline').forEach(function (x) { if (x.estado === 'idea' || x.tipo === 'estreno') return; var d = dn(x.inicio) - t; if (d === 0 || d === 1) out.push({ c: 'info', i: 'spark', t: x.titulo + ' ' + (d ? 'empieza mañana' : 'empieza hoy'), s: x.notas || '', open: 'tl:' + x.id, r: 'juego/temporadas' }); });
     items('versiones').forEach(function (v) { if (v.ios === 'en revisión' || v.android === 'en revisión') out.push({ c: 'info', i: 'layers', t: 'La versión ' + v.version + ' está en revisión' + (v.ios === 'en revisión' ? ' de Apple' : ' de Google'), s: v.ios === 'en revisión' ? 'Cuando la aprueben, se publica a mano en App Store Connect.' : '', r: 'proyecto/versiones' }); });
@@ -63,18 +65,19 @@ function vInicio() {
   var out = '<div class="hero"><h1>' + sal + ', Manuel</h1><p>' + DSEM[d.getDay()].replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + d.getDate() + ' de ' + MES[d.getMonth()] + '. Esto es lo que pasa hoy en Blokku.</p>' +
     '<div class="row"><button class="btn w" data-a="qDrop">' + ic('zap') + 'Lanzar drop</button><button class="btn" data-a="qAviso">' + ic('bell') + 'Nuevo aviso</button><button class="btn" data-a="qCodes">' + ic('ticket') + 'Crear códigos</button><button class="btn" data-a="qPend">' + ic('plus') + 'Pendiente</button></div></div>';
   /* KPIs */
-  var cj = rm('canjes'), A = cjAgg(), d14 = lastDays(A.day, 14), w1 = d14.slice(7).reduce(function (a, x) { return a + x.v; }, 0), w0 = d14.slice(0, 7).reduce(function (a, x) { return a + x.v; }, 0);
+  var rkr = rm('rkres'), cj = rm('canjes'), A = cjAgg(), d14 = lastDays(A.day, 14), w1 = d14.slice(7).reduce(function (a, x) { return a + x.v; }, 0), w0 = d14.slice(0, 7).reduce(function (a, x) { return a + x.v; }, 0);
   var hoy = A.day[todayS()] || 0, ayer = A.day[iso(dn(todayS()) - 1)] || 0;
   var C = rows('codigos'), cact = C.filter(function (c) { return cEst(c) === 'activo'; }).length, cuse = C.reduce(function (a, c) { return a + (c.usos || 0); }, 0);
   var E = rows('eventos'), eact = E.filter(function (e) { return evEst(e) === 'activo'; }).length, eprox = E.filter(function (e) { return evEst(e) === 'proximo'; }).length;
   var AV = rows('avisos'), aact = AV.filter(function (a) { return avEst(a) === 'activo'; }), vs = 0, cl = 0; aact.forEach(function (a) { vs += a.vistos || 0; cl += a.clics || 0; });
   var ld = function (o) { return o && o.rows == null && !o.err ? '<span class="sk" style="display:inline-block;width:48px;height:26px"></span>' : null; };
   var delta = w0 ? Math.round((w1 - w0) * 100 / w0) : null;
-  out += '<div class="kpis">' +
+  out += '<div class="kpis k6">' +
     kpi('trophy', 'Canjes hoy', ld(cj) || nf(hoy), cj.err ? 'Sin datos' : 'Ayer: ' + nf(ayer) + ' · códigos fijos', '', 'codigos/canjes') +
     kpi('chart', 'Últimos 7 días', ld(cj) || nf(w1), cj.err ? 'Sin datos' : delta == null ? 'vs. semana anterior: —' : '<span class="delta ' + (delta >= 0 ? 'up' : 'dn') + '">' + (delta >= 0 ? '+' : '') + delta + ' %</span> vs. semana anterior', cj.rows ? spark(d14.map(function (x) { return x.v; })) : '', 'codigos/canjes') +
     kpi('zap', 'Códigos activos', ld(RM.codigos) || nf(cact), nf(cuse) + ' canjes de rotativos', '', 'codigos/rotativos') +
     kpi('cal', 'Eventos', ld(RM.eventos) || nf(eact) + '<small>activos</small>', eprox ? nf(eprox) + ' próximo' + (eprox > 1 ? 's' : '') : 'Ninguno próximo', '', 'vivo/eventos') +
+    kpi('trophy', 'Jugadores en ranking', ld(rkr) || (rkr.err ? '—' : nf(rkr.rows.jugadores)), rkr.err ? (rkr.err.code === 'sin_sql' ? 'Falta correr ' + SQLF.ranking : 'Sin datos') : nf(rkr.rows.activos_7d) + ' activos en 7 días', '', 'juego/ranking') +
     kpi('bell', 'Avisos activos', ld(RM.avisos) || nf(aact.length), aact.length ? nf(vs) + ' vistos · ' + pct(cl, vs) + ' de clics' : 'Ninguno en la app ahora', '', 'vivo/avisos') +
     '</div>';
   /* columnas */
