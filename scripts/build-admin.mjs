@@ -69,6 +69,8 @@ if (existsSync(CSV)) {
 } else console.warn('sin CSV de códigos:', CSV);
 const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CODES=' + JSON.stringify(CODES) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\n';
 app = app.replace('/*INJECT*/', () => inject);
+// Vista previa local SIN cifrar (solo fuera del repo): ADMIN_PREVIEW=/ruta/panel.html
+if (process.env.ADMIN_PREVIEW) writeFileSync(process.env.ADMIN_PREVIEW, app);
 
 const enc = new TextEncoder();
 const salt = crypto.getRandomValues(new Uint8Array(16));

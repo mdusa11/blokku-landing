@@ -140,7 +140,7 @@ var MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','sept
 var RAR=['Común','Raro','Épico','Legendario','Mítico'];
 var RC={'Común':'#9ca3af','Raro':'#2563EB','Épico':'#7c3aed','Legendario':'#d97706','Mítico':'#db2777'};
 var RMAP={common:'Común',comun:'Común',rare:'Raro',raro:'Raro',rara:'Raro',epic:'Épico',epico:'Épico',epica:'Épico',legendary:'Legendario',legendario:'Legendario',legendaria:'Legendario',mythic:'Mítico',mitico:'Mítico',mitica:'Mítico'};
-var GANA={logro:'Logro',nivel:'Ruta de nivel',reto:'Reto difícil',evento:'Evento',código:'Código de sticker'};
+var GANA={inicio:'Gratis desde el inicio',logro:'Logro',nivel:'Ruta de nivel',reto:'Reto difícil',evento:'Evento',dusa:'Colección Dusa',código:'Solo código'};
 var TT={version:'Versión',evento:'Evento',temporada:'Temporada',estreno:'Estreno de premios',hito:'Hito'};
 var CEST=['disponible','publicado','regalado'];
 var IMGC={},IMGP={};
@@ -565,13 +565,25 @@ function vPrem(){
   h+=L.length?'<div class="list">'+L.map(prow).join('')+'</div>':'<div class="empty">Ningún premio con esos filtros.</div>';
   return h;
 }
+function plink(id){var p=prem(id);return p?'<a data-act="prem" data-id="'+p.id+'" style="cursor:pointer;color:var(--ac)">'+esc(p.nombre)+'</a>':''}
 function vRutas(){
-  var h=sh('Ruta de nivel','<span class="mut">XP: 125·(nivel−1)², 20 XP base por partida. Tope en el nivel 100.</span>')+'<div class="route">';
-  h+=(S.doc.rutaNivel||[]).map(function(r){var p=prem(r.premio);return '<div class="rs" data-act="prem" data-id="'+r.premio+'">'+(p?thumb(p):'<div class="th"></div>')+'<b>Nivel '+r.nivel+'</b><span>'+esc(p?p.nombre:'—')+'</span></div>'}).join('');
-  h+='</div>'+sh('Ruta de retos diarios','<span class="mut">Racha de retos seguidos. Premios por definir.</span>')+'<div class="route">'+(S.doc.rutaReto||[]).map(function(r){var p=r.premio&&prem(r.premio);return '<div class="rs">'+(p?thumb(p):'<div class="th ph" data-l="?"></div>')+'<b>'+r.dias+' días</b><span>'+esc(p?p.nombre:'por definir')+'</span></div>'}).join('')+'</div>';
-  h+=sh('Logros por escalones','<span class="mut">9 familias × 5 escalones = 45, más 3 secretos = 48. Oro, Diamante e Imposible dan cosmético.</span>')+'<div class="tbl"><table><tr><th>Familia</th><th>Bronce</th><th>Plata</th><th>Oro</th><th>Diamante</th><th>Imposible</th><th>Premio</th></tr>';
-  h+=(S.doc.logros||[]).map(function(l){var p=l.premio&&prem(l.premio);return '<tr><td><b>'+esc(l.familia)+'</b></td>'+l.niveles.map(function(n){return '<td>'+esc(n)+'</td>'}).join('')+'<td>'+(p?'<a data-act="prem" data-id="'+p.id+'" style="cursor:pointer;color:var(--ac)">'+esc(p.nombre)+'</a>':'<span class="mut">—</span>')+'</td></tr>'}).join('');
-  return h+'</table></div>';
+  var h=sh('Ruta de nivel','<span class="mut">XP para el nivel L: 125·(L−1)². Por partida: 20 base + líneas, tope 3.000. Nivel 100 = MÁX.</span>')+'<div class="route">';
+  h+=(S.doc.rutaNivel||[]).slice().sort(function(a,b){return a.nivel-b.nivel}).map(function(r){var p=prem(r.premio);return '<div class="rs" data-act="prem" data-id="'+r.premio+'">'+(p?thumb(p):'<div class="th"></div>')+'<b>Nivel '+r.nivel+'</b><span>'+esc(p?p.nombre:'—')+'</span></div>'}).join('');
+  h+='</div>';
+  var mn=S.doc.marcosNivel||[];
+  if(mn.length)h+=sh('Marcos por nivel','<span class="mut">Fuera de la ruta; se desbloquean al llegar al nivel.</span>')+'<div class="route">'+mn.map(function(r){var p=prem(r.premio);return '<div class="rs" data-act="prem" data-id="'+r.premio+'">'+(p?thumb(p):'<div class="th"></div>')+'<b>Nivel '+r.nivel+'</b><span>'+esc(p?p.nombre:'—')+'</span></div>'}).join('')+'</div>';
+  h+=sh('Ruta de retos diarios','<span class="mut">Racha de retos diarios seguidos. Hoy repite premios de la ruta de nivel.</span>')+'<div class="route">'+(S.doc.rutaReto||[]).map(function(r){var p=r.premio&&prem(r.premio);return '<div class="rs"'+(p?' data-act="prem" data-id="'+p.id+'"':'')+'>'+(p?thumb(p):'<div class="th ph" data-l="?"></div>')+'<b>'+r.dias+' días</b><span>'+esc(p?p.nombre:'por definir')+'</span></div>'}).join('')+'</div>';
+  h+=sh('Logros por escalones','<span class="mut">9 familias × 5 escalones = 45, más 3 secretos = 48 en la vitrina. XP: 200 · 500 · 1.500 · 5.000 · 15.000.</span>')+'<div class="tbl"><table><tr><th>Familia</th><th>Bronce</th><th>Plata</th><th>Oro</th><th>Diamante</th><th>Imposible</th></tr>';
+  h+=(S.doc.logros||[]).map(function(l){return '<tr><td><b>'+esc(l.familia)+'</b></td>'+l.niveles.map(function(n,i){var pp=(l.premios&&l.premios[i])||(i===4&&l.premio?[l.premio]:[]);var lk=pp.map(plink).filter(Boolean).join(' + ');return '<td>'+esc(n)+(lk?'<div style="margin-top:4px">🎁 '+lk+'</div>':'')+'</td>'}).join('')+'</tr>'}).join('');
+  h+='</table></div>';
+  var M=S.doc.metas||[],G=[];M.forEach(function(m){if(G.indexOf(m.grupo)<0)G.push(m.grupo)});
+  if(M.length){
+    h+=sh('Metas especiales','<span class="mut">Fuera de la tabla de escalones: secretos, retos difíciles, eventos y colecciones.</span>');
+    G.forEach(function(g){
+      h+='<p class="mut" style="margin:14px 0 6px"><b>'+esc(g)+'</b></p><div class="list">'+M.filter(function(m){return m.grupo===g}).map(function(m){var ps=(m.premios||[]).map(prem).filter(Boolean);return '<div class="li'+(ps.length?' clk" data-act="prem" data-id="'+ps[0].id:'')+'">'+(ps[0]?thumb(ps[0]):'')+'<div class="t"><b>'+esc(m.nombre)+'</b><span class="mut">'+esc(m.meta)+(ps.length?' → '+esc(ps.map(function(p){return p.nombre}).join(' + ')):'')+(m.xp?' · '+m.xp.toLocaleString('es-MX')+' XP':'')+'</span></div>'+(ps[0]?'<div class="r">'+rr(ps[0].rareza)+'</div>':'')+'</div>'}).join('')+'</div>';
+    });
+  }
+  return h;
 }
 function sheetPrem(p){
   var u=pimg(p,false),m=MAPA[p.id];
@@ -579,9 +591,11 @@ function sheetPrem(p){
   if(u)h+='<img class="bigimg" alt="" src="'+u+'" data-act="lbk" data-k="'+(p.imgs&&p.imgs.length?'':((m&&(m.big||m.img))||''))+'" data-l="'+esc(p.nombre)+'" '+(p.imgs&&p.imgs.length?'data-u="premios|'+p.id+'|0"':'')+'>';
   if(m&&m.big)h+='<div class="mut" style="margin-top:4px">Toca la imagen para ver la pantalla completa.</div>';
   h+=userImgs(p,'premios');
-  h+='<div class="kv"><b>Cómo se gana</b>'+esc(GANA[p.gana]||p.gana)+'</div><div class="kv"><b>Meta</b>'+esc(p.detalle)+'</div><div class="kv"><b>Se estrena en</b>'+(p.estreno?'Versión '+esc(p.estreno):'Sin versión asignada')+'</div>';
+  h+='<div class="kv"><b>Cómo se gana</b>'+esc(GANA[p.gana]||p.gana)+(p.coleccion?' · colección '+esc(p.coleccion):'')+'</div>'+(p.formas&&p.formas.length?'<div class="kv"><b>Todas las formas</b>'+p.formas.map(function(f){return '<div>• '+esc(f)+'</div>'}).join('')+'</div>':'<div class="kv"><b>Meta</b>'+esc(p.detalle)+'</div>')+(p.cid?'<div class="kv"><b>Id en la app</b><span class="code" style="font-size:13px">'+esc(p.cid)+'</span></div>':'')+'<div class="kv"><b>Se estrena en</b>'+(p.estreno?'Versión '+esc(p.estreno):'Sin versión asignada')+'</div>';
   var cups=S.doc.cupones.filter(function(c){return (c.premios||[]).indexOf(p.id)>=0});
-  if(cups.length)h+='<div class="kv"><b>Códigos que lo dan</b>'+cups.map(function(c){return '<span class="code" style="font-size:13px;margin:2px 4px 2px 0">'+esc(c.codigo)+'</span>'}).join('')+'</div>';
+  var uc=p.cid&&typeof CODES!=='undefined'?CODES.filter(function(c){return c.i===p.cid}):[];
+  if(uc.length)h+='<div class="kv"><b>Códigos únicos</b>'+uc.filter(function(c){return cst(c.h)==='disponible'}).length+' de '+uc.length+' disponibles (pestaña Cupones)</div>';
+  if(cups.length)h+='<div class="kv"><b>Códigos de sticker</b>'+cups.map(function(c){return '<span class="code" style="font-size:13px;margin:2px 4px 2px 0">'+esc(c.codigo)+'</span>'}).join('')+'</div>';
   var ev=S.doc.timeline.filter(function(x){return (x.premios||[]).indexOf(p.id)>=0});
   if(ev.length)h+='<div class="kv"><b>Evento</b>'+ev.map(function(x){return esc(x.titulo)+' ('+whenOf(x)+')'}).join(', ')+'</div>';
   var nv=(S.doc.rutaNivel||[]).filter(function(r){return r.premio===p.id});
@@ -645,7 +659,8 @@ function vCup(){
     if(ps.length)h+='<div class="thr">'+ps.map(function(p){return '<div data-act="prem" data-id="'+p.id+'">'+thumb(p)+'</div>'}).join('')+'</div>';
     h+='<div class="mut">'+esc(c.tipo)+' · '+esc(c.vigencia)+' · '+esc(c.donde)+(c.notas?' · '+esc(c.notas):'')+'</div>'+userImgs(c,'cupones')+'<div class="row" style="margin:0"><button class="sm" data-act="addimg" data-sec="cupones" data-id="'+c.id+'">+ Imagen</button></div></div>';
   });
-  return h+'</div>'+vCodes();
+  h+='</div>'+sh('Canjes registrados','<span class="mut">Cuántas veces se canjea cada código</span>')+'<div class="note"><span><b>Aún sin datos.</b> Se activa con la 1.0.5: la app registra cada canje (anónimo) en Supabase y aquí verás el total, por código, por premio, por plataforma y por día.</span></div>';
+  return h+vCodes();
 }
 function vPend(){
   var q=S.pq,L=S.doc.pendientes.filter(function(k){return q==='Todos'||k.quien===q});
