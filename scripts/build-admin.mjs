@@ -2,7 +2,7 @@
 // de la clave de Manuel con PBKDF2). El repo solo guarda el cifrado; sin la
 // clave no se puede leer. No necesita servidor ni secretos en Cloudflare.
 // Uso: ADMIN_KEY='bk-…' node scripts/build-admin.mjs
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { COSM, VERS, LOGOS } from './admin-images.mjs';
@@ -13,7 +13,14 @@ import { SEED } from '../admin/seed.js';
 const key = process.env.ADMIN_KEY;
 if (!key) { console.error('Falta ADMIN_KEY'); process.exit(1); }
 
-let app = readFileSync(new URL('../admin/app.html', import.meta.url), 'utf8');
+// El panel vive en admin/app.html (estructura) + admin/panel/*.css|*.js (en orden
+// por nombre); aquí se juntan en una sola página.
+const PDIR = new URL('../admin/panel/', import.meta.url);
+const parts = readdirSync(PDIR).sort();
+const css = parts.filter((f) => f.endsWith('.css')).map((f) => readFileSync(new URL(f, PDIR), 'utf8')).join('\n');
+const js = parts.filter((f) => f.endsWith('.js')).map((f) => `/* ${f} */\n` + readFileSync(new URL(f, PDIR), 'utf8')).join('\n');
+let app = readFileSync(new URL('../admin/app.html', import.meta.url), 'utf8')
+  .replace('/*STYLE*/', () => css).replace('/*APP*/', () => js);
 
 // Imágenes: se reducen con Pillow a JPEG (~360 px) y van como data URI DENTRO
 // del documento cifrado, así no quedan públicas.
@@ -77,9 +84,10 @@ for (const c of SEED.cupones || []) {
   V1H[createHash('sha256').update('blokku-codes-v1|' + n).digest('hex')] = c.codigo;
 }
 const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CODES=' + JSON.stringify(CODES) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\nvar V1H=' + JSON.stringify(V1H) + ';\n';
-app = app.replace('/*INJECT*/', () => inject);
-// Vista previa local SIN cifrar (solo fuera del repo): ADMIN_PREVIEW=/ruta/panel.html
-if (process.env.ADMIN_PREVIEW) writeFileSync(process.env.ADMIN_PREVIEW, app);
+// Vista previa local SIN cifrar (solo fuera del repo): ADMIN_PREVIEW=/ruta/panel.html.
+// Solo ella acepta ?sb=http://127.0.0.1:PUERTO para probar contra un Supabase local.
+if (process.env.ADMIN_PREVIEW) writeFileSync(process.env.ADMIN_PREVIEW, app.replace('/*INJECT*/', () => 'var PREVIEW=true;\n' + inject));
+app = app.replace('/*INJECT*/', () => 'var PREVIEW=false;\n' + inject);
 
 const enc = new TextEncoder();
 const salt = crypto.getRandomValues(new Uint8Array(16));

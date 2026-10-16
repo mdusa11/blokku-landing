@@ -1,5 +1,5 @@
-// Datos semilla del panel. Se usan mientras ADMIN_KV no exista (modo lectura)
-// y como documento inicial al primer guardado.
+// Datos semilla del panel: estado inicial de las secciones en Supabase y datos
+// nuevos que se suman cuando sube seedRev (sin pisar lo que Manuel editó).
 import { CAT } from './catalogo.js';
 
 const R = { C: 'Común', R: 'Raro', E: 'Épico', L: 'Legendario', M: 'Mítico' };
@@ -8,7 +8,7 @@ const p = (id, nombre, tipo, rareza, gana, detalle, estado = 'estreno programado
 
 export const SEED = {
   version: 1,
-  seedRev: 3,
+  seedRev: 4,
   actualizado: '2026-10-15',
   timeline: [
     { id: 't-104', titulo: 'Blokku 1.0.4', tipo: 'version', inicio: '2026-10-13', fin: '', estado: 'publicada', notas: 'Android publicada. iOS en revisión desde el 14-oct (build 5).', premios: [] },
@@ -89,7 +89,8 @@ export const SEED = {
     { id: 'k15', titulo: 'Bio de @blokku.online y publicar según 2-PUBLICACIONES', col: 'todo', quien: 'Manuel', bloqueo: '', notas: '' },
     { id: 'k16', titulo: 'Llevar los 37 stickers a imprimir', col: 'todo', quien: 'Manuel', bloqueo: '', notas: 'ZIP en agencia/marca/stickers.' },
     { id: 'k17', titulo: 'Post «Llegó la 1.0.4» al salir en Play', col: 'todo', quien: 'Claude', bloqueo: 'espera 1.0.4 en Play', notas: '' },
-    { id: 'k18', titulo: 'Panel /admin de Blokku (cifrado, con imágenes)', col: 'hecho', quien: 'Claude', bloqueo: '', notas: 'Estático y cifrado; tus cambios viven en este navegador. Respalda con Exportar.', _forzar: ['col', 'bloqueo', 'notas', 'titulo'] },
+    { id: 'k18', titulo: 'Panel /admin de Blokku (cifrado, con imágenes)', col: 'hecho', quien: 'Claude', bloqueo: '', notas: 'Panel nuevo (oct-2026): todo se guarda en Supabase, con historial por sección.', _forzar: ['col', 'bloqueo', 'notas', 'titulo'] },
+    { id: 'k32', titulo: 'Correr 3-panel.sql en Supabase', col: 'todo', quien: 'Manuel', bloqueo: '', notas: 'Escritorio › Blokku › 02-Documentos › Supabase › 3-panel.sql. Supabase › SQL Editor › pegar › Run. Sin esto el panel no guarda pendientes ni notas.' },
     { id: 'k22', titulo: 'Tablet (SM-T970): escalar la bandeja de piezas', col: 'todo', quien: 'Claude', bloqueo: '', notas: 'En vertical se ve chica frente al tablero. Celda de bandeja ~70 % de la del tablero.' },
     { id: 'k23', titulo: 'iOS: publicar la 1.0.4 cuando Apple apruebe', col: 'todo', quien: 'Manuel', bloqueo: 'espera revisión de Apple', notas: 'Publicación manual en App Store Connect. Después se puede subir la 1.0.5.' },
     { id: 'k24', titulo: '1.0.5: widget de racha (probar en A17 y App Group en iOS)', col: 'todo', quien: 'Claude', bloqueo: 'espera App Group', notas: '' },
