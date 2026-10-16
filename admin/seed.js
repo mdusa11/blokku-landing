@@ -8,11 +8,12 @@ const p = (id, nombre, tipo, rareza, gana, detalle, estado = 'estreno programado
 
 export const SEED = {
   version: 1,
-  seedRev: 4,
+  seedRev: 5,
   actualizado: '2026-10-15',
   timeline: [
     { id: 't-104', titulo: 'Blokku 1.0.4', tipo: 'version', inicio: '2026-10-13', fin: '', estado: 'publicada', notas: 'Android publicada. iOS en revisión desde el 14-oct (build 5).', premios: [] },
     { id: 't-105', titulo: 'Blokku 1.0.5 (en espera)', tipo: 'version', inicio: '2026-10-20', fin: '', estado: 'lista', notas: 'Lista en dev/1.0.5. Fecha real: cuando AdMob apruebe y Apple publique la 1.0.4 iOS.', premios: [] },
+    { id: 't-hal26', titulo: 'Halloween 2026', tipo: 'evento', inicio: '2026-10-24', fin: '2026-10-31', estado: 'programado', notas: 'Evento remoto halloween26: 5 partidas. Da el paquete Noche de Brujas. No vuelve.', premios: ['p-theme_halloween26', 'p-style_halloween26', 'p-effect_halloween26', 'p-frame_halloween26', 'p-badge_halloween26'] },
     { id: 't-mue26', titulo: 'Día de Muertos 2026', tipo: 'evento', inicio: '2026-10-25', fin: '2026-11-02', estado: 'programado', notas: '5 partidas en esas fechas. Da las piezas Día de Muertos y el tema Papel picado. No vuelve.', premios: ['p-mue26', 'p-papel'], _forzar: ['notas', 'premios'] },
     { id: 't-pion', titulo: 'Pionero (primer mes 1.0.5)', tipo: 'temporada', inicio: '2026-10-25', fin: '2026-11-30', estado: 'programado', notas: 'Insignia Pionero para quien juegue durante el primer mes de la 1.0.5.', premios: ['p-pionero'] },
     { id: 't-dusa11', titulo: 'Semana Dusa (noviembre)', tipo: 'evento', inicio: '2026-11-01', fin: '2026-11-07', estado: 'programado', notas: '10 partidas del 1 al 7. Se repite cada mes.', premios: ['p-dusa', 'p-mx', 'p-medusas'] },
@@ -20,10 +21,10 @@ export const SEED = {
     { id: 't-dusa01', titulo: 'Semana Dusa (enero)', tipo: 'evento', inicio: '2027-01-01', fin: '2027-01-07', estado: 'programado', notas: '10 partidas del 1 al 7. Se repite cada mes.', premios: ['p-dusa', 'p-mx', 'p-medusas'] },
     { id: 't-nums', titulo: 'Revisión de números (redes)', tipo: 'hito', inicio: '2026-11-08', fin: '', estado: 'programado', notas: 'Alcance, seguidores, clics a Play.', premios: [] },
     { id: 't-106', titulo: 'Blokku 1.0.6', tipo: 'version', inicio: '2027-01-11', fin: '', estado: 'idea', notas: 'Fecha tentativa.', premios: [] },
-    { id: 't-nav26', titulo: 'Navidad 2026', tipo: 'evento', inicio: '2026-12-15', fin: '2026-12-26', estado: 'idea', notas: 'Ventana tentativa.', premios: ['p-nav26'] },
-    { id: 't-ny', titulo: 'Año Nuevo 2027', tipo: 'evento', inicio: '2026-12-28', fin: '2027-01-02', estado: 'idea', notas: 'Ventana tentativa.', premios: ['p-ny27'] },
+    { id: 't-nav26', titulo: 'Navidad 2026', tipo: 'evento', inicio: '2026-12-15', fin: '2026-12-26', estado: 'programado', notas: 'Evento remoto navidad26: 5 partidas. Da el paquete Noche Nevada. No vuelve.', premios: ['p-theme_navidad26', 'p-style_navidad26', 'p-effect_navidad26', 'p-frame_navidad26', 'p-badge_navidad26'], _forzar: ['estado', 'notas', 'premios'] },
+    { id: 't-ny', titulo: 'Año Nuevo 2027', tipo: 'evento', inicio: '2026-12-28', fin: '2027-01-02', estado: 'programado', notas: 'Evento remoto anionuevo27: 5 partidas. Da el paquete Medianoche Dorada. No vuelve.', premios: ['p-theme_anionuevo27', 'p-style_anionuevo27', 'p-effect_anionuevo27', 'p-badge_anionuevo27'], _forzar: ['estado', 'notas', 'premios'] },
     { id: 't-estrenos', titulo: 'Estreno semanal de premios', tipo: 'estreno', inicio: '2027-01-18', fin: '2027-12-31', estado: 'idea', notas: 'Un premio nuevo cada semana, desde la 1.0.6.', premios: [] },
-    { id: 't-val', titulo: 'San Valentín 2027', tipo: 'evento', inicio: '2027-02-10', fin: '2027-02-15', estado: 'idea', notas: 'Ventana tentativa.', premios: ['p-val27'] },
+    { id: 't-val', titulo: 'San Valentín 2027', tipo: 'evento', inicio: '2027-02-10', fin: '2027-02-15', estado: 'programado', notas: 'Evento remoto sanvalentin27: 5 partidas. Da el paquete Atardecer Rosa. No vuelve.', premios: ['p-theme_sanvalentin27', 'p-style_sanvalentin27', 'p-effect_sanvalentin27', 'p-frame_sanvalentin27', 'p-badge_sanvalentin27'], _forzar: ['estado', 'notas', 'premios'] },
     { id: 't-mue27', titulo: 'Día de Muertos 2027', tipo: 'evento', inicio: '2027-10-25', fin: '2027-11-02', estado: 'idea', notas: 'Otro diseño distinto al de 2026.', premios: ['p-mue27'] },
   ],
   versiones: [
@@ -47,9 +48,6 @@ export const SEED = {
   ],
   premios: [
     ...CAT.premios,
-    p('p-nav26', 'Navidad 2026', 'Por definir', 'M', 'evento', 'Meta del evento. No vuelve. Aún no existe en el código.', 'idea', ''),
-    p('p-ny27', 'Año Nuevo 2027', 'Por definir', 'M', 'evento', 'Meta del evento. No vuelve. Aún no existe en el código.', 'idea', ''),
-    p('p-val27', 'San Valentín 2027', 'Por definir', 'M', 'evento', 'Meta del evento. No vuelve. Aún no existe en el código.', 'idea', ''),
     p('p-mue27', 'Muertos 2027', 'Por definir', 'M', 'evento', 'Diseño distinto al de Muertos 2026. No vuelve. Aún no existe en el código.', 'idea', ''),
   ],
   eventos: [

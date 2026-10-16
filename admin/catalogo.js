@@ -1983,6 +1983,1236 @@ export const CAT = {
     "estado",
     "estreno"
    ]
+  },
+  {
+   "id": "p-theme_halloween26",
+   "cid": "theme_halloween26",
+   "nombre": "Noche de Brujas",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Halloween 2026",
+   "gana": "evento",
+   "detalle": "Evento Halloween (24–31 oct 2026): 5 partidas",
+   "formas": [
+    "Evento Halloween (24–31 oct 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_halloween26",
+   "cid": "style_halloween26",
+   "nombre": "Calabaza",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Halloween 2026",
+   "gana": "evento",
+   "detalle": "Evento Halloween (24–31 oct 2026): 5 partidas",
+   "formas": [
+    "Evento Halloween (24–31 oct 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_halloween26",
+   "cid": "effect_halloween26",
+   "nombre": "Murciélagos",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Halloween 2026",
+   "gana": "evento",
+   "detalle": "Evento Halloween (24–31 oct 2026): 5 partidas",
+   "formas": [
+    "Evento Halloween (24–31 oct 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_halloween26",
+   "cid": "frame_halloween26",
+   "nombre": "Telaraña",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Halloween 2026",
+   "gana": "evento",
+   "detalle": "Evento Halloween (24–31 oct 2026): 5 partidas",
+   "formas": [
+    "Evento Halloween (24–31 oct 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_halloween26",
+   "cid": "badge_halloween26",
+   "nombre": "Halloween 2026",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Halloween 2026",
+   "gana": "evento",
+   "detalle": "Evento Halloween (24–31 oct 2026): 5 partidas",
+   "formas": [
+    "Evento Halloween (24–31 oct 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_navidad26",
+   "cid": "theme_navidad26",
+   "nombre": "Noche Nevada",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Navidad 2026",
+   "gana": "evento",
+   "detalle": "Evento Navidad (15–26 dic 2026): 5 partidas",
+   "formas": [
+    "Evento Navidad (15–26 dic 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_navidad26",
+   "cid": "style_navidad26",
+   "nombre": "Regalo",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Navidad 2026",
+   "gana": "evento",
+   "detalle": "Evento Navidad (15–26 dic 2026): 5 partidas",
+   "formas": [
+    "Evento Navidad (15–26 dic 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_navidad26",
+   "cid": "effect_navidad26",
+   "nombre": "Copos",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Navidad 2026",
+   "gana": "evento",
+   "detalle": "Evento Navidad (15–26 dic 2026): 5 partidas",
+   "formas": [
+    "Evento Navidad (15–26 dic 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_navidad26",
+   "cid": "frame_navidad26",
+   "nombre": "Luces",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Navidad 2026",
+   "gana": "evento",
+   "detalle": "Evento Navidad (15–26 dic 2026): 5 partidas",
+   "formas": [
+    "Evento Navidad (15–26 dic 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_navidad26",
+   "cid": "badge_navidad26",
+   "nombre": "Navidad 2026",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Navidad 2026",
+   "gana": "evento",
+   "detalle": "Evento Navidad (15–26 dic 2026): 5 partidas",
+   "formas": [
+    "Evento Navidad (15–26 dic 2026): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_anionuevo27",
+   "cid": "theme_anionuevo27",
+   "nombre": "Medianoche Dorada",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Año Nuevo 2027",
+   "gana": "evento",
+   "detalle": "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+   "formas": [
+    "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_anionuevo27",
+   "cid": "style_anionuevo27",
+   "nombre": "Champaña",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Año Nuevo 2027",
+   "gana": "evento",
+   "detalle": "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+   "formas": [
+    "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_anionuevo27",
+   "cid": "effect_anionuevo27",
+   "nombre": "Burbujas",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Año Nuevo 2027",
+   "gana": "evento",
+   "detalle": "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+   "formas": [
+    "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_anionuevo27",
+   "cid": "badge_anionuevo27",
+   "nombre": "¡Feliz 2027!",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Año Nuevo 2027",
+   "gana": "evento",
+   "detalle": "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+   "formas": [
+    "Evento Año Nuevo (28 dic – 2 ene): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_sanvalentin27",
+   "cid": "theme_sanvalentin27",
+   "nombre": "Atardecer Rosa",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "San Valentín 2027",
+   "gana": "evento",
+   "detalle": "Evento San Valentín (10–15 feb 2027): 5 partidas",
+   "formas": [
+    "Evento San Valentín (10–15 feb 2027): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_sanvalentin27",
+   "cid": "style_sanvalentin27",
+   "nombre": "Corazón de dulce",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "San Valentín 2027",
+   "gana": "evento",
+   "detalle": "Evento San Valentín (10–15 feb 2027): 5 partidas",
+   "formas": [
+    "Evento San Valentín (10–15 feb 2027): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_sanvalentin27",
+   "cid": "effect_sanvalentin27",
+   "nombre": "Lluvia de corazones",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "San Valentín 2027",
+   "gana": "evento",
+   "detalle": "Evento San Valentín (10–15 feb 2027): 5 partidas",
+   "formas": [
+    "Evento San Valentín (10–15 feb 2027): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_sanvalentin27",
+   "cid": "frame_sanvalentin27",
+   "nombre": "Listón",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "San Valentín 2027",
+   "gana": "evento",
+   "detalle": "Evento San Valentín (10–15 feb 2027): 5 partidas",
+   "formas": [
+    "Evento San Valentín (10–15 feb 2027): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_sanvalentin27",
+   "cid": "badge_sanvalentin27",
+   "nombre": "San Valentín 2027",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "San Valentín 2027",
+   "gana": "evento",
+   "detalle": "Evento San Valentín (10–15 feb 2027): 5 partidas",
+   "formas": [
+    "Evento San Valentín (10–15 feb 2027): 5 partidas",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "normal",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_viral",
+   "cid": "theme_viral",
+   "nombre": "En Vivo",
+   "tipo": "Tema",
+   "rareza": "Legendario",
+   "coleccion": "Viral",
+   "gana": "código",
+   "detalle": "Solo código: drop de TikTok / redes",
+   "formas": [
+    "Solo código: drop de TikTok / redes",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_viral",
+   "cid": "style_viral",
+   "nombre": "Neón dividido",
+   "tipo": "Estilo de pieza",
+   "rareza": "Legendario",
+   "coleccion": "Viral",
+   "gana": "código",
+   "detalle": "Solo código: drop de TikTok / redes",
+   "formas": [
+    "Solo código: drop de TikTok / redes",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_viral",
+   "cid": "effect_viral",
+   "nombre": "Likes",
+   "tipo": "Efecto de línea",
+   "rareza": "Legendario",
+   "coleccion": "Viral",
+   "gana": "código",
+   "detalle": "Solo código: drop de TikTok / redes",
+   "formas": [
+    "Solo código: drop de TikTok / redes",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_viral",
+   "cid": "frame_viral",
+   "nombre": "EN VIVO",
+   "tipo": "Marco",
+   "rareza": "Legendario",
+   "coleccion": "Viral",
+   "gana": "código",
+   "detalle": "Solo código: drop de TikTok / redes",
+   "formas": [
+    "Solo código: drop de TikTok / redes",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_viral",
+   "cid": "badge_viral",
+   "nombre": "Viral",
+   "tipo": "Insignia",
+   "rareza": "Legendario",
+   "coleccion": "Viral",
+   "gana": "código",
+   "detalle": "Solo código: drop de TikTok / redes",
+   "formas": [
+    "Solo código: drop de TikTok / redes",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_taller",
+   "cid": "theme_taller",
+   "nombre": "Taller",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Taller",
+   "gana": "código",
+   "detalle": "Solo código (edición inspirada en Claude)",
+   "formas": [
+    "Solo código (edición inspirada en Claude)",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_taller",
+   "cid": "style_taller",
+   "nombre": "Barro",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Taller",
+   "gana": "código",
+   "detalle": "Solo código (edición inspirada en Claude)",
+   "formas": [
+    "Solo código (edición inspirada en Claude)",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_taller",
+   "cid": "effect_taller",
+   "nombre": "Tinta",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Taller",
+   "gana": "código",
+   "detalle": "Solo código (edición inspirada en Claude)",
+   "formas": [
+    "Solo código (edición inspirada en Claude)",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_taller",
+   "cid": "frame_taller",
+   "nombre": "Lápiz",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Taller",
+   "gana": "código",
+   "detalle": "Solo código (edición inspirada en Claude)",
+   "formas": [
+    "Solo código (edición inspirada en Claude)",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_taller",
+   "cid": "badge_taller",
+   "nombre": "Taller",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Taller",
+   "gana": "código",
+   "detalle": "Solo código (edición inspirada en Claude)",
+   "formas": [
+    "Solo código (edición inspirada en Claude)",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_reliquia",
+   "cid": "theme_reliquia",
+   "nombre": "Cielo de la Reliquia",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_reliquia",
+   "cid": "style_reliquia",
+   "nombre": "Fragmento de Obsidiana",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_reliquia",
+   "cid": "effect_reliquia",
+   "nombre": "Ascensión",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_reliquia",
+   "cid": "frame_reliquia",
+   "nombre": "Anillo Rúnico",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_reliquia",
+   "cid": "badge_reliquia",
+   "nombre": "Portador",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_reliquia",
+   "cid": "title_reliquia",
+   "nombre": "Portador de la Reliquia",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "La Reliquia",
+   "gana": "código",
+   "detalle": "Solo código: súper exclusivo",
+   "formas": [
+    "Solo código: súper exclusivo",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_dev",
+   "cid": "theme_dev",
+   "nombre": "Terminal",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_dev",
+   "cid": "style_dev",
+   "nombre": "Token",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_dev",
+   "cid": "effect_dev",
+   "nombre": "Compilar",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_dev",
+   "cid": "frame_dev",
+   "nombre": "IDE",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_dev",
+   "cid": "badge_dev",
+   "nombre": "</>",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_dev",
+   "cid": "title_dev",
+   "nombre": "Arquitecto del Código",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Programador",
+   "gana": "código",
+   "detalle": "Solo código: edición programador",
+   "formas": [
+    "Solo código: edición programador",
+    "Códigos rotativos del panel (Códigos → Rotativos / drop)",
+    "Códigos maestros (3)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.5",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
   }
  ],
  "logros": [
