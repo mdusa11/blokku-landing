@@ -95,10 +95,7 @@ function btDest(i, b) {
   if (acc === 'url') return field(id, 'Link (https)', inp(id, val, { ph: 'https://…', di: 'avPrev' }), 'Se abre en el navegador del teléfono.');
   if (acc === 'tienda') return field(id, 'Link de la tienda (opcional)', inp(id, val, { ph: 'Vacío = Play Store o App Store según el teléfono', di: 'avPrev' }), 'Déjalo vacío: la app abre su ficha en la tienda correcta.');
   if (acc === 'evento') return field(id, 'Evento', '<select class="sel" id="' + id + '" data-c="avPrevC">' + opts([['', 'Elige un evento…']].concat(btEvs()), val) + '</select>', 'Al tocar el botón se abre la hoja del evento.');
-  if (acc === 'canjear') {
-    var codes = rows('codigos').filter(function (c) { return cEst(c) === 'activo'; });
-    return field(id, 'Código que se canjea', inp(id, val, { ph: 'Ej. BK-ABCD-EFGH-JKLM', di: 'avPrev', max: 40 }) + (codes.length ? '<div class="presets">' + codes.slice(0, 6).map(function (c) { return '<button type="button" class="btn xs" data-a="avPick" data-t="' + id + '" data-v="' + esc(c.mostrar) + '"><span class="mono">' + esc(c.mostrar) + '</span></button>'; }).join('') + '</div>' : ''), 'Escríbelo o toca uno de tus códigos activos. Debe existir en Códigos › Rotativos.');
-  }
+  if (acc === 'canjear') return caBtnHtml(i, b);
   if (acc === 'personalizar') {
     var isTab = PERS_TABS.some(function (t) { return t[0] === val; }), mode = b._p || (val && !isTab) ? '__p' : (val || 'temas');
     return field(id, 'Qué abre en Personalizar', '<select class="sel" id="' + id + '" data-c="avBtnRe">' + opts(PERS_TABS.map(function (t) { return [t[0], 'Pestaña: ' + t[1]]; }).concat([['__p', 'Un premio concreto…']]), mode) + '</select>') +
@@ -124,10 +121,15 @@ function readBtns() {
   var out = [];
   for (var i = 0; i < 2; i++) {
     if (!document.getElementById('av_b' + i + '_a')) continue;
-    var acc = drawerVal('av_b' + i + '_a'), d = '', pm = false;
+    var acc = drawerVal('av_b' + i + '_a'), d = '', pm = false, modo, au;
+    if (acc === 'canjear') {
+      modo = radioVal('av_b' + i + '_m') || undefined;
+      if (modo === 'auto') au = { premios: pkSel('cab' + i), usos: drawerVal('av_b' + i + '_sl') ? null : Math.floor(Number(drawerVal('av_b' + i + '_u')) || 0), texto: String(drawerVal('av_b' + i + '_x') || '').trim() };
+    }
     if (acc === 'personalizar') { var sv = drawerVal('av_b' + i + '_d'); pm = sv === '__p'; d = pm ? (pkSel('avb' + i)[0] || '') : sv; }
     else if (document.getElementById('av_b' + i + '_d')) d = String(drawerVal('av_b' + i + '_d')).trim();
-    out.push({ texto: { es: String(drawerVal('av_b' + i + '_t') || '').trim(), en: String(drawerVal('av_b' + i + '_te') || '').trim() }, accion: acc, destino: d, estilo: radioVal('av_b' + i + '_s') || 'primario', _p: pm });
+    if (modo === 'auto') { var de = document.getElementById('av_b' + i + '_d'); if (de && !de.dataset.own) d = ''; }
+    out.push({ texto: { es: String(drawerVal('av_b' + i + '_t') || '').trim(), en: String(drawerVal('av_b' + i + '_te') || '').trim() }, accion: acc, destino: d, estilo: radioVal('av_b' + i + '_s') || 'primario', _p: pm, modo: modo, codigo_auto: au });
   }
   return out;
 }
@@ -141,7 +143,7 @@ C.avBtnAcc = function (el) {
     var od = BT_DEF[old] || ['', ''];
     if (!b.texto.es || b.texto.es === od[0]) b.texto.es = BT_DEF[b.accion][0];
     if (!b.texto.en || b.texto.en === od[1]) b.texto.en = BT_DEF[b.accion][1];
-    b.destino = ''; b._p = false;
+    b.destino = ''; b._p = false; b.modo = undefined; b.codigo_auto = undefined;
   }
   AV.bt = cur; var w = $('#av_btw'); w.innerHTML = btnsHtml(); avPrevNow();
 };
@@ -230,7 +232,7 @@ function avForm(a, pre) {
   avProbe();
   var isNew = !a || !a.id, v = Object.assign({ tipo: 'tarjeta', titulo: {}, texto: {}, inicio: new Date(Date.now() - 60000).toISOString(), fin: addMs(7 * 864e5).toISOString(), accion: '', destino: '', premio: '', imagen: '', imagen_id: '', acento: '', version_menor: '', plataforma: '', repetir: 'una', activo: true, orden: 0 }, a || {}, pre || {});
   v.formato = avFmt(v);
-  var st = AV = { fmt: v.formato, bt: clone(avBtns(v)), imid: v.imagen_id || '', fresh: {}, orig: (a && a.imagen_id) || '', meta: null, saved: false };
+  var st = AV = { fmt: v.formato, bt: clone(avBtns(v)), imid: v.imagen_id || '', fresh: {}, orig: (a && a.imagen_id) || '', meta: null, saved: false, force: false };
   var oldSql = avSqlOld();
   formDrawer({
     wide: true, title: isNew ? 'Nuevo aviso' : 'Editar aviso', sub: isNew ? 'Elige un formato, llena lo necesario y mira cómo queda a la derecha.' : esc(EST_L[avEst(v)]) + ' · ' + nf(v.vistos) + ' vistos · ' + nf(v.clics) + ' clics',
@@ -254,7 +256,7 @@ function avForm(a, pre) {
       f += '<div class="fsec"><h4>Más</h4><div class="fg">' + field('av_ord', 'Orden', inp('av_ord', v.orden || 0, { type: 'number', mode: 'numeric' }), 'Si hay varios, el número menor va primero.') + '<div class="f"><span class="fl">Estado</span>' + tog('av_act', v.activo !== false, 'Encendido') + '</div></div></div>';
       return '<div class="edl"><div>' + f + '</div><div class="pvs"><div id="av_pv">' + avisoPhone(avRead(v)) + '</div><div class="pvcap" id="av_pc">Así se verá en un teléfono</div></div></div>';
     },
-    foot: function () { return (isNew ? '' : '<button class="btn ghost dng" data-a="avDel" data-id="' + esc(v.id) + '">' + ic('trash') + 'Borrar</button>') + '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="avSave" data-id="' + esc(isNew ? '' : v.id) + '">' + ic('check') + (isNew ? 'Crear aviso' : 'Guardar') + '</button>'; },
+    foot: function () { return (isNew ? '' : '<button class="btn ghost dng" data-a="avDel" data-id="' + esc(v.id) + '">' + ic('trash') + 'Borrar</button>') + '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn dng" id="av_force" data-a="avSaveAny" style="display:none">Guardar de todos modos</button><button class="btn pri" data-a="avSave" data-id="' + esc(isNew ? '' : v.id) + '">' + ic('check') + (isNew ? 'Crear aviso' : 'Guardar') + '</button>'; },
     onMount: function (el) {
       $$('input[name="av_rep"],#av_pl,#av_vm,#av_ten,#av_xen,#av_ord,#av_act', el).forEach(function (x) { x.addEventListener('change', avPrevNow); });
       var over = function (e) { return e.dataTransfer && e.target.closest && e.target.closest('#av_imw'); };
@@ -285,6 +287,7 @@ function avRead(base) {
   var bs = readBtns().slice(0, fmt === 'banner' ? 1 : 2).map(function (b) {
     var d = BT_DEF[b.accion] || ['', ''], es = b.texto.es || d[0];
     var o = { texto: { es: es, en: b.texto.en || (b.texto.es && b.texto.es !== d[0] ? b.texto.es : d[1]) }, accion: b.accion, destino: b.destino, estilo: fmt === 'banner' ? 'primario' : b.estilo };
+    if (b.accion === 'canjear' && b.modo === 'auto' && b.codigo_auto) o.codigo_auto = b.codigo_auto;
     return o;
   });
   var m = bs.filter(function (b) { return b.accion === 'evento' || b.accion === 'canjear' || b.accion === 'url' || b.accion === 'tienda'; })[0];
@@ -296,12 +299,16 @@ function avRead(base) {
     version_menor: drawerVal('av_vm').trim(), plataforma: drawerVal('av_pl'), repetir: radioVal('av_rep') || 'una', activo: !!drawerVal('av_act'), orden: Math.floor(Number(drawerVal('av_ord')) || 0)
   };
 }
-function avPrevNow() { var b = $('#av_pv'); if (b) b.innerHTML = avisoPhone(avRead()); }
+function avPrevNow() {
+  var b = $('#av_pv'); if (!b) return;
+  var o = avRead(); o.botones.forEach(function (x) { if (x.codigo_auto && !x.destino) x.destino = 'BK-XXXX-XXXX-XXXX'; }); caSyncLegacy(o);
+  b.innerHTML = avisoPhone(o); caRefresh();
+}
 I.avPrev = debounce(avPrevNow, 80);
 A.avSave = async function (el) {
   var o = avRead(), e = {}, fmt = o.formato, hasImg = o.imagen_id || isHttps(o.imagen) || o.premio;
   if (avSqlOld()) { toast('Antes de guardar hay que volver a correr 2-remoto.sql y 3-panel.sql en Supabase', 'bad'); return; }
-  if (fmt === 'banner' ? !o.titulo.es && !o.texto.es : fmt === 'imagen' ? false : !o.titulo.es && !(fmt === 'ventana' && (o.texto.es || avCode(o)))) e.av_tes = fmt === 'banner' ? 'Escribe el texto de la franja' : 'Escribe un título';
+  if (fmt === 'banner' ? !o.titulo.es && !o.texto.es : fmt === 'imagen' ? false : !o.titulo.es && !(fmt === 'ventana' && (o.texto.es || avCode(o) || o.botones.some(function (x) { return x.accion === 'canjear'; })))) e.av_tes = fmt === 'banner' ? 'Escribe el texto de la franja' : 'Escribe un título';
   if (fmt === 'imagen' && !hasImg) e.av_imfield = 'Sube la imagen de la promo';
   if (!o.inicio) e.av_ini = 'Elige cuándo empieza'; if (!o.fin) e.av_fin = 'Elige cuándo termina';
   if (o.inicio && o.fin && new Date(o.fin) <= new Date(o.inicio)) e.av_fin = 'Debe terminar después de empezar';
@@ -313,7 +320,12 @@ A.avSave = async function (el) {
     else if (b.accion === 'tienda' && b.destino && !isHttps(b.destino)) e[p + '_d'] = 'Debe empezar con https://, o déjalo vacío';
     else if (b.accion === 'evento' && !b.destino) e[p + '_d'] = 'Elige el evento';
     else if (b.accion === 'canjear') {
-      if (!b.destino) e[p + '_d'] = 'Escribe el código';
+      var au = b.codigo_auto;
+      if (b.modo === 'auto') {
+        if (!au.premios.length) e[p + '_cp'] = 'Elige al menos un premio';
+        if (au.usos !== null && !(au.usos >= 1)) e[p + '_u'] = 'Un número de 1 en adelante, o «Sin límite»';
+        if (au.texto && !/^[A-Za-z0-9 -]{4,24}$/.test(au.texto)) e[p + '_x'] = '4 a 20 letras o números';
+      } else if (!b.destino) e[p + '_d'] = 'Escribe el código';
       else if (RM.codigos && RM.codigos.rows) { var n = b.destino.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (!rows('codigos').some(function (c) { return c.mostrar.toUpperCase().replace(/[^A-Z0-9]/g, '') === n; })) e[p + '_d'] = 'Ese código no existe en tus códigos rotativos. Créalo primero.'; }
     } else if (b.accion === 'personalizar' && b._p && !b.destino) e[p + '_pk'] = 'Elige el premio';
   });
@@ -321,8 +333,16 @@ A.avSave = async function (el) {
   if (o.version_menor && !/^\d+(\.\d+){1,2}$/.test(o.version_menor)) e.av_vm = 'Números separados por punto, como 1.0.6';
   if (!showErrs(e)) return;
   if (el.dataset.id) o.id = el.dataset.id;
+  var force = AV.force; AV.force = false;
   busy(el, true);
   try {
+    var blocked = null;
+    var okc = await caGate(o, function (p) { if (force) return 'any'; blocked = blocked || p; return null; });
+    if (!okc) {
+      busy(el, false); var fb = $('#av_force'); if (fb) fb.style.display = '';
+      var er2 = {}; er2['av_b' + blocked.k + '_d'] = 'Este código ' + caWhyTxt(blocked.c, blocked.issue, o.fin) + '. Usa uno de los arreglos de abajo, o toca «Guardar de todos modos».';
+      showErrs(er2); caRefresh(); return;
+    }
     await rpc('admin_guardar_aviso', { p_aviso: o });
     AV.saved = true;
     Object.keys(AV.fresh).forEach(function (id) { if (id !== o.imagen_id) avImgDrop(id); });

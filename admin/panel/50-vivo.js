@@ -116,6 +116,7 @@ function avCard(a) {
     '<div class="sm mt8">' + ic('clock', 'faint') + ' ' + esc(fdt(a.inicio)) + ' → ' + esc(fdt(a.fin)) + ' <span class="mut">· ' + (e === 'activo' ? 'termina ' + relT(a.fin) : e === 'proximo' ? 'empieza ' + relT(a.inicio) : e === 'terminado' ? 'terminó ' + relT(a.fin) : 'apagado') + '</span></div>' +
     (e === 'activo' ? '<div class="bar mt8" style="max-width:360px"><i style="width:' + Math.round(el * 100) + '%"></i></div>' : '') +
     (avBtns(a).length ? '<div class="row mt8 sm mut">' + avBtns(a).map(function (b) { return '<span class="chip line">' + esc(btLabel(b)) + '</span>' + (b.destino ? '<span class="mono xs" style="overflow-wrap:anywhere">' + esc(b.destino) + '</span>' : '<span class="xs">' + esc((BT_ACC.filter(function (x) { return x[0] === b.accion; })[0] || [0, ''])[1]) + '</span>'); }).join(' ') + '</div>' : '') +
+    caListHtml(a) +
     '<div class="row mt12" style="gap:18px"><div><b style="font-size:18px">' + nf(v) + '</b> <span class="xs mut">vistos</span></div><div><b style="font-size:18px">' + nf(c) + '</b> <span class="xs mut">clics</span></div><div><b style="font-size:18px">' + pct(c, v) + '</b> <span class="xs mut">CTR</span></div></div>' +
     '<div class="row mt12"><button class="btn sm" data-a="avEdit" data-id="' + esc(a.id) + '">' + ic('edit') + 'Editar</button><button class="btn sm" data-a="avTog" data-id="' + esc(a.id) + '">' + ic(a.activo ? 'pause' : 'play') + (a.activo ? 'Apagar' : 'Encender') + '</button><button class="btn sm ghost" data-a="avDup" data-id="' + esc(a.id) + '">' + ic('dup') + 'Duplicar</button><button class="btn sm ghost dng" data-a="avDel" data-id="' + esc(a.id) + '">' + ic('trash') + 'Borrar</button></div></div>' +
     '<button class="avpv" data-a="avEdit" data-id="' + esc(a.id) + '" aria-label="Vista previa"><div class="avpvi">' + avisoPhone(a) + '</div></button></div></div>';
@@ -144,7 +145,9 @@ A.avDup = function (el) { var a = rows('avisos').find(function (x) { return x.id
 A.avTog = async function (el) {
   var a = rows('avisos').find(function (x) { return x.id === el.dataset.id; }); if (!a) return;
   var o = clone(a); o.activo = !a.activo; delete o.vistos; delete o.clics; delete o.actualizado;
-  try { await rpc('admin_guardar_aviso', { p_aviso: o }); a.activo = o.activo; toast(o.activo ? 'Aviso encendido' : 'Aviso apagado'); rload('avisos'); rload('config'); paintPage(); } catch (e) { toast(e.message, 'bad'); }
+  try {
+    if (o.activo && caCanj({ botones: avBtns(o) }).length) { o.botones = avBtns(o); if (!await caGate(o, caAskList)) return; }
+    await rpc('admin_guardar_aviso', { p_aviso: o }); a.activo = o.activo; toast(o.activo ? 'Aviso encendido' : 'Aviso apagado'); rload('avisos'); rload('config'); paintPage(); } catch (e) { toast(e.message, 'bad'); }
 };
 A.avDel = async function (el) {
   var a = rows('avisos').find(function (x) { return x.id === el.dataset.id; }); if (!a) return;
@@ -190,7 +193,7 @@ A.dropGo = async function (el) {
     c = r && r[0]; if (!c) throw new Error('No se creó el código');
   } catch (er) { busy(el, false); toast(er.message, 'bad'); return; }
   try {
-    await rpc('admin_guardar_aviso', { p_aviso: { tipo: 'drop', titulo: { es: d.titulo, en: d.titulo === '¡Salió un código!' ? 'A code just dropped!' : d.titulo }, texto: { es: d.texto, en: d.custom ? d.texto : d.u + ' spots left. Redeem it now!' }, inicio: new Date(Date.now() - 60000).toISOString(), fin: fin, accion: 'canjear', destino: c.mostrar, formato: 'ventana', botones: [bt('canjear', 'primario', c.mostrar, 'Canjear ahora', 'Redeem now'), bt('cerrar', 'secundario')], premio: d.sel[0], imagen: '', activo: true, orden: 0, repetir: 'una', plataforma: '', version_menor: '' } });
+    await rpc('admin_guardar_aviso', { p_aviso: { tipo: 'drop', titulo: { es: d.titulo, en: d.titulo === '¡Salió un código!' ? 'A code just dropped!' : d.titulo }, texto: { es: d.texto, en: d.custom ? d.texto : d.u + ' spots left. Redeem it now!' }, inicio: new Date(Date.now() - 60000).toISOString(), fin: fin, accion: 'canjear', destino: c.mostrar, formato: 'ventana', botones: [caBtAuto(bt('canjear', 'primario', c.mostrar, 'Canjear ahora', 'Redeem now'), d.sel, d.u, d.code), bt('cerrar', 'secundario')], premio: d.sel[0], imagen: '', activo: true, orden: 0, repetir: 'una', plataforma: '', version_menor: '' } });
     toast('Drop lanzado: ' + c.mostrar); drawerKill(); rload('codigos'); rload('avisos'); rload('config'); go('vivo/ahora');
   } catch (er) { busy(el, false); rload('codigos'); toast('El código ' + c.mostrar + ' se creó, pero el aviso falló: ' + er.message, 'bad'); }
 };
@@ -226,7 +229,7 @@ A.seasonGo = async function (el) {
   try {
     var r = await rpc('admin_crear_codigos', { p_cosmeticos: sel2, p_cantidad: 1, p_usos_max: us ? Math.floor(Number(us)) : null, p_caduca: fin, p_etiqueta: drawerVal('se_et').trim(), p_texto: tx || null });
     var c = r && r[0]; if (!c) throw new Error('No se creó el código');
-    await rpc('admin_guardar_aviso', { p_aviso: { tipo: 'drop', formato: 'ventana', botones: [bt('canjear', 'primario', c.mostrar), bt('cerrar', 'secundario')], titulo: { es: drawerVal('se_ti').trim(), en: drawerVal('se_ti').trim() }, texto: { es: drawerVal('se_te').trim(), en: drawerVal('se_te').trim() }, inicio: ini, fin: fin, accion: 'canjear', destino: c.mostrar, premio: sel2[0], imagen: '', activo: true, orden: 0, repetir: 'una', plataforma: '', version_menor: '' } });
+    await rpc('admin_guardar_aviso', { p_aviso: { tipo: 'drop', formato: 'ventana', botones: [caBtAuto(bt('canjear', 'primario', c.mostrar), sel2, us ? Math.floor(Number(us)) : null, tx), bt('cerrar', 'secundario')], titulo: { es: drawerVal('se_ti').trim(), en: drawerVal('se_ti').trim() }, texto: { es: drawerVal('se_te').trim(), en: drawerVal('se_te').trim() }, inicio: ini, fin: fin, accion: 'canjear', destino: c.mostrar, premio: sel2[0], imagen: '', activo: true, orden: 0, repetir: 'una', plataforma: '', version_menor: '' } });
     toast('Cupón ' + c.mostrar + ' y ventana creados'); drawerKill(); rload('codigos'); rload('avisos'); rload('config'); go('vivo/avisos');
   } catch (er) { busy(el, false); toast(er.message, 'bad'); rload('codigos'); }
 };

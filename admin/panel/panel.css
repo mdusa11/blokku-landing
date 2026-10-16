@@ -318,7 +318,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .grab{display:none}
 .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-48%) scale(.98);width:min(440px,calc(100vw - 32px));background:var(--surface);border-radius:var(--rad-lg);box-shadow:var(--sh-3);z-index:71;opacity:0;transition:transform .16s ease,opacity .16s ease;border:1px solid var(--border)}
 .modal.on{opacity:1;transform:translate(-50%,-50%)}
-.modal .mb{padding:22px 22px 8px}
+.modal .mb{height:auto;padding:22px 22px 8px;border-radius:0;display:block;font-weight:inherit;font-size:inherit;letter-spacing:normal;text-transform:none}
 .modal h3{font-size:18px;font-weight:800}
 .modal p{color:var(--text-2);margin-top:8px;font-size:14.5px}
 .modal .mi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;background:var(--accent-soft);color:var(--accent)}
@@ -823,3 +823,5 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .sws .hx{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
 @media (max-width:600px){.fmts{grid-template-columns:repeat(2,minmax(0,1fr))}.dz{padding:12px}}
 .f label.tog{display:inline-flex;font-size:14px;margin:0;color:var(--text)}
+.calist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.segr.col{max-width:100%;flex-wrap:wrap}.segr.col span{white-space:normal}
