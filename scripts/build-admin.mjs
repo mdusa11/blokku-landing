@@ -32,6 +32,21 @@ for (const [id, c] of Object.entries(COSM)) {
   MAPA[id] = { img: id };
   if (c.big) { spec.push({ key: id + '_b', file: c.file, w: 300 }); MAPA[id].big = id + '_b'; }
 }
+// Miniatura de cada premio pintada por el propio juego (test/panel_thumbs_test.dart
+// en blocktetris): es la imagen de la lista; la captura de partida, si la hay,
+// queda como imagen grande del detalle.
+const THUMBS = process.env.PANEL_THUMBS || `${homedir()}/Desktop/Blokku/02-Documentos/panel-miniaturas`;
+let nThumbs = 0;
+for (const p of SEED.premios || []) {
+  const f = p.cid && `${THUMBS}/${p.cid}.png`;
+  if (!f || !existsSync(f)) continue;
+  const key = 'th_' + p.cid;
+  spec.push({ key, file: f, w: 240, q: 80 });
+  const prev = MAPA[p.id];
+  MAPA[p.id] = { img: key, big: prev ? prev.big || prev.img : key };
+  nThumbs++;
+}
+console.log('miniaturas de premios:', nThumbs);
 for (const [vid, list] of Object.entries(VERS)) {
   CAPS[vid] = [];
   list.forEach((c, i) => {
