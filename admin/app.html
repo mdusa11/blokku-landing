@@ -255,7 +255,7 @@ nav{-webkit-overflow-scrolling:touch}
 .pvd .th,.pvd img.pi{margin:0 auto 8px;width:56px;height:56px;border-radius:14px;object-fit:cover;display:grid}
 .pvd b{display:block;font-size:16px}.pvd span{font-size:12px;opacity:.8;display:block;margin-top:2px}
 .pvd .cc{font-family:ui-monospace,Menlo,monospace;background:#ffffff1f;border-radius:10px;padding:8px;margin:10px 0;font-weight:700;letter-spacing:.04em;font-size:14px}
-.pvd .bt{display:block;margin:0;background:linear-gradient(135deg,#5b4cf0,#7a5cff);color:#fff;padding:8px}
+.pvd .bt{display:block;margin:10px 0 0;background:linear-gradient(135deg,#5b4cf0,#7a5cff);color:#fff;padding:8px}
 .av{display:flex;gap:16px 20px;flex-wrap:wrap;align-items:flex-start}
 .av .in{flex:1 1 260px;min-width:0}.av .pv{flex:0 1 340px;min-width:0}
 .big{font-size:22px;font-weight:800;letter-spacing:-.02em}
@@ -861,7 +861,7 @@ function vIdeas(){
 S.rm={};S.plv='camino';S.plf={tipo:'Todos',rar:'Todas',gana:'Todas',q:''};
 S.gen={sel:[],q:'',cant:'1',usos:'1',sinlim:false,cad:'no',fecha:'',etq:'',texto:'',out:null,busy:false};
 S.cf={estado:'Todos',prem:'',etq:'',q:'',lim:100};
-S.drop={sel:[],q:'',usos:'10',min:'15',busy:false};S.dropRes=null;
+S.drop={sel:[],q:'',usos:'10',min:'15',unit:'min',texto:'',busy:false};S.dropRes=null;
 var RFN={codigos:'admin_codigos',eventos:'admin_eventos',avisos:'admin_avisos'};
 function rpc(fn,p){
   p=p||{};p.p_clave=key();
@@ -873,7 +873,7 @@ function rpc(fn,p){
       throw (j&&(j.message||j.error))||('http_'+r.status);
     })},function(){throw 'red'});
 }
-function rerr(e){e=String(e&&e.message||e);return e==='sin_sql'?'Falta correr supabase/remoto.sql en Supabase':e==='red'?'Sin conexión con Supabase':e==='no autorizado'?'Clave no autorizada':e}
+function rerr(e){e=String(e&&e.message||e);if(/version_menor|plataforma|repetir|avisos_accion|avisos_extra/.test(e))return 'Falta volver a correr 2-remoto.sql en Supabase (columnas nuevas de avisos)';return e==='sin_sql'?'Falta correr supabase/remoto.sql en Supabase':e==='red'?'Sin conexión con Supabase':e==='no autorizado'?'Clave no autorizada':e}
 function rmFetch(k){
   rpc(RFN[k]).then(function(r){var o=S.rm[k];o.rows=r||[];o.err=null;o.cargando=false;o.t=Date.now();render()},function(e){var o=S.rm[k];o.err=String(e);o.cargando=false;render()});
 }
@@ -1152,16 +1152,16 @@ function pvPrem(a){
   var img=/^https:\/\//.test(a.imagen||'')?'<img class="pi" alt="" src="'+esc(a.imagen)+'" onerror="this.style.display=\'none\'">':(a.premio?cthumb(a.premio):'');
   return img;
 }
-function accLbl(a){return a.accion==='evento'?'Ver evento':a.accion==='canjear'?'Canjear':a.accion==='url'?'Abrir':''}
+function accLbl(a){return a.accion==='evento'?'Ver evento':a.accion==='canjear'?'Canjear ahora':a.accion==='url'?'Ver más':a.accion==='tienda'?'Actualizar':''}
 function pvAviso(a){
   var t=ml(a.titulo)||'Sin título',x=ml(a.texto);
-  if(a.tipo==='drop')return '<div class="pvd">'+pvPrem(a)+'<b>'+esc(t)+'</b>'+(x?'<span>'+esc(x)+'</span>':'')+(a.destino?'<div class="cc">'+esc(a.destino)+'</div>':'')+'<div class="bt">'+(accLbl(a)||'Cerrar')+'</div></div>';
+  if(a.tipo==='drop')return '<div class="pvd">'+pvPrem(a)+'<b>'+esc(t)+'</b>'+(x?'<span>'+esc(x)+'</span>':'')+(a.accion==='canjear'&&a.destino?'<div class="cc">'+esc(a.destino)+'</div>':'')+'<div class="bt">'+(accLbl(a)||'Cerrar')+'</div></div>';
   return '<div class="pvt">'+pvPrem(a)+'<div><b>'+esc(t)+'</b>'+(x?'<span>'+esc(x)+'</span>':'')+(accLbl(a)?'<span class="bt">'+accLbl(a)+'</span>':'')+'</div></div>';
 }
 function avEst(a){var n=Date.now();return !a.activo?'inactivo':n<new Date(a.inicio).getTime()?'próximo':n>=new Date(a.fin).getTime()?'terminado':'activo'}
 function avCard(a){
   var e=avEst(a),v=a.vistos||0,c=a.clics||0;
-  return '<div class="card"><div class="av"><div class="in"><div class="r1" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(ml(a.titulo)||'Sin título')+'</b>'+st(e)+'<span class="chipx">'+(a.tipo==='drop'?'Drop':'Tarjeta')+'</span></div>'+
+  return '<div class="card"><div class="av"><div class="in"><div class="r1" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(ml(a.titulo)||'Sin título')+'</b>'+st(e)+'<span class="chipx">'+(a.tipo==='drop'?'Drop':'Tarjeta')+'</span>'+(a.version_menor?'<span class="chipx v">solo &lt; '+esc(a.version_menor)+'</span>':'')+(a.plataforma?'<span class="chipx v">'+(a.plataforma==='ios'?'iOS':'Android')+'</span>':'')+(a.repetir?'<span class="chipx a">'+({una:'una vez',diaria:'diaria',siempre:'siempre'}[a.repetir]||esc(a.repetir))+'</span>':'')+'</div>'+
     '<div class="mut" style="margin-top:4px">'+esc(fdt(a.inicio))+' → '+esc(fdt(a.fin))+(a.accion?' · acción: '+esc(a.accion)+(a.destino?' ('+esc(a.destino)+')':''):'')+(a.orden?' · orden '+a.orden:'')+'</div>'+
     '<div class="stats" style="margin:12px 0 0;grid-template-columns:repeat(3,minmax(0,1fr))"><div class="stat"><b>'+nf(v)+'</b><span>Vistos</span></div><div class="stat"><b>'+nf(c)+'</b><span>Clics</span></div><div class="stat"><b>'+pcts(c,v)+'</b><span>CTR</span></div></div>'+
     '<div class="row"><button class="sm" data-act="avtog" data-id="'+a.id+'">'+(a.activo?'Desactivar':'Activar')+'</button><button class="sm" data-act="avedit" data-id="'+a.id+'">Editar</button><button class="sm dng" data-act="avdel" data-id="'+a.id+'">Borrar</button></div></div>'+
@@ -1190,8 +1190,11 @@ function vLive(){
   var oa=rmNeed('avisos'),oe=rmNeed('eventos'),oc=rmNeed('codigos'),d=S.drop;
   var h='<div class="head"><div><h2>En vivo</h2><p class="sub" style="margin:0">Eventos y avisos que llegan a la app sin publicar versión. La app los revisa al abrir y cada pocos minutos.</p></div><button class="sm" data-act="lrel">'+(oa.cargando||oe.cargando?'Actualizando…':'Actualizar')+'</button></div>';
   h+=rmNote('avisos')||rmNote('eventos');
-  h+=sh('Lanzar un drop','<span class="mut">Crea un código que dura poco y avisa a quien tenga la app abierta.</span>');
-  h+='<div class="card"><div class="f"><label>Premios</label>'+pick('drop')+'</div><div class="g2"><div class="f"><label>Usos (cuántos pueden canjearlo)</label><input type="number" id="d_usos" min="1" data-bind="drop.usos" value="'+esc(d.usos)+'"></div><div class="f"><label>Duración (minutos)</label><input type="number" id="d_min" min="1" max="1440" data-bind="drop.min" value="'+esc(d.min)+'"></div></div>';
+  var A0=rows('avisos');
+  if(A0.length&&A0[0].version_menor===undefined)h+='<div class="note"><span><b>Falta volver a correr 2-remoto.sql en Supabase.</b> Hasta entonces los avisos no guardan versión, plataforma, frecuencia ni el botón de tienda.</span></div>';
+  h+=sh('Plantillas','<span class="mut">Avisos listos para llenar.</span>')+'<div class="bar"><button data-act="tplupd">Aviso de actualización</button><button data-act="tplpromo">Promoción de otra app</button></div>';
+  h+=sh('Cupón de temporada / drop','<span class="mut">Crea un código con caducidad y avisa a quien tenga la app abierta. Puede durar minutos, horas o días.</span>');
+  h+='<div class="card"><div class="f"><label>Premios</label>'+pick('drop')+'</div><div class="g2"><div class="f"><label>Usos (cuántos pueden canjearlo)</label><input type="number" id="d_usos" min="1" data-bind="drop.usos" value="'+esc(d.usos)+'"></div><div class="f"><label>Duración</label><div style="display:flex;gap:6px"><input type="number" id="d_min" min="1" data-bind="drop.min" value="'+esc(d.min)+'"><select id="d_unit" data-bind="drop.unit" style="width:auto"><option value="min"'+(d.unit==='min'?' selected':'')+'>minutos</option><option value="h"'+(d.unit==='h'?' selected':'')+'>horas</option><option value="d"'+(d.unit==='d'?' selected':'')+'>días</option></select></div></div><div class="f"><label>Texto propio del código (opcional)</label><input type="text" id="d_texto" data-bind="drop.texto" maxlength="24" placeholder="ej. NAVIDAD26" value="'+esc(d.texto)+'"></div></div>';
   h+='<div class="row" style="margin-top:0"><button class="pri" data-act="lanzar"'+(d.busy?' disabled':'')+'>'+(d.busy?'Lanzando…':'Lanzar drop')+'</button><span class="mut">Crea un código y un aviso «drop» con la misma ventana.</span></div></div>';
   h+=dropCard();
   var A=rows('avisos');
@@ -1204,13 +1207,13 @@ function vLive(){
   return h;
 }
 function lanzar(){
-  var d=S.drop,u=Math.floor(Number(d.usos)),m=Math.floor(Number(d.min));
+  var d=S.drop,u=Math.floor(Number(d.usos)),m=Math.floor(Number(d.min)),mult={min:60000,h:3600000,d:864e5}[d.unit]||60000,tx0=d.texto.trim();
   if(!d.sel.length)return toast('Elige al menos un premio');
   if(!(u>=1))return toast('Usos: un número de 1 en adelante');
-  if(!(m>=1&&m<=1440))return toast('Duración: de 1 a 1440 minutos');
-  var ini=new Date(Date.now()-60000),fin=new Date(Date.now()+m*60000),tx='Quedan '+u+' lugares. ¡Canjéalo ya!';
+  if(!(m>=1)||m*mult>90*864e5)return toast('Duración: de 1 minuto a 90 días');
+  var ini=new Date(Date.now()-60000),fin=new Date(Date.now()+m*mult),tx='Quedan '+u+' lugares. ¡Canjéalo ya!';
   d.busy=true;render();
-  rpc('admin_crear_codigos',{p_cosmeticos:d.sel,p_cantidad:1,p_usos_max:u,p_caduca:fin.toISOString(),p_etiqueta:'drop '+fdt(new Date()),p_texto:null}).then(function(r){
+  rpc('admin_crear_codigos',{p_cosmeticos:d.sel,p_cantidad:1,p_usos_max:u,p_caduca:fin.toISOString(),p_etiqueta:'drop '+fdt(new Date()),p_texto:tx0||null}).then(function(r){
     var c=r&&r[0];if(!c)throw 'sin código';
     S.dropRes={code:c,avisoId:null,texto:tx};
     return rpc('admin_guardar_aviso',{p_aviso:{tipo:'drop',titulo:{es:'¡Salió un código!',en:'A code just dropped!'},texto:{es:tx,en:u+' spots left. Redeem it now!'},inicio:ini.toISOString(),fin:fin.toISOString(),accion:'canjear',destino:c.mostrar,premio:d.sel[0],imagen:'',activo:true,orden:0}}).then(function(id){
@@ -1218,20 +1221,24 @@ function lanzar(){
     },function(e){d.busy=false;rmReload('codigos');toast('El código se creó pero el aviso falló: '+rerr(e));render()});
   }).catch(function(e){d.busy=false;toast(rerr(e));render()});
 }
-function avForm(a){
+function avForm(a,pre){
   var isNew=!a,now=new Date(),w=new Date(Date.now()+7*864e5);
-  var v=a?{tipo:a.tipo,tes:(a.titulo||{}).es||'',ten:(a.titulo||{}).en||'',xes:(a.texto||{}).es||'',xen:(a.texto||{}).en||'',inicio:fromIso(a.inicio),fin:fromIso(a.fin),accion:a.accion||'',destino:a.destino||'',premio:a.premio||'',imagen:a.imagen||'',activo:a.activo?'true':'false',orden:a.orden||0}
-   :{tipo:'tarjeta',tes:'',ten:'',xes:'',xen:'',inicio:ldt(now),fin:ldt(w),accion:'',destino:'',premio:'',imagen:'',activo:'true',orden:0};
+  var v=a?{tipo:a.tipo,tes:(a.titulo||{}).es||'',ten:(a.titulo||{}).en||'',xes:(a.texto||{}).es||'',xen:(a.texto||{}).en||'',inicio:fromIso(a.inicio),fin:fromIso(a.fin),accion:a.accion||'',destino:a.destino||'',premio:a.premio||'',imagen:a.imagen||'',activo:a.activo?'true':'false',orden:a.orden||0,vm:a.version_menor||'',plat:a.plataforma||'',rep:a.repetir||'una'}
+   :{vm:'',plat:'',rep:'una',tipo:'tarjeta',tes:'',ten:'',xes:'',xen:'',inicio:ldt(now),fin:ldt(w),accion:'',destino:'',premio:'',imagen:'',activo:'true',orden:0};
+  if(pre)Object.keys(pre).forEach(function(k){v[k]=pre[k]});
   var cids=S.doc.premios.filter(function(p){return p.cid}).map(function(p){return [p.cid,p.nombre]});
   return form(isNew?'Nuevo aviso':'Editar aviso',[
     {k:'tipo',l:'Tipo',t:'sel',o:[['tarjeta','Tarjeta en el menú'],['drop','Drop (ventana emergente)']]},
     {k:'tes',l:'Título (español)'},{k:'ten',l:'Título (inglés)'},
     {k:'xes',l:'Texto (español)',t:'area'},{k:'xen',l:'Texto (inglés)',t:'area'},
     {k:'inicio',l:'Empieza',t:'datetime-local'},{k:'fin',l:'Termina',t:'datetime-local'},
-    {k:'accion',l:'Botón',t:'sel',o:[['','Sin botón'],['evento','Ir a un evento'],['canjear','Canjear un código'],['url','Abrir una página']]},
-    {k:'destino',l:'Destino (id del evento, código o URL https)'},
+    {k:'accion',l:'Botón',t:'sel',o:[['','Sin botón'],['evento','Ir a un evento'],['canjear','Canjear un código'],['url','Abrir una página'],['tienda','Ir a la tienda (Play Store / App Store)']]},
+    {k:'destino',l:'Destino (id del evento, código o URL https; en tienda: URL opcional que reemplaza la de la tienda)'},
     {k:'premio',l:'Premio para la imagen',t:'sel',o:[['','Ninguno']].concat(cids)},
     {k:'imagen',l:'Imagen (URL https, opcional)'},
+    {k:'vm',l:'Solo a apps con versión menor que… (vacío = todas)',ph:'ej. 1.0.6'},
+    {k:'plat',l:'Plataforma',t:'sel',o:[['','Android e iOS'],['android','Solo Android'],['ios','Solo iOS']]},
+    {k:'rep',l:'Cuántas veces se muestra',t:'sel',o:[['una','Una vez por teléfono'],['diaria','Una vez al día'],['siempre','Cada vez que abre la app']]},
     {k:'orden',l:'Orden (menor va primero)',t:'number'},
     {k:'activo',l:'Activo',t:'sel',o:[['true','Sí'],['false','No']]}
   ],v,{check:function(r){
@@ -1239,14 +1246,31 @@ function avForm(a){
     var i=new Date(r.inicio),f=new Date(r.fin);
     if(isNaN(i)||isNaN(f))return 'Pon las fechas de inicio y fin';
     if(f<=i)return 'El fin debe ser después del inicio';
-    if(r.accion&&!r.destino)return 'El botón necesita un destino';
-    if(r.accion==='url'&&!/^https:\/\//.test(r.destino))return 'La URL debe empezar con https://';
+    if(r.accion&&r.accion!=='tienda'&&!r.destino)return 'El botón necesita un destino';
+    if(r.vm&&!/^\d+(\.\d+){1,2}$/.test(r.vm))return 'Versión: números separados por punto, como 1.0.6';
+    if((r.accion==='url'||(r.accion==='tienda'&&r.destino))&&!/^https:\/\//.test(r.destino))return 'La URL debe empezar con https://';
     if(r.imagen&&!/^https:\/\//.test(r.imagen))return 'La imagen debe ser una URL https';
   }}).then(function(r){
     if(!r)return;
-    var o={tipo:r.tipo,titulo:{es:r.tes,en:r.ten||r.tes},texto:{es:r.xes,en:r.xen||r.xes},inicio:toIso(r.inicio),fin:toIso(r.fin),accion:r.accion||null,destino:r.destino,premio:r.premio,imagen:r.imagen,activo:r.activo==='true',orden:r.orden};
+    var o={tipo:r.tipo,titulo:{es:r.tes,en:r.ten||r.tes},texto:{es:r.xes,en:r.xen||r.xes},inicio:toIso(r.inicio),fin:toIso(r.fin),accion:r.accion||null,destino:r.destino,premio:r.premio,imagen:r.imagen,version_menor:r.vm,plataforma:r.plat,repetir:r.rep,activo:r.activo==='true',orden:r.orden};
     if(a)o.id=a.id;
     avSave(o,isNew?'Aviso creado':'Aviso guardado');
+  });
+}
+var PROMOS={
+  fakturo:{n:'Fakturo',url:'https://fakturo.cloud',tes:'Prueba Fakturo',ten:'Try Fakturo',xes:'Factura en segundos desde tu celular. De los creadores de Blokku.',xen:'Invoice in seconds from your phone. From the makers of Blokku.'},
+  cumple:{n:'Cumplegratis',url:'https://cumplegratis.fun',tes:'Tu cumpleaños sale gratis',ten:'Your birthday is on the house',xes:'Descubre promos de cumpleaños cerca de ti con Cumplegratis.',xen:'Find birthday deals near you with Cumplegratis.'}
+};
+function tplUpd(){
+  form('Aviso de actualización',[{t:'note',l:'Avisa a quien tenga una versión anterior. Dura 30 días y se muestra una vez al día.'},{k:'vm',l:'Versión nueva (se avisa a quien tenga una menor)'}],{vm:'1.0.6'},{check:function(r){if(!/^\d+(\.\d+){1,2}$/.test(r.vm))return 'Versión: números separados por punto, como 1.0.6'}}).then(function(r){
+    if(!r)return;
+    avForm(null,{tipo:'drop',tes:'¡Nueva versión de Blokku!',ten:'New Blokku version!',xes:'Ya está disponible la versión '+r.vm+' con premios y mejoras nuevas. Actualiza para disfrutarlas.',xen:'Version '+r.vm+' is out with new rewards and improvements. Update to enjoy them.',accion:'tienda',vm:r.vm,rep:'diaria',fin:ldt(new Date(Date.now()+30*864e5))});
+  });
+}
+function tplPromo(){
+  form('Promoción de otra app',[{k:'app',l:'App',t:'sel',o:Object.keys(PROMOS).map(function(k){return [k,PROMOS[k].n+' ('+PROMOS[k].url+')']})},{k:'imagen',l:'Imagen (URL https, opcional)'}],{app:'fakturo',imagen:''},{check:function(r){if(r.imagen&&!/^https:\/\//.test(r.imagen))return 'La imagen debe ser una URL https'}}).then(function(r){
+    if(!r)return;var p=PROMOS[r.app];
+    avForm(null,{tipo:'tarjeta',tes:p.tes,ten:p.ten,xes:p.xes,xen:p.xen,accion:'url',destino:p.url,imagen:r.imagen,rep:'siempre',fin:ldt(new Date(Date.now()+30*864e5))});
   });
 }
 function avSave(o,msg){rpc('admin_guardar_aviso',{p_aviso:o}).then(function(){toast(msg);rmReload('avisos');render()},function(e){toast(rerr(e))})}
@@ -1301,6 +1325,8 @@ function act2(a,d){
     case 'dclose':S.dropRes=null;render();break;
     case 'lanzar':lanzar();break;
     case 'avnew':avForm(null);break;
+    case 'tplupd':tplUpd();break;
+    case 'tplpromo':tplPromo();break;
     case 'avedit':{var av=rows('avisos').find(function(x){return x.id===d.id});if(av)avForm(av);break}
     case 'avtog':{var av2=rows('avisos').find(function(x){return x.id===d.id});if(av2){var o2=Object.assign({},av2);o2.activo=!av2.activo;avSave(o2,o2.activo?'Aviso activado':'Aviso desactivado')}break}
     case 'avdel':{var av3=rows('avisos').find(function(x){return x.id===d.id});if(av3&&confirm('¿Borrar este aviso?'))rpc('admin_borrar_aviso',{p_id:av3.id}).then(function(){toast('Aviso borrado');rmReload('avisos');render()},function(e){toast(rerr(e))});break}
