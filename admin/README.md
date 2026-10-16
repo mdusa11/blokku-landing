@@ -27,3 +27,8 @@ Leer el estado actual (por ejemplo, Claude):
 ```
 curl -H "Authorization: Bearer $ADMIN_KEY" https://blokku.online/api/admin/doc
 ```
+
+## Pestañas Plan, Códigos y En vivo
+
+- **Plan**: mapa de progresión (inicio, niveles 1→100 con XP, racha de retos, logros, metas, temporadas y eventos con los remotos de Supabase, solo código/dormidos). En el formulario de un premio, el campo «Plan» marca «solo con código» o «dormido»; se guarda en el documento del panel.
+- **Códigos** y **En vivo** hablan con Supabase por RPC (`admin_*`, ver `supabase/remoto.sql` en el repo de Blokku): crear/editar/desactivar/borrar códigos dinámicos, exportar CSV, eventos remotos, avisos (tarjeta/drop) con vistos y clics, y «Lanzar drop» (un código con caducidad + un aviso). Si las funciones no existen, el panel avisa «Falta correr supabase/remoto.sql en Supabase».
