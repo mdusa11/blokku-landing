@@ -1002,7 +1002,8 @@ function plLogros(){
   return h;
 }
 var REMAP={'t-mue26':'muertos26','t-pion':'pionero'};
-var METAU={partidas:'partidas',lineas:'líneas',puntos:'puntos',retos:'retos'};
+var METAU={partidas:'partidas',lineas:'líneas',puntos:'puntos',retos:'retos'},META1={partidas:'partida',lineas:'línea',puntos:'punto',retos:'reto'};
+function mu(n,m){return n+' '+((n==1?META1[m]:METAU[m])||m)}
 function ml(o){return o&&(o.es||o.en)||''}
 function plEventos(){
   rmNeed('eventos');
@@ -1010,10 +1011,10 @@ function plEventos(){
   S.doc.timeline.filter(function(t){return t.tipo==='evento'||t.tipo==='temporada'}).forEach(function(t){
     var r=R.find(function(x){return x.id===REMAP[t.id]}),e=(S.doc.eventos||[]).find(function(x){return x.nombre===t.titulo}),o;
     o={t:t.titulo,ini:new Date(t.inicio+'T00:00:00').getTime(),fin:new Date((t.fin||t.inicio)+'T23:59:59').getTime(),meta:(e&&e.meta)||t.notas||'',ps:(t.premios||[]).map(prem).filter(Boolean),src:t.estado==='idea'?'idea':'app',on:true,id:'',notas:t.notas};
-    if(r){used[r.id]=1;o.src='remoto';o.id=r.id;o.t=ml(r.nombre)||o.t;o.ini=new Date(r.inicio).getTime();o.fin=new Date(r.fin).getTime();o.meta=r.objetivo+' '+(METAU[r.meta]||r.meta);o.ps=(r.premios||[]).map(pc).filter(Boolean);o.on=r.activo}
+    if(r){used[r.id]=1;o.src='remoto';o.id=r.id;o.t=ml(r.nombre)||o.t;o.ini=new Date(r.inicio).getTime();o.fin=new Date(r.fin).getTime();o.meta=mu(r.objetivo,r.meta);o.ps=(r.premios||[]).map(pc).filter(Boolean);o.on=r.activo}
     out.push(o);
   });
-  R.forEach(function(r){if(used[r.id])return;out.push({t:ml(r.nombre)||r.id,ini:new Date(r.inicio).getTime(),fin:new Date(r.fin).getTime(),meta:r.objetivo+' '+(METAU[r.meta]||r.meta),ps:(r.premios||[]).map(pc).filter(Boolean),src:'remoto',on:r.activo,id:r.id,notas:ml(r.descripcion)})});
+  R.forEach(function(r){if(used[r.id])return;out.push({t:ml(r.nombre)||r.id,ini:new Date(r.inicio).getTime(),fin:new Date(r.fin).getTime(),meta:mu(r.objetivo,r.meta),ps:(r.premios||[]).map(pc).filter(Boolean),src:'remoto',on:r.activo,id:r.id,notas:ml(r.descripcion)})});
   out.sort(function(a,b){return a.ini-b.ini});
   var act=plAct();
   var h=sh('Temporadas y eventos','<span class="mut">En orden de fecha. «Remoto» = se controla desde En vivo, sin actualizar la app.</span>');
@@ -1170,7 +1171,7 @@ function evCard(e){
   var n=Date.now(),a=new Date(e.inicio).getTime(),b=new Date(e.fin).getTime();
   var est=!e.activo?'inactivo':n<a?'próximo':n>b?'terminado':'activo';
   return '<div class="li col"><div class="row" style="margin:0"><b>'+esc(ml(e.nombre)||e.id)+'</b>'+st(est)+'<span class="chipx v">'+esc(e.id)+'</span>'+((e.id==='muertos26'||e.id==='pionero')?'<span class="chipx">Reemplaza al de la app</span>':'')+'<span class="sp"></span><button class="sm" data-act="evtog" data-id="'+esc(e.id)+'">'+(e.activo?'Desactivar':'Activar')+'</button><button class="sm" data-act="evedit" data-id="'+esc(e.id)+'">Editar</button><button class="sm dng" data-act="evdel" data-id="'+esc(e.id)+'">Borrar</button></div>'+
-    '<div class="mut">'+esc(fdt(e.inicio))+' → '+esc(fdt(e.fin))+' · '+e.objetivo+' '+(METAU[e.meta]||e.meta)+'</div>'+(ml(e.descripcion)?'<div>'+esc(ml(e.descripcion))+'</div>':'')+
+    '<div class="mut">'+esc(fdt(e.inicio))+' → '+esc(fdt(e.fin))+' · '+mu(e.objetivo,e.meta)+'</div>'+(ml(e.descripcion)?'<div>'+esc(ml(e.descripcion))+'</div>':'')+
     '<div class="tws">'+(e.premios||[]).map(cthumb).join('')+'<span class="tn">'+esc((e.premios||[]).map(cname).join(' + '))+'</span></div></div>';
 }
 function dropCard(){
