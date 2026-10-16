@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { COSM, VERS, LOGOS } from './admin-images.mjs';
-import { webcrypto as crypto, createHash } from 'node:crypto';
+import { webcrypto as crypto, createHash, createHmac } from 'node:crypto';
 import { homedir } from 'node:os';
 import { SEED } from '../admin/seed.js';
 
@@ -65,9 +65,18 @@ if (existsSync(CSV)) {
     const c = r[ix.codigo].trim();
     return { h: createHash('sha256').update(c).digest('hex'), c, i: r[ix.cosmetico_id].trim(), n: r[ix.nombre].trim(), r: RAR[norm(r[ix.rareza])] || r[ix.rareza], t: r[ix.tipo].trim() };
   });
+  // Hash con el que la APP reconoce cada código (el que llega a Supabase al canjear).
+  const norm2 = (x) => x.toUpperCase().replace(/[\s\-‐‑‒–—−]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+  CODES.forEach((c) => { c.a = createHmac('sha256', 'blokku-codes-v2|').update(norm2(c.c)).digest('hex'); });
   console.log('códigos de canje:', CODES.length, '(maestros:', CODES.filter((c) => c.i === '*').length + ')');
 } else console.warn('sin CSV de códigos:', CSV);
-const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CODES=' + JSON.stringify(CODES) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\n';
+// Stickers (v1): sha256('blokku-codes-v1|' + código normalizado) → código.
+const V1H = {};
+for (const c of SEED.cupones || []) {
+  const n = c.codigo.toUpperCase().replace(/\s/g, '').replace(/[‐‑‒–—−]/g, '-');
+  V1H[createHash('sha256').update('blokku-codes-v1|' + n).digest('hex')] = c.codigo;
+}
+const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.stringify(IMGS) + ';\nvar MAPA=' + JSON.stringify(MAPA) + ';\nvar CODES=' + JSON.stringify(CODES) + ';\nvar CAPS=' + JSON.stringify(CAPS) + ';\nvar V1H=' + JSON.stringify(V1H) + ';\n';
 app = app.replace('/*INJECT*/', () => inject);
 // Vista previa local SIN cifrar (solo fuera del repo): ADMIN_PREVIEW=/ruta/panel.html
 if (process.env.ADMIN_PREVIEW) writeFileSync(process.env.ADMIN_PREVIEW, app);

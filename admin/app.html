@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Blokku HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--tx:#1f2937;--mut:#6b7280;--ln:#e5e7eb;--sf:#f9fafb;--ac:#2563EB;--acl:#eff6ff;--red:#DC2626;--amb:#D97706;--grn:#16A34A}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;background:#fff}
@@ -121,6 +122,75 @@ table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}th,td{p
  .hd{padding:10px 14px 0}main{padding:20px 14px 80px}h2{font-size:23px}
  .li .lb{width:84px}.li{gap:10px}
 }
+
+/* ===== diseño 2026-10 ===== */
+:root{--tx:#0f172a;--mut:#64748b;--ln:#e8eaf1;--sf:#f6f7fb;--ac:#5b4cf0;--acl:#efedff;--card:#fff;--sh:0 1px 2px #0f172a0d,0 4px 16px #0f172a0a}
+html,body{background:var(--sf)}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-feature-settings:"cv11","ss01";-webkit-font-smoothing:antialiased}
+header{background:#ffffffeb;backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--ln)}
+.hd{padding:14px 20px 10px}
+.top img{width:38px;height:38px;border-radius:10px;box-shadow:0 2px 8px #5b4cf033}
+h1{font-size:18px;font-weight:800;letter-spacing:-.02em}
+h1:after{content:" HQ";background:linear-gradient(90deg,#5b4cf0,#e64aa0);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{gap:6px;margin:12px 0 0;padding-bottom:2px}
+nav button{border:0;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;color:var(--mut)}
+nav button:hover{background:var(--sf);color:var(--tx)}
+nav button.on{background:var(--tx);color:#fff;border:0}
+main{padding:32px 20px 96px}
+h2{font-size:30px;font-weight:800;letter-spacing:-.03em}
+h3{font-weight:700;letter-spacing:-.01em}
+.sub{font-size:15px}
+.sh{margin:44px 0 12px}
+.sh h3{font-size:17px}
+button{border-radius:10px;font-weight:500;border-color:var(--ln);transition:background .15s,border-color .15s,transform .1s}
+button:active{transform:scale(.97)}
+button.pri{background:linear-gradient(135deg,#5b4cf0,#7a5cff);border:0;box-shadow:0 2px 10px #5b4cf040;font-weight:600}
+button.pri:hover{background:linear-gradient(135deg,#4c3de0,#6a4cf0)}
+button.on{background:var(--acl);border-color:#d9d4ff;color:var(--ac);font-weight:600}
+.bar button{border-radius:999px;padding:7px 16px}
+input,select,textarea{border-radius:10px;border-color:var(--ln);background:#fff}
+input:focus,select:focus,textarea:focus{outline:3px solid #5b4cf026;border-color:var(--ac)}
+.filt select,.filt input{height:42px}
+/* tarjetas */
+.list{background:var(--card);border:1px solid var(--ln);border-radius:16px;box-shadow:var(--sh);overflow:hidden}
+.li{padding:12px 16px;border-bottom:1px solid var(--ln)}
+.list>.li:last-child,.list>.tk:last-child{border-bottom:0}
+.li.clk:hover{background:#fafaff}
+.li .t b{font-weight:600}
+.tk{padding:12px 16px}
+.empty{padding:22px 16px;text-align:center}
+.th{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#eef0f7,#e2e5f0);color:#94a3b8;box-shadow:inset 0 0 0 1px #0f172a0d}
+/* chips */
+.rr{padding:3px 10px;border-radius:999px;font-weight:600;font-size:12px;color:color-mix(in srgb,var(--rc) 80%,#000);background:color-mix(in srgb,var(--rc) 13%,#fff)}
+.rr i{width:6px;height:6px}
+.st{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;background:#f1f3f8}
+.code{background:#f1f0ff;color:#3b2fc0;border-radius:8px}
+.note{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:12px;padding:12px 16px}
+/* rutas y tablas */
+.route{gap:10px;padding:6px 2px 14px}
+.rs{width:92px;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:10px 6px;box-shadow:var(--sh);transition:transform .15s}
+.rs:hover{transform:translateY(-2px)}
+.rs .th{width:56px;height:56px}
+.rs b{font-size:13px;margin-top:2px}
+.tbl{background:var(--card);border:1px solid var(--ln);border-radius:16px;box-shadow:var(--sh)}
+th{background:#fafbfe;text-transform:uppercase;letter-spacing:.04em;font-size:11px}
+th,td{padding:12px 14px}
+tr:last-child td{border-bottom:0}
+td b{font-weight:600}
+/* versiones y calendario */
+.ver{background:var(--card);border:1px solid var(--ln);border-radius:16px;box-shadow:var(--sh);padding:22px 22px;margin-bottom:16px}.ver:first-of-type{padding-top:22px}
+.pbar{height:6px}.pbar i{background:linear-gradient(90deg,#22c55e,#16a34a)}
+.cal{gap:4px}.cell{border-radius:12px}.cell.today .d{background:var(--ac)}.cell.sel{background:var(--acl)}
+.dt{background:var(--ac)}
+#tl{background:var(--card);border-radius:16px;box-shadow:var(--sh)}
+.tlb{background:linear-gradient(90deg,#5b4cf0,#8b5cf6)}
+/* modal */
+#ov{background:#0f172a80;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#md{border-radius:20px 20px 0 0;padding:26px 24px}
+@media(min-width:700px){#md{border-radius:20px;box-shadow:0 24px 64px #0f172a40}}
+.bigimg{border-radius:14px}
+#toast{border-radius:12px;box-shadow:0 8px 24px #0f172a40}
+@media(max-width:640px){.hd{padding:12px 16px 8px}main{padding:22px 16px 90px}h2{font-size:25px}.li{padding:12px 14px}.ver{padding:18px 16px}}
 </style></head><body>
 <header><div class="hd"><div class="top"><img id="lg" alt=""><div class="ttl"><h1>Blokku</h1><div id="stat"></div></div>
 <button class="sm ghost" data-act="menu">Más ▾</button>
@@ -186,7 +256,7 @@ function save(){
 }
 function commit(){save();render()}
 function needsUpdate(){return (S.doc.seedRev||1)<(SEED_DOC.seedRev||1)}
-function mergeSeed(){
+function mergeSeed(quiet){
   var d=S.doc,borr=d.borrados||[];
   Object.keys(SEED_DOC).forEach(function(sec){
     var sv=SEED_DOC[sec];if(!Array.isArray(sv))return;
@@ -201,7 +271,7 @@ function mergeSeed(){
     });
   });
   d.seedRev=SEED_DOC.seedRev;d.actualizado=SEED_DOC.actualizado;
-  save();render();toast('Datos actualizados. Tus notas se conservaron.');
+  save();if(quiet)return;render();toast('Datos actualizados. Tus notas se conservaron.');
 }
 function delItem(sec,id){S.doc[sec]=S.doc[sec].filter(function(x){return x.id!==id});(S.doc.borrados=S.doc.borrados||[]).push(id)}
 
@@ -313,7 +383,8 @@ function pimg(p,big){
 }
 function thumb(p,cls){
   var u=pimg(p);
-  return '<div class="th '+(cls||'')+(u?'':' ph')+'" data-l="'+esc((p.nombre||'?').charAt(0))+'">'+(u?'<img loading="lazy" alt="" src="'+u+'">':'')+'</div>';
+  var tint=!u&&p.rareza&&RC[p.rareza]?' style="background:linear-gradient(135deg,color-mix(in srgb,'+RC[p.rareza]+' 18%,#fff),color-mix(in srgb,'+RC[p.rareza]+' 34%,#fff));color:color-mix(in srgb,'+RC[p.rareza]+' 85%,#000)"':'';
+  return '<div'+tint+' class="th '+(cls||'')+(u?'':' ph')+'" data-l="'+esc((p.nombre||'?').charAt(0))+'">'+(u?'<img loading="lazy" alt="" src="'+u+'">':'')+'</div>';
 }
 function lightbox(u,l){var b=$('#lb');b.innerHTML='<img src="'+u+'" alt=""><span>'+esc(l||'')+' · toca para cerrar</span>';b.style.display='flex'}
 function addImage(sec,id){S.imgT={sec:sec,id:id};$('#imgin').value='';$('#imgin').click()}
@@ -539,7 +610,7 @@ function vVer(){
 /* ---------- PREMIOS ---------- */
 function filt(){
   var f=S.pf,q=f.q.toLowerCase();
-  return S.doc.premios.filter(function(p){
+  return S.doc.premios.slice().sort(function(a,b){return RAR.indexOf(b.rareza)-RAR.indexOf(a.rareza)}).filter(function(p){
     if(f.tipo!=='Todos'&&grp(p.tipo)!==f.tipo)return false;
     if(f.rar!=='Todas'&&p.rareza!==f.rar)return false;
     if(f.gana!=='Todas'&&p.gana!==f.gana)return false;
@@ -549,8 +620,9 @@ function filt(){
 }
 function opts(list,cur){return list.map(function(o){return '<option value="'+esc(o[0])+'"'+(o[0]===cur?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')}
 function prow(p){
-  var gl=GANA[p.gana]||p.gana;
-  return '<div class="li clk" data-act="prem" data-id="'+p.id+'">'+thumb(p)+'<div class="t"><b>'+esc(p.nombre)+'</b><span class="mut">'+esc(p.tipo)+' · '+esc(gl)+(p.detalle?': '+esc(p.detalle):'')+'</span></div><div class="r">'+rr(p.rareza)+st(p.estado)+'</div></div>';
+  var gl=GANA[p.gana]||p.gana,dt=String(p.detalle||'');
+  if(p.gana==='inicio')dt='';else if(dt.indexOf(gl)===0)dt=dt.slice(gl.length).replace(/^[:\s·]+/,'');
+  return '<div class="li clk" data-act="prem" data-id="'+p.id+'">'+thumb(p)+'<div class="t"><b>'+esc(p.nombre)+'</b><span class="mut">'+esc(p.tipo)+' · '+esc(gl)+(dt?': '+esc(dt):'')+'</span></div><div class="r">'+rr(p.rareza)+st(p.estado)+'</div></div>';
 }
 function vPrem(){
   var h='<div class="head"><div><h2>Premios</h2><p class="sub" style="margin:0">Todo lo que se puede ganar en Blokku.</p></div><button class="pri sm" data-act="add" data-sec="premios">+ Premio</button></div>';
@@ -628,7 +700,7 @@ function crow(c){
   return '<div class="li" style="flex-wrap:wrap;gap:8px 10px"><span class="code" style="min-width:176px;text-align:center">'+(show?esc(c.c):'••••••••••••')+'</span>'+
    '<button class="sm" data-act="creveal" data-h="'+h+'">'+(show?'ocultar':'ver')+'</button><button class="sm" data-act="ccopy" data-h="'+h+'">copiar</button>'+
    '<select data-act="cest" data-h="'+h+'">'+CEST.map(function(o){return '<option'+(o===e?' selected':'')+'>'+o+'</option>'}).join('')+'</select>'+
-   '<input data-act="cnote" data-h="'+h+'" placeholder="A quién o dónde" value="'+esc(cnote(h))+'" style="flex:1 1 160px;min-width:0"></div>';
+   (cjCount(c.a)?'<span class="mut">'+cjCount(c.a)+' canje'+(cjCount(c.a)>1?'s':'')+'</span>':'')+'<input data-act="cnote" data-h="'+h+'" placeholder="A quién o dónde" value="'+esc(cnote(h))+'" style="flex:1 1 160px;min-width:0"></div>';
 }
 function vCodes(){
   var all=(typeof CODES!=='undefined'?CODES:[]);
@@ -650,6 +722,38 @@ function vCodes(){
   });
   return h+'<div class="list">'+(rows||'<div class="empty">Ningún cosmético con ese filtro.</div>')+'</div>';
 }
+/* ---------- CANJES (Supabase) ---------- */
+var SB='https://fngbputjfnwtrcwaabue.supabase.co',SBK='sb_publishable_uSMrnJx7qRj2HU2yuyTs9A_y5eL514_';
+function loadCanjes(){
+  S.cj={cargando:true};
+  fetch(SB+'/rest/v1/rpc/resumen_canjes',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify({p_clave:key()}),cache:'no-store'})
+    .then(function(r){if(r.status===404)throw 'sin_sql';if(!r.ok)throw 'http_'+r.status;return r.json()})
+    .then(function(rows){S.cj={rows:rows||[],t:Date.now()};render()})
+    .catch(function(e){S.cj={err:String(e)};render()});
+}
+function cjName(h){
+  if(V1H[h])return {n:'Sticker '+V1H[h],k:'v1'};
+  var c=(typeof CODES!=='undefined'?CODES:[]).find(function(x){return x.a===h});
+  if(!c)return {n:'Código desconocido',k:'?'};
+  return c.i==='*'?{n:'Maestro '+c.c,k:'master',c:c}:{n:c.n,k:'v2',c:c};
+}
+function cjCount(h){var n=0;((S.cj&&S.cj.rows)||[]).forEach(function(r){if(r.h===h)n+=r.n});return n}
+function vCanjes(){
+  var h=sh('Canjes registrados','<button class="sm" data-act="cjload">Actualizar</button>');
+  if(!S.cj){loadCanjes();return h+'<div class="empty">Cargando…</div>'}
+  if(S.cj.cargando)return h+'<div class="empty">Cargando…</div>';
+  if(S.cj.err)return h+'<div class="note"><span>'+(S.cj.err==='sin_sql'?'<b>Falta correr el SQL en Supabase</b> (supabase/canjes.sql del repo de Blokku).':'No se pudo leer Supabase ('+esc(S.cj.err)+'). Si el proyecto se pausó por inactividad, reactívalo en supabase.com.')+'</span></div>';
+  var R=S.cj.rows,tot=0,pl={android:0,ios:0},porH={},porD={};
+  R.forEach(function(r){tot+=r.n;pl[r.p]=(pl[r.p]||0)+r.n;porH[r.h]=(porH[r.h]||0)+r.n;porD[r.d]=(porD[r.d]||0)+r.n});
+  h+='<p class="mut" style="margin:0 0 10px">Desde la 1.0.5. Cada canje exitoso en un teléfono, anónimo. Actualizado '+ago(S.cj.t)+'.</p>';
+  h+='<div class="tbl"><table><tr><th>Total</th><th>Android</th><th>iOS</th><th>Hoy</th></tr><tr><td><b>'+tot+'</b></td><td>'+pl.android+'</td><td>'+pl.ios+'</td><td>'+(porD[todayS()]||0)+'</td></tr></table></div>';
+  if(!tot)return h+'<div class="empty">Todavía nadie ha canjeado un código.</div>';
+  var hs=Object.keys(porH).sort(function(a,b){return porH[b]-porH[a]});
+  h+='<p class="mut" style="margin:14px 0 6px"><b>Por código</b></p><div class="list">'+hs.map(function(x){var o=cjName(x);return '<div class="li"><div class="t"><b>'+esc(o.n)+'</b><span class="mut">'+(o.c&&o.k==='v2'?esc(o.c.c)+(cnote(o.c.h)?' · '+esc(cnote(o.c.h)):''):o.k==='v1'?'sticker':'')+'</span></div><div class="r"><b>'+porH[x]+'</b></div></div>'}).join('')+'</div>';
+  var ds=Object.keys(porD).sort().reverse().slice(0,14);
+  h+='<p class="mut" style="margin:14px 0 6px"><b>Por día</b> (últimos con canjes)</p><div class="list">'+ds.map(function(d){return '<div class="li"><div class="t"><b>'+fd(d)+'</b></div><div class="r">'+porD[d]+'</div></div>'}).join('')+'</div>';
+  return h;
+}
 function vCup(){
   var h='<div class="head"><div><h2>Cupones</h2><p class="sub" style="margin:0">Códigos impresos en los stickers y códigos únicos de canje.</p></div><button class="pri sm" data-act="add" data-sec="cupones">+ Cupón</button></div><div class="list">';
   S.doc.cupones.forEach(function(c){
@@ -659,7 +763,7 @@ function vCup(){
     if(ps.length)h+='<div class="thr">'+ps.map(function(p){return '<div data-act="prem" data-id="'+p.id+'">'+thumb(p)+'</div>'}).join('')+'</div>';
     h+='<div class="mut">'+esc(c.tipo)+' · '+esc(c.vigencia)+' · '+esc(c.donde)+(c.notas?' · '+esc(c.notas):'')+'</div>'+userImgs(c,'cupones')+'<div class="row" style="margin:0"><button class="sm" data-act="addimg" data-sec="cupones" data-id="'+c.id+'">+ Imagen</button></div></div>';
   });
-  h+='</div>'+sh('Canjes registrados','<span class="mut">Cuántas veces se canjea cada código</span>')+'<div class="note"><span><b>Aún sin datos.</b> Se activa con la 1.0.5: la app registra cada canje (anónimo) en Supabase y aquí verás el total, por código, por premio, por plataforma y por día.</span></div>';
+  h+='</div>'+vCanjes();
   return h+vCodes();
 }
 function vPend(){
@@ -684,6 +788,7 @@ function vIdeas(){
 /* ---------- render ---------- */
 var VIEWS={hoy:vHoy,cal:vCal,ver:vVer,prem:vPrem,cup:vCup,pend:vPend,ideas:vIdeas};
 function render(){
+  if(S.doc&&needsUpdate())mergeSeed(true);
   var y=window.scrollY;
   $('#nav').innerHTML=TABS.map(function(t){return '<button class="'+(S.tab===t[0]?'on':'')+'" data-act="goto" data-t="'+t[0]+'">'+t[1]+'</button>'}).join('');
   $('#app').innerHTML=VIEWS[S.tab]();
