@@ -841,3 +841,22 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 @media (min-width:1560px){.kpis.k6{grid-template-columns:repeat(6,minmax(0,1fr))}}
 @media (max-width:760px){.kpis.k6{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .li .t .chip{display:inline-flex}
+.kpis.k7{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (min-width:1560px){.kpis.k7{grid-template-columns:repeat(7,minmax(0,1fr))}}
+@media (max-width:760px){.kpis.k7{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* errores */
+.er-n{flex:none;min-width:34px;height:26px;padding:0 9px;border-radius:999px;display:inline-grid;place-items:center;font-size:12.5px;font-weight:800;background:var(--sunken);color:var(--text-2);font-variant-numeric:tabular-nums}
+.er-n.hot{background:var(--bad-soft);color:var(--bad)}
+.er-li{align-items:flex-start}
+.er-li .t b{display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}
+.er-li .t b .er-ty{font-family:var(--mono);font-size:13px;color:var(--accent-ink);font-weight:700}
+.er-li .er-msg{display:block;font-size:13.5px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.er-li .chips{margin-top:6px}
+.er-li .er-when{font-size:12px;color:var(--faint);margin-top:4px}
+.er-li.nuevo{box-shadow:inset 3px 0 0 var(--bad)}
+.er-stack{font-family:var(--mono);font-size:12px;line-height:1.55;background:var(--sunken);border:1px solid var(--border);border-radius:10px;padding:12px 14px;max-height:300px;overflow:auto;white-space:pre;color:var(--text-2);tab-size:2}
+.er-full{font-size:14.5px;line-height:1.5;background:var(--sunken);border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:13px}
+.er-dl{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13.5px;margin:0}
+.er-dl dt{color:var(--muted)}.er-dl dd{margin:0;overflow-wrap:anywhere}
+.er-h{display:flex;align-items:center;gap:8px;margin:18px 0 8px}.er-h h4{margin:0;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;flex:1}
+@media (max-width:760px){.er-li{flex-wrap:wrap}.er-li .t{flex-basis:calc(100% - 60px)}.er-dl{grid-template-columns:90px 1fr}}

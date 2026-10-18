@@ -46,6 +46,8 @@ function alertsList() {
   });
   var rk = RM.rkres && RM.rkres.rows;
   if (rk && rk.sospechosos > 0) out.push({ c: 'warn', i: 'flag', t: plural(rk.sospechosos, 'puntaje sospechoso', 'puntajes sospechosos') + ' en el ranking', s: 'Aprueba los legítimos y borra las trampas', open: 'rk:sosp', r: 'juego/ranking' });
+  var en = erNuevos();
+  if (en) { var er0 = erList().filter(function (x) { return x.estado === 'nuevo'; })[0]; out.push({ c: 'bad', i: 'warn', t: plural(en, 'error nuevo', 'errores nuevos') + ' en la app', s: er0 ? erTitulo(er0) : '', open: 'er:nuevos', r: 'proyecto/errores' }); }
   if (DB.ready) {
     items('timeline').forEach(function (x) { if (x.estado === 'idea' || x.tipo === 'estreno') return; var d = dn(x.inicio) - t; if (d === 0 || d === 1) out.push({ c: 'info', i: 'spark', t: x.titulo + ' ' + (d ? 'empieza mañana' : 'empieza hoy'), s: x.notas || '', open: 'tl:' + x.id, r: 'juego/temporadas' }); });
     items('versiones').forEach(function (v) { if (v.ios === 'en revisión' || v.android === 'en revisión') out.push({ c: 'info', i: 'layers', t: 'La versión ' + v.version + ' está en revisión' + (v.ios === 'en revisión' ? ' de Apple' : ' de Google'), s: v.ios === 'en revisión' ? 'Cuando la aprueben, se publica a mano en App Store Connect.' : '', r: 'proyecto/versiones' }); });
@@ -72,13 +74,14 @@ function vInicio() {
   var AV = rows('avisos'), aact = AV.filter(function (a) { return avEst(a) === 'activo'; }), vs = 0, cl = 0; aact.forEach(function (a) { vs += a.vistos || 0; cl += a.clics || 0; });
   var ld = function (o) { return o && o.rows == null && !o.err ? '<span class="sk" style="display:inline-block;width:48px;height:26px"></span>' : null; };
   var delta = w0 ? Math.round((w1 - w0) * 100 / w0) : null;
-  out += '<div class="kpis k6">' +
+  out += '<div class="kpis k6' + (erNuevos() ? ' k7' : '') + '">' +
     kpi('trophy', 'Canjes hoy', ld(cj) || nf(hoy), cj.err ? 'Sin datos' : 'Ayer: ' + nf(ayer) + ' · códigos fijos', '', 'codigos/canjes') +
     kpi('chart', 'Últimos 7 días', ld(cj) || nf(w1), cj.err ? 'Sin datos' : delta == null ? 'vs. semana anterior: —' : '<span class="delta ' + (delta >= 0 ? 'up' : 'dn') + '">' + (delta >= 0 ? '+' : '') + delta + ' %</span> vs. semana anterior', cj.rows ? spark(d14.map(function (x) { return x.v; })) : '', 'codigos/canjes') +
     kpi('zap', 'Códigos activos', ld(RM.codigos) || nf(cact), nf(cuse) + ' canjes de rotativos', '', 'codigos/rotativos') +
     kpi('cal', 'Eventos', ld(RM.eventos) || nf(eact) + '<small>activos</small>', eprox ? nf(eprox) + ' próximo' + (eprox > 1 ? 's' : '') : 'Ninguno próximo', '', 'vivo/eventos') +
     kpi('trophy', 'Jugadores en ranking', ld(rkr) || (rkr.err ? '—' : nf(rkr.rows.jugadores)), rkr.err ? (rkr.err.code === 'sin_sql' ? 'Falta correr ' + SQLF.ranking : 'Sin datos') : nf(rkr.rows.activos_7d) + ' activos en 7 días', '', 'juego/ranking') +
     kpi('bell', 'Avisos activos', ld(RM.avisos) || nf(aact.length), aact.length ? nf(vs) + ' vistos · ' + pct(cl, vs) + ' de clics' : 'Ninguno en la app ahora', '', 'vivo/avisos') +
+    (erNuevos() ? kpi('warn', 'Errores nuevos', nf(erNuevos()), erFatales() ? nf(erFatales()) + ' fatal' + (erFatales() > 1 ? 'es' : '') + ' · sin revisar' : 'Sin revisar', '', 'proyecto/errores') : '') +
     '</div>';
   /* columnas */
   var al = alertsList();

@@ -24,7 +24,7 @@ function vAjustes() {
   /* apariencia */
   var th = document.documentElement.getAttribute('data-theme') || 'auto';
   h += '<div class="card pad mb16"><h3 style="font-size:15px;font-weight:700">Apariencia</h3><div class="mt12">' + seg('themeSet', th, [['light', 'Claro', 'sun'], ['dark', 'Oscuro', 'moon'], ['auto', 'Automático', 'phone']]) + '</div></div>';
-  h += '<div class="card pad"><h3 style="font-size:15px;font-weight:700">Sesión</h3><p class="sm mut mt8">La clave se olvida al cerrar la pestaña. En un equipo ajeno, sal al terminar.</p><button class="btn mt12" data-a="logout">' + ic('logout') + 'Salir</button></div>';
+  h += '<div class="card pad"><h3 style="font-size:15px;font-weight:700">Sesión</h3><p class="sm mut mt8">' + (remembered() ? 'Este dispositivo recuerda tu clave hasta ' + esc(fdt(remembered(), 1)) + '.' : 'La clave se olvida al cerrar la pestaña.') + ' En un equipo ajeno, sal al terminar. Al salir se borran la clave y los datos guardados en este navegador.</p><button class="btn mt12" data-a="logout">' + ic('logout') + 'Cerrar sesión en este dispositivo</button></div>';
   return h;
 }
 A.themeSet = function (el) { var v = el.dataset.v; if (v === 'auto') { document.documentElement.removeAttribute('data-theme'); try { localStorage.removeItem('bk_theme'); } catch (e) { } } else { document.documentElement.setAttribute('data-theme', v); try { localStorage.setItem('bk_theme', v); } catch (e) { } } paintShell(); paintPage(); };

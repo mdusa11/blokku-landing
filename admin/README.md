@@ -20,8 +20,11 @@ Todo en Supabase (`fngbputjfnwtrcwaabue`), por RPC con la clave del panel (`p_cl
 | `2-remoto.sql` | `admin_codigos`, `admin_crear_codigos`, `admin_editar_codigo`, `admin_borrar_codigo`, `admin_eventos`, `admin_guardar_evento`, `admin_borrar_evento`, `admin_avisos`, `admin_guardar_aviso`, `admin_borrar_aviso`, `config_remota` | Códigos rotativos, eventos, avisos y drops |
 | `3-panel.sql` | `admin_panel`, `admin_guardar_seccion`, `admin_historial`, `admin_version_seccion`, `admin_guardar_imagen`, `admin_imagenes`, `admin_borrar_imagen` | Datos propios del panel |
 | `4-ranking.sql` | `admin_ranking`, `admin_moderar`, `admin_ranking_resumen`, `admin_ranking_config` (y las del juego: `ranking_registrar`, `ranking_enviar`, `ranking_tabla`) | Ranking: jugadores, puntajes, moderación y reglas anti-trampa (Juego › Ranking). En el repo de Blokku es `supabase/ranking.sql` |
+| `5-errores.sql` | `admin_errores`, `admin_error_estado` (y `reportar_error`, que llama la app) | Proyecto › Errores. En el repo de Blokku es `supabase/errores.sql` |
 
-Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio).
+Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores.
+
+Acceso: la pantalla de clave está fuera del cifrado (con el ícono público). «Recordar en este dispositivo» guarda la clave 30 días en `localStorage['bk_k_rem']` (`{k, exp}`); si no, solo en `sessionStorage['bk_k']`. «Cerrar sesión en este dispositivo» borra ambas y los cachés del panel.
 
 ### Secciones (`panel_secciones`)
 

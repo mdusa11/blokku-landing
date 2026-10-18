@@ -4,7 +4,7 @@ var NAV = [
   { g: 'En vivo', k: 'vivo', ic: 'live', items: [['vivo/ahora', 'Ahora en la app', 'live'], ['vivo/avisos', 'Avisos y drops', 'bell'], ['vivo/eventos', 'Eventos', 'cal']] },
   { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/canjes', 'Canjes', 'chart']] },
   { g: 'Juego', k: 'juego', ic: 'game', items: [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['juego/ranking', 'Ranking', 'trophy']] },
-  { g: 'Proyecto', k: 'proyecto', ic: 'folder', items: [['proyecto/pendientes', 'Pendientes', 'tasks'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas y decisiones', 'bulb']] }
+  { g: 'Proyecto', k: 'proyecto', ic: 'folder', items: [['proyecto/pendientes', 'Pendientes', 'tasks'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas y decisiones', 'bulb'], ['proyecto/errores', 'Errores', 'warn']] }
 ];
 var ROUTES = {}; NAV.forEach(function (g) { g.items.forEach(function (it) { ROUTES[it[0]] = { t: it[1], ic: it[2], g: g.g, k: g.k }; }); });
 ROUTES.ajustes = { t: 'Ajustes y respaldo', ic: 'sliders', g: '' };
@@ -40,6 +40,7 @@ function navCount(r) {
   if (r === 'proyecto/pendientes' && DB.ready) { var n = items('pendientes').filter(function (k) { return k.quien === 'Manuel' && k.col !== 'hecho' && !k.bloqueo; }).length; return n ? '<span class="ct">' + n + '</span>' : ''; }
   if (r === 'vivo/avisos') { var a = rows('avisos').filter(function (x) { return avEst(x) === 'activo'; }).length; return a ? '<span class="ct hot">' + a + '</span>' : ''; }
   if (r === 'juego/ranking') { var rr = RM.rkres && RM.rkres.rows; return rr && rr.sospechosos ? '<span class="ct hot">' + rr.sospechosos + '</span>' : ''; }
+  if (r === 'proyecto/errores') { var en = erNuevos(); return en ? '<span class="ct hot">' + en + '</span>' : ''; }
   return '';
 }
 function paintShell() {
@@ -53,7 +54,7 @@ function paintShell() {
   });
   side += '</nav><div class="sfoot"><a class="si" href="#/ajustes" title="Ajustes y respaldo"' + (cur === 'ajustes' ? ' aria-current="page"' : '') + '>' + ic('sliders') + '<span>Ajustes</span></a>' +
     '<button class="si sq" data-a="theme" title="' + (isDark() ? 'Tema claro' : 'Tema oscuro') + '" aria-label="' + (isDark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro') + '">' + ic(isDark() ? 'sun' : 'moon') + '</button>' +
-    '<button class="si sq" data-a="logout" title="Salir" aria-label="Salir">' + ic('logout') + '</button></div>';
+    '<button class="si sq" data-a="logout" title="Cerrar sesión en este dispositivo" aria-label="Cerrar sesión en este dispositivo">' + ic('logout') + '</button></div>';
   $('#side').innerHTML = side;
   var R = ROUTES[cur];
   $('#top').innerHTML = '<div class="tt"><div class="tlogo">' + logoImg() + '<span>' + esc(R.t) + '</span></div><div class="crumb">' + (R.g ? esc(R.g) + ' <span class="faint">/</span> ' : '') + '<b>' + esc(R.t) + '</b></div></div>' +
@@ -138,7 +139,12 @@ A.more = function () {
 A.drClose = function () { drawerClose(); };
 A.logout = async function () {
   if (pending() && !await confirmDlg({ title: '¿Salir ahora?', text: 'Todavía se están guardando cambios. Si sales, se pueden perder.', ok: 'Salir', danger: true })) return;
-  try { sessionStorage.removeItem('bk_k'); } catch (e) { } location.reload();
+  try { sessionStorage.removeItem('bk_k'); } catch (e) { }
+  try {
+    localStorage.removeItem('bk_k_rem'); localStorage.removeItem(CACHE);
+    Object.keys(localStorage).forEach(function (k) { if (k.indexOf('bk_last_') === 0) localStorage.removeItem(k); });
+  } catch (e) { }
+  location.reload();
 };
 A.sqlretry = function () { S.missing = {}; paintBanners(); if (S.ro || DB.needInit) location.reload(); else { rloadAll(); toast('Revisando…', 'info'); } };
 A.seedok = function () { S.view.seedMsg = ''; paintBanners(); };
