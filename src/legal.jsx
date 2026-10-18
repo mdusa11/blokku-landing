@@ -122,13 +122,16 @@ export function Privacidad() {
         <li><strong>Datos de compras</strong> — Google Play y RevenueCat procesan tus compras; recibimos confirmaciones de transacción (no vemos ni almacenamos datos de tarjetas).</li>
         <li><strong>Datos técnicos y de uso</strong> — modelo de dispositivo, versión del sistema, métricas de rendimiento y eventos de juego agregados.</li>
         <li><strong>Registros de fallos y diagnóstico</strong> — si la App se cierra por un error, se envía un informe técnico (qué falló, modelo y sistema del dispositivo) para poder corregirlo. No incluye datos personales.</li>
-        <li><strong>Progreso de juego</strong> — se guarda localmente en tu dispositivo; no lo subimos a servidores propios.</li>
+        <li><strong>Progreso de juego</strong> — se guarda localmente en tu dispositivo.</li>
+        <li><strong>Ranking (opcional)</strong> — si decides entrar al ranking, guardamos en nuestro servidor el apodo público que eliges, tus puntuaciones, la insignia y el título que muestras, un identificador aleatorio generado por la App y el país aproximado (deducido de la conexión, nunca por GPS). No pedimos correo, contraseña ni cuenta.</li>
+        <li><strong>Códigos canjeados</strong> — contamos cuántas veces se usa cada código (sin saber quién lo usó).</li>
       </ul>
-      <p>No recopilamos tu nombre, dirección, contactos ni ubicación precisa.</p>
+      <p>No recopilamos tu nombre real, dirección, contactos ni ubicación precisa.</p>
 
       <h3>2. Finalidades</h3>
       <ul>
         <li>Operar el juego y entregar tus compras.</li>
+        <li>Mostrar el ranking mundial y por país.</li>
         <li>Mostrar anuncios (versión gratuita) y medir su rendimiento.</li>
         <li>Prevenir fraude y abuso.</li>
         <li>Mejorar la App con métricas agregadas.</li>
@@ -139,6 +142,7 @@ export function Privacidad() {
         <li><strong>Google AdMob</strong> (anuncios) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>Google Play Billing / Play Games Services</strong> — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>RevenueCat</strong> (gestión de compras y suscripciones) — <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
+        <li><strong>Supabase</strong> (servidor del ranking, eventos y registro de errores) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>Firebase Crashlytics</strong> (informes de fallos) — <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">privacidad y seguridad en Firebase</a></li>
       </ul>
 
@@ -158,7 +162,8 @@ export function Privacidad() {
       <h3>6. Conservación y seguridad</h3>
       <p>
         Conservamos los datos de transacciones el tiempo requerido por obligaciones legales y de facturación. Los
-        datos técnicos se conservan en forma agregada. Aplicamos medidas de seguridad administrativas y técnicas
+        datos técnicos se conservan en forma agregada. Los datos del ranking se guardan mientras participes y se
+        borran al usar «Eliminar mis datos» en la App o al pedirlo por correo. Aplicamos medidas de seguridad administrativas y técnicas
         razonables para protegerlos.
       </p>
 
@@ -187,7 +192,8 @@ export function EliminarDatos() {
     <LegalLayout title="ELIMINAR MIS DATOS">
       <p>
         Blokku <strong>no tiene cuentas de usuario</strong>: no hay registro, correo ni contraseña. Tu progreso
-        (puntuación, récord, nivel, logros y cosméticos) se guarda <strong>solo en tu dispositivo</strong>.
+        (puntuación, récord, nivel, logros y cosméticos) se guarda <strong>en tu dispositivo</strong>. Si entraste al
+        ranking, tu apodo y tus puntuaciones también están en nuestro servidor.
       </p>
 
       <h3><Gamepad2 size={18} /> Borrar desde la app</h3>
@@ -198,7 +204,8 @@ export function EliminarDatos() {
         <li>Toca <strong>Eliminar mis datos</strong> y confirma.</li>
       </ol>
       <p>
-        Eso borra de forma permanente todo tu progreso local y el estado de la compra en ese dispositivo.
+        Eso borra de forma permanente todo tu progreso local, el estado de la compra en ese dispositivo y tus datos
+        del ranking en nuestro servidor.
         <strong> No se puede deshacer.</strong>
       </p>
 
@@ -206,7 +213,7 @@ export function EliminarDatos() {
       <p>
         Si ya desinstalaste la app o quieres que borremos los datos que están fuera de tu dispositivo, escríbenos a{' '}
         <a href={`mailto:${SUPPORT_EMAIL}?subject=Eliminar%20mis%20datos%20-%20Blokku`}>{SUPPORT_EMAIL}</a> desde el
-        correo asociado a tus compras. Respondemos en un plazo máximo de <strong>30 días</strong>.
+        correo asociado a tus compras o indícanos tu apodo del ranking. Respondemos en un plazo máximo de <strong>30 días</strong>.
       </p>
 
       <h3><ShoppingCart size={18} /> Qué pasa con tu compra</h3>
@@ -270,7 +277,7 @@ export function Soporte() {
       <h3><Gamepad2 size={18} /> Preguntas frecuentes</h3>
       <ul>
         <li><strong>¿Perdí mi progreso al cambiar de teléfono?</strong> El progreso se guarda en tu dispositivo. Las compras duraderas (Sin Anuncios, Pase) sí se pueden restaurar en el nuevo equipo con tu cuenta de Google.</li>
-        <li><strong>¿El juego necesita internet?</strong> No — solo para anuncios, compras y el ranking de amigos.</li>
+        <li><strong>¿El juego necesita internet?</strong> No — solo para anuncios, compras, el ranking y los eventos de temporada.</li>
         <li><strong>¿Cómo activo el modo para daltonismo?</strong> Ajustes (engrane en el menú) → <em>Símbolos en las gemas</em>.</li>
       </ul>
 
