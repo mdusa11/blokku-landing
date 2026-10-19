@@ -2,7 +2,7 @@
 var NAV = [
   { g: '', items: [['inicio', 'Inicio', 'home']] },
   { g: 'En vivo', k: 'vivo', ic: 'live', items: [['vivo/ahora', 'Ahora en la app', 'live'], ['vivo/avisos', 'Avisos y drops', 'bell'], ['vivo/eventos', 'Eventos', 'cal']] },
-  { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/canjes', 'Canjes', 'chart']] },
+  { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/revocados', 'Revocados', 'pause'], ['codigos/canjes', 'Canjes', 'chart']] },
   { g: 'Juego', k: 'juego', ic: 'game', items: [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['juego/ranking', 'Ranking', 'trophy']] },
   { g: 'Proyecto', k: 'proyecto', ic: 'folder', items: [['proyecto/pendientes', 'Pendientes', 'tasks'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas y decisiones', 'bulb'], ['proyecto/errores', 'Errores', 'warn']] }
 ];
