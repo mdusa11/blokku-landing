@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
+import { Showcase } from './showcase.jsx'
 import { STORE_URL, StoreBadges } from './extras.jsx'
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
@@ -250,6 +251,9 @@ export function Novedades() {
           <span className="kicker">Versión 1.0.5</span>
           <h2 className="display">NOVEDADES <span className="shimmer" style={{ color: 'var(--yellow)' }}>1.0.5</span></h2>
         </Reveal>
+        <Reveal delay={0.1}>
+          <Showcase />
+        </Reveal>
         <div className="prog-grid">
           {NEWS.map((p, i) => (
             <Reveal key={p.n} delay={i * 0.09}>
@@ -264,12 +268,6 @@ export function Novedades() {
             </Reveal>
           ))}
         </div>
-        <Reveal delay={0.1}>
-          <div className="news-shots">
-            <img src={`${import.meta.env.BASE_URL}media/nov_personalizar.webp`} alt="Pantalla Personalizar de Blokku con estilos de piezas" loading="lazy" width="420" height="583" />
-            <img src={`${import.meta.env.BASE_URL}media/nov_logros.webp`} alt="Ruta de nivel de Blokku con premios por nivel" loading="lazy" width="420" height="801" />
-          </div>
-        </Reveal>
       </div>
     </section>
   )

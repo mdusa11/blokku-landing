@@ -511,8 +511,70 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
 .playbadge .pb-big { font-family: var(--body); font-weight: 700; font-size: 20px; color: #fff; }
 
 /* ═══ NOVEDADES 1.0.5 — capturas ═════════════════════════════════════════════ */
-.news-shots { display: flex; gap: 22px; justify-content: center; align-items: flex-start; flex-wrap: wrap; margin-top: 44px; }
-.news-shots img { width: min(300px, 44vw); height: auto; border-radius: 22px; border: 3px solid rgba(255,255,255,.18); box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+.showcase {
+  --sc: var(--purple); --sg: 154,92,255;
+  display: grid; grid-template-columns: 1fr minmax(0, 360px); gap: 56px; align-items: center;
+  margin-top: 54px; padding: 44px 48px; border-radius: 32px;
+  background: radial-gradient(120% 90% at 85% 40%, rgba(var(--sg), .22), transparent 60%), rgba(255,255,255,.04);
+  border: 1px solid var(--stroke); border-top: 3px solid var(--sc);
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+  transition: background .5s, border-color .5s;
+  overflow: hidden;
+}
+.sc-kicker { text-align: left; margin-bottom: 10px; }
+.sc-title { font-size: clamp(30px, 4vw, 44px); text-shadow: 0 5px 0 rgba(0,0,0,.25); text-wrap: balance; }
+.sc-sub { color: var(--muted); font-size: 16.5px; line-height: 1.55; margin-top: 12px; max-width: 46ch; }
+.sc-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.sc-chip {
+  --c: var(--yellow);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--utility); font-weight: 800; font-size: 14px; letter-spacing: .3px;
+  padding: 10px 16px; border-radius: 100px;
+  background: rgba(255,255,255,.07); border: 1.5px solid var(--stroke); color: #fff;
+  box-shadow: 0 4px 0 rgba(0,0,0,.25);
+  transition: transform .12s, background .2s, border-color .2s, box-shadow .2s, color .2s;
+}
+.sc-chip svg { color: var(--c); flex: none; }
+.sc-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+.sc-chip:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.sc-chip:focus-visible { outline: 3px solid var(--c); outline-offset: 2px; }
+.sc-chip.on {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 92%, #fff), var(--c));
+  border-color: transparent; color: #10173d;
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 55%, #000), 0 0 26px color-mix(in srgb, var(--c) 45%, transparent);
+}
+.sc-chip.on svg { color: #10173d; }
+.sc-caption { margin-top: 24px; min-height: 92px; padding-left: 16px; border-left: 3px solid var(--sc); transition: border-color .4s; }
+.sc-cap-title { font-family: var(--display); font-size: 24px; letter-spacing: .5px; color: var(--sc); text-shadow: 0 3px 0 rgba(0,0,0,.28); transition: color .4s; }
+.sc-cap-desc { color: #dfe5ff; font-size: 15.5px; line-height: 1.55; margin-top: 6px; max-width: 44ch; }
+.sc-stage { position: relative; display: flex; flex-direction: column; align-items: center; }
+.sc-halo {
+  position: absolute; inset: 6% -10%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(var(--sg), .55), transparent);
+  filter: blur(30px); transition: background .5s;
+}
+.sc-phone { position: relative; width: min(300px, 72vw); padding: 9px; box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 70px rgba(var(--sg), .35); transition: box-shadow .5s; }
+.sc-screen { border-radius: 32px; overflow: hidden; aspect-ratio: 540 / 1044; background: #0a1235; }
+.sc-screen video, .sc-screen img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.sc-deco { position: absolute; z-index: 2; pointer-events: none; border-radius: 22%; filter: drop-shadow(0 12px 18px rgba(0,0,0,.45)); }
+.sc-badge {
+  margin-top: 18px; font-family: var(--utility); font-weight: 800; font-size: 11.5px; letter-spacing: 1.5px;
+  color: var(--muted); background: rgba(0,0,0,.25); border: 1px solid var(--stroke); border-radius: 100px; padding: 6px 14px;
+}
+@media (max-width: 860px) {
+  .showcase { display: flex; flex-direction: column; gap: 0; padding: 30px 16px 28px; text-align: center; }
+  .sc-deco { scale: .68; }
+  .sc-copy { display: contents; }
+  .sc-kicker { text-align: center; }
+  .sc-sub, .sc-cap-desc { margin-inline: auto; }
+  .sc-chips { order: 1; justify-content: center; gap: 8px; margin-top: 22px; }
+  .sc-chip { font-size: 13px; padding: 9px 13px; }
+  .sc-stage { order: 2; margin-top: 30px; }
+  .sc-caption { order: 3; margin-top: 24px; border-left: none; padding-left: 0; min-height: 0; }
+}
+@media (max-width: 420px) {
+  .sc-phone { width: min(270px, 70vw); }
+}
 
 /* ═══ CÓMO JUGAR — 3 pasos ════════════════════════════════════════════════════ */
 .sec-how { }
@@ -575,3 +637,4 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
   font-size: 14px;
   letter-spacing: .3px;
 }
+#novedades .prog-grid { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
