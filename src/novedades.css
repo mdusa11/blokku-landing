@@ -1,0 +1,74 @@
+/* ═══ NOVEDADES 1.0.5 — nota de parche ═══════════════════════════════════════ */
+.sec-new { background: rgba(0, 0, 0, .15); }
+
+.nv-head { max-width: 760px; margin-bottom: 48px; }
+.nv-ver { font-family: var(--utility); font-weight: 700; font-size: 15px; color: var(--muted); }
+.nv-title.display { text-align: left; margin-top: 8px; font-size: clamp(38px, 6vw, 64px); }
+.nv-title span { color: var(--yellow); }
+
+.nv-num { display: block; font-family: var(--display); font-size: 30px; line-height: 1; letter-spacing: 1px; text-shadow: 0 4px 0 rgba(0, 0, 0, .3); }
+.nv-h3 { font-size: clamp(28px, 3.6vw, 38px); margin-top: 10px; text-shadow: 0 4px 0 rgba(0, 0, 0, .25); text-wrap: balance; }
+.nv-h3-big { font-size: clamp(32px, 4.6vw, 50px); }
+.nv-p { color: #dfe5ff; font-size: 16.5px; line-height: 1.6; margin-top: 12px; max-width: 48ch; }
+.nv-note { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin-top: 18px; max-width: 46ch; }
+
+/* 01 — Ranking: texto a la izquierda, teléfono inclinado que se sale del renglón */
+.nv-rank { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+.nv-facts { list-style: none; margin-top: 22px; display: grid; gap: 12px; }
+.nv-facts li { display: flex; align-items: center; gap: 14px; font-weight: 600; font-size: 17px; }
+.nv-facts .gem { flex: none; width: 22px; height: 22px; transform: rotate(-8deg); }
+.nv-facts li:nth-child(2) .gem { transform: rotate(10deg); }
+.nv-rank-shot { margin: 0; justify-self: center; }
+.nv-rank-phone { width: min(290px, 70vw); padding: 9px; transform: rotate(4deg); }
+.nv-rank-phone img { width: 100%; height: auto; border-radius: 32px; }
+.nv-rank-shot figcaption { margin-top: 18px; text-align: center; font-size: 13px; color: var(--muted); }
+
+/* 02 — Personalizar: espejo del bloque anterior (teléfono a la izquierda) */
+.nv-perso { --sc: var(--blue); display: grid; grid-template-columns: .85fr 1.15fr; gap: 48px; align-items: center; margin-top: 90px; }
+.nv-perso-stage { justify-self: center; }
+.nv-perso-phone { width: min(290px, 70vw); padding: 9px; transform: rotate(-3deg); }
+.nv-screen { border-radius: 32px; overflow: hidden; aspect-ratio: 540 / 1044; background: #0a1235; animation: nvFade .3s ease; }
+.nv-screen video, .nv-screen img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes nvFade { from { opacity: .2; } to { opacity: 1; } }
+.nv-tabs { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 24px; }
+.nv-tab {
+  --c: var(--yellow);
+  display: inline-flex; align-items: center; gap: 9px; padding: 8px 0;
+  font-family: var(--body); font-weight: 600; font-size: 17px; color: var(--muted);
+  border-bottom: 3px solid transparent; transition: color .15s, border-color .15s;
+}
+.nv-tab:hover { color: #fff; }
+.nv-tab.on { color: #fff; border-bottom-color: var(--c); }
+.nv-tab-gem { width: 14px; height: 14px; background: var(--c); opacity: .45; transform: rotate(-10deg); transition: opacity .15s; }
+.nv-tab.on .nv-tab-gem { opacity: 1; }
+.nv-cap { margin-top: 16px; min-height: 3.2em; color: #dfe5ff; font-size: 16px; line-height: 1.55; max-width: 46ch; animation: nvFade .3s ease; }
+
+/* 03+ — lista de parche con su captura */
+.nv-list { list-style: none; margin-top: 90px; border-top: 2px dashed var(--stroke); }
+.nv-item {
+  display: grid; grid-template-columns: 64px 1fr 300px; gap: 26px; align-items: start;
+  padding: 30px 0; border-bottom: 2px dashed var(--stroke);
+}
+.nv-item .nv-num { align-self: start; padding-top: 4px; }
+.nv-item-t { font-family: var(--body); font-weight: 700; font-size: 22px; }
+.nv-item-copy .nv-p { margin-top: 6px; }
+.nv-thumb { width: 100%; height: auto; border-radius: 16px; transform: rotate(1.5deg); box-shadow: 0 14px 30px rgba(0, 0, 0, .4); border: 3px solid rgba(255, 255, 255, .9); }
+.nv-item.alt .nv-thumb { transform: rotate(-1.5deg); }
+.nv-also { margin-top: 34px; display: grid; grid-template-columns: 64px 1fr; gap: 26px; }
+.nv-also-t { font-family: var(--display); font-size: 22px; letter-spacing: .5px; color: var(--muted); grid-column: 1 / -1; }
+.nv-also ul { grid-column: 2; list-style: none; display: grid; gap: 10px; }
+.nv-also li { color: var(--muted); font-size: 16px; line-height: 1.5; }
+.nv-also b { color: #fff; font-weight: 700; }
+
+@media (max-width: 860px) {
+  .nv-rank, .nv-perso { grid-template-columns: 1fr; gap: 34px; }
+  .nv-perso { margin-top: 70px; }
+  .nv-perso-stage { order: 2; }
+  .nv-rank-phone, .nv-perso-phone { width: min(250px, 66vw); }
+  .nv-item { grid-template-columns: 44px 1fr; gap: 6px 16px; }
+  .nv-item .nv-num { font-size: 24px; }
+  .nv-thumb { grid-column: 2; max-width: 340px; margin-top: 14px; }
+  .nv-list { margin-top: 70px; }
+  .nv-also { grid-template-columns: 44px 1fr; gap: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .nv-screen, .nv-cap { animation: none; } }
