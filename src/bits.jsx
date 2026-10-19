@@ -89,12 +89,13 @@ export function AppIcon({ size = 84 }) {
   )
 }
 
-/* Reveal on-scroll con rebote exagerado */
+/* Reveal on-scroll con rebote exagerado. `transform` como cadena (no y/scale
+   sueltos) para que framer lo mande a WAAPI y corra en el compositor. */
 export function Reveal({ children, delay = 0, y = 60, ...rest }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y, scale: 0.92 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, transform: `translateY(${y}px) scale(0.92)` }}
+      whileInView={{ opacity: 1, transform: 'translateY(0px) scale(1)' }}
       viewport={{ once: true, margin: '-80px' }}
       transition={{ delay, type: 'spring', stiffness: 220, damping: 17 }}
       {...rest}

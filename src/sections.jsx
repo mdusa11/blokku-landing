@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion'
 import {
   Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
-  Bomb, Palette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
-  CalendarDays, TrendingUp, Ban, Rocket, Globe, Ticket,
+  Bomb, Pipette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
+  CalendarDays, TrendingUp, Ban, Rocket,
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
-import { Showcase } from './showcase.jsx'
 import { STORE_URL, StoreBadges } from './extras.jsx'
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
@@ -28,9 +27,9 @@ export function Hero() {
             Fácil de aprender, imposible de soltar.
           </motion.p>
           <motion.div className="hero-ctas" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, type: 'spring' }}>
-            <motion.a className="btn3d" href={STORE_URL} target="_blank" rel="noopener noreferrer" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
+            <a className="btn3d pulse-cta" href={STORE_URL} target="_blank" rel="noopener noreferrer">
               <Play size={20} strokeWidth={3} fill="currentColor" /> JUGAR GRATIS
-            </motion.a>
+            </a>
             <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
           </motion.div>
           <motion.div className="hero-ctas" style={{ marginTop: 18 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
@@ -59,9 +58,9 @@ export function Hero() {
           animate={{ opacity: 1, y: 0, rotate: 0 }}
           transition={{ delay: 0.5, type: 'spring', stiffness: 130, damping: 15 }}
         >
-          <motion.div className="phone" animate={{ y: [0, -14, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
-            <video src={`${import.meta.env.BASE_URL}media/gameplay.mp4`} poster={`${import.meta.env.BASE_URL}media/hero-poster.jpg`} autoPlay muted loop playsInline preload="metadata" />
-          </motion.div>
+          <div className="phone float-y">
+            <video src={`${import.meta.env.BASE_URL}media/105/juego.mp4`} poster={`${import.meta.env.BASE_URL}media/105/juego.webp`} width="540" height="1044" autoPlay muted loop playsInline preload="metadata" data-autopause aria-label="Partida real de Blokku 1.0.5" />
+          </div>
         </motion.div>
       </div>
     </div>
@@ -109,12 +108,13 @@ export function DemoSection() {
 }
 
 /* ═══ PODERES — fichas de poder estilo in-game ════════════════════════════════ */
+// Mismo orden y color que la barra de poderes de la 1.0.5
 const POWERS = [
-  { I: Bomb, n: 'BOMBA', d: 'Explota una celda y todas sus vecinas', c: '#FF6600', qty: 3 },
-  { I: Zap, n: 'RAYO', d: 'Borra una fila completa al instante', c: '#FFC400', qty: 3 },
-  { I: Palette, n: 'DESTRUCTOR', d: 'Elimina todas las gemas de un color', c: '#FF2E88', qty: 2 },
-  { I: Undo2, n: 'RETROCESO', d: 'Deshaz tu última jugada', c: '#12E0C4', qty: 3 },
-  { I: Shuffle, n: 'MEZCLA', d: 'Cambia tus piezas por otras nuevas', c: '#9A5CFF', qty: 5 },
+  { I: Bomb, n: 'BOMBA', d: 'Despeja una zona del tablero', c: '#FF6A00' },
+  { I: Zap, n: 'RAYO', d: 'Limpia una línea completa', c: '#FFC400' },
+  { I: Undo2, n: 'DESHACER', d: 'Regresa tu última jugada', c: '#12E0C4' },
+  { I: Shuffle, n: 'MEZCLAR', d: 'Cambia las piezas de la bandeja', c: '#9A5CFF' },
+  { I: Pipette, n: 'DESTRUCTOR', d: 'Elimina todos los bloques de un color', c: '#FF2E88' },
 ]
 
 export function Powers() {
@@ -124,7 +124,7 @@ export function Powers() {
         <Reveal>
           <span className="kicker">Cuando el tablero se pone feo</span>
           <h2 className="display">5 PODERES <span className="shimmer" style={{ color: 'var(--yellow)' }}>ÉPICOS</span></h2>
-          <p className="sub">Guárdalos para el momento justo y dale la vuelta a la partida.</p>
+          <p className="sub">Cada partida empieza con poderes gratis. Si te quedas sin espacio, Blokku te dice cuál te puede salvar.</p>
         </Reveal>
         <div className="powers-grid">
           {POWERS.map((p, i) => (
@@ -138,7 +138,6 @@ export function Powers() {
                 <p.I className="power-ghost" size={130} strokeWidth={1.6} aria-hidden />
                 <motion.div className="power-token" whileHover={{ rotate: [0, -8, 8, 0], scale: 1.08 }} transition={{ duration: 0.5 }}>
                   <p.I size={38} strokeWidth={2.4} />
-                  <span className="power-badge">×{p.qty}</span>
                 </motion.div>
                 <div className="power-name">{p.n}</div>
                 <div className="power-desc">{p.d}</div>
@@ -178,9 +177,9 @@ export function Modes() {
                 transition={{ type: 'spring', stiffness: 280, damping: 15 }}
               >
                 <m.I className="mode-ghost" size={150} strokeWidth={1.4} aria-hidden />
-                <motion.span className="mode-icon" animate={{ y: [0, -8, 0], rotate: [0, 6, 0] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}>
+                <span className="mode-icon float-y" style={{ animationDelay: `${i * 0.4}s` }}>
                   <m.I size={52} strokeWidth={2.4} />
-                </motion.span>
+                </span>
                 <div className="mode-name">{m.n}</div>
                 <div className="mode-desc">{m.d}</div>
                 <span className="mode-chip">{m.chip}</span>
@@ -233,57 +232,31 @@ export function Progression() {
   )
 }
 
-/* ═══ NOVEDADES 1.0.5 ═════════════════════════════════════════════════════════ */
-const NEWS = [
-  { I: Globe, n: 'RANKING', d: 'Mundial o de tu país: semanal, histórico y reto de hoy, con tu insignia y título. Opcional y necesita internet.', c: '#4EA1FF', chip: 'COMPITE' },
-  { I: Palette, n: 'PERSONALIZAR', d: 'Prueba temas, piezas, efectos, marcos e insignias con vista previa antes de usarlos.', c: '#FF5D8F', chip: 'A TU ESTILO' },
-  { I: Medal, n: 'LOGROS Y NIVELES', d: 'Logros por escalones, niveles hasta el 100 con ruta de premios y cofres con «Abrir todos».', c: '#FFC93C', chip: 'MÁS METAS' },
-  { I: Ticket, n: 'EVENTOS Y CÓDIGOS', d: 'Halloween, Día de Muertos, Navidad y más por tiempo limitado, y códigos canjeables para extras.', c: '#FF8A3D', chip: 'DE TEMPORADA' },
-  { I: Sparkles, n: '+40 EXTRAS', d: 'Más de 40 temas, piezas y efectos nuevos, algunos exclusivos, y fondos más fluidos.', c: '#B388FF', chip: 'NUEVOS' },
-  { I: Flame, n: 'RACHA Y TUTORIAL', d: 'Widget de racha para tu pantalla de inicio y un tutorial nuevo para empezar en segundos.', c: '#43D9A3', chip: 'MÁS FÁCIL' },
-]
-
-export function Novedades() {
-  return (
-    <section id="novedades" className="sec-prog">
-      <div className="wrap">
-        <Reveal>
-          <span className="kicker">Versión 1.0.5</span>
-          <h2 className="display">NOVEDADES <span className="shimmer" style={{ color: 'var(--yellow)' }}>1.0.5</span></h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <Showcase />
-        </Reveal>
-        <div className="prog-grid">
-          {NEWS.map((p, i) => (
-            <Reveal key={p.n} delay={i * 0.09}>
-              <motion.div className="prog-card" style={{ '--c': p.c }} whileHover={{ y: -10 }} transition={{ type: 'spring', stiffness: 300, damping: 16 }}>
-                <motion.span className="prog-badge" whileHover={{ scale: 1.12, rotate: -8 }}>
-                  <p.I size={34} strokeWidth={2.2} />
-                </motion.span>
-                <div className="prog-name">{p.n}</div>
-                <div className="prog-desc">{p.d}</div>
-                <span className="prog-chip">{p.chip}</span>
-              </motion.div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
+/* ═══ NOVEDADES 1.0.5 — vive en novedades.jsx ═══════════════════════════════════ */
+export { Novedades } from './novedades.jsx'
 
 /* ═══ SCREENSHOTS — escaparate de 2 filas opuestas ════════════════════════════ */
-const ShotCard = ({ n }) => (
+// Capturas de la 1.0.5 en un Galaxy A17 (nombres de prueba difuminados)
+const SHOTS = [
+  ['s_juego', 'Partida en Zen con combo x2'],
+  ['s_inicio', 'Inicio con misiones diarias'],
+  ['s_ranking', 'Ranking semanal mundial'],
+  ['s_personalizar', 'Personalizar con vista previa del tema Galaxia'],
+  ['s_chicle', 'Partida con el tema Chicle y combo x3'],
+  ['s_logros', 'Logros por escalones'],
+  ['s_evento', 'Evento de Halloween y sus premios'],
+  ['s_nuevo', 'Desbloqueo del efecto Confeti'],
+]
+const ShotCard = ({ id, alt }) => (
   <div className="shot-card">
-    <img src={`${import.meta.env.BASE_URL}media/shot_${n}.jpg`} alt={`Captura ${n} de Blokku`} loading="lazy" />
+    <img src={`${import.meta.env.BASE_URL}media/105/${id}.webp`} alt={alt} width="540" height="1044" loading="lazy" decoding="async" />
   </div>
 )
 
 export function Shots() {
-  const shots = [1, 2, 3, 4, 5, 6, 7, 8]
+  const shots = SHOTS
   const rowA = [...shots, ...shots]
-  const rowB = [...shots].reverse()
+  const rowB = [...shots.slice(4), ...shots.slice(0, 4)]
   const rowBdup = [...rowB, ...rowB]
   return (
     <section id="capturas" className="sec-shots">
@@ -291,13 +264,13 @@ export function Shots() {
         <Reveal>
           <span className="kicker">Directo del juego</span>
           <h2 className="display">ASÍ SE <span className="shimmer" style={{ color: 'var(--blue)' }}>VE</span></h2>
-          <p className="sub">Gráficos coloridos, animaciones jugosas y una interfaz que entra por los ojos.</p>
+          <p className="sub">Capturas de la versión 1.0.5, tal cual se ve en el teléfono.</p>
         </Reveal>
       </div>
       <Reveal delay={0.1} style={{ marginTop: 52 }}>
         <div className="shots-viewport">
-          <div className="shots-row">{rowA.map((n, i) => <ShotCard key={`a${i}`} n={n} />)}</div>
-          <div className="shots-row rev">{rowBdup.map((n, i) => <ShotCard key={`b${i}`} n={n} />)}</div>
+          <div className="shots-row">{rowA.map(([id, alt], i) => <ShotCard key={`a${i}`} id={id} alt={alt} />)}</div>
+          <div className="shots-row rev">{rowBdup.map(([id, alt], i) => <ShotCard key={`b${i}`} id={id} alt={alt} />)}</div>
         </div>
       </Reveal>
     </section>

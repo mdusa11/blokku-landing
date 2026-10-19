@@ -59,9 +59,9 @@ function FinalCta() {
       <FallingGems count={14} opacity={0.14} />
       <div className="wrap">
         <Reveal>
-          <motion.div animate={{ rotate: [0, -4, 4, 0] }} transition={{ duration: 3, repeat: Infinity }} style={{ display: 'inline-block' }}>
+          <div className="wiggle" style={{ display: 'inline-block' }}>
             <AppIcon size={120} />
-          </motion.div>
+          </div>
         </Reveal>
         <Reveal delay={0.1}>
           <div style={{ marginTop: 26 }}><Logo size={'clamp(52px, 8vw, 84px)'} /></div>
@@ -71,17 +71,15 @@ function FinalCta() {
         </Reveal>
         <Reveal delay={0.2}>
           <div style={{ display: 'flex', gap: 18, justifyContent: 'center', flexWrap: 'wrap', marginTop: 40 }}>
-            <motion.a
-              className="btn3d"
+            <a
+              className="btn3d pulse-cta"
               href={STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ fontSize: 24, padding: '22px 52px' }}
-              animate={{ scale: [1, 1.07, 1], boxShadow: ['0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)', '0 6px 0 #2c9a45, 0 0 80px rgba(67,217,163,.7)', '0 6px 0 #2c9a45, 0 0 44px rgba(67,217,163,.35)'] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{ fontSize: 24, padding: '22px 52px', boxShadow: '0 6px 0 #2c9a45, 0 0 60px rgba(67,217,163,.5)' }}
             >
               <Download size={24} strokeWidth={3} /> DESCÁRGALO GRATIS
-            </motion.a>
+            </a>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap', marginTop: 26 }}>
             <StoreBadges />
