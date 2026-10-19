@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import {
   Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
   Bomb, Palette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
-  CalendarDays, TrendingUp, Ban, Rocket,
+  CalendarDays, TrendingUp, Ban, Rocket, Globe, Ticket,
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
@@ -194,8 +194,8 @@ export function Modes() {
 
 /* ═══ PROGRESIÓN — tarjetas de recompensa con color propio ═════════════════════ */
 const PROGS = [
-  { I: Medal, n: 'LOGROS', d: 'Desbloquea decenas de medallas conforme mejoras', c: '#FFC93C', chip: 'COLECCIÓNALAS' },
-  { I: TrendingUp, n: 'NIVELES', d: 'Sube de rango y récord con cada partida', c: '#FF5D8F', chip: 'SIN TECHO' },
+  { I: Medal, n: 'LOGROS', d: 'Logros por escalones: cada meta tiene varios niveles por conquistar', c: '#FFC93C', chip: 'COLECCIÓNALOS' },
+  { I: TrendingUp, n: 'NIVELES', d: 'Sube hasta el nivel 100 con una ruta de premios y cofres', c: '#FF5D8F', chip: 'HASTA EL 100' },
   { I: CalendarDays, n: 'RETO DIARIO', d: 'Un puzzle nuevo cada día, con su racha', c: '#4EA1FF', chip: 'CADA DÍA' },
   { I: Ban, n: 'SIN ANUNCIOS', d: 'Un pago único opcional y cero anuncios para siempre (Android)', c: '#B388FF', chip: 'OPCIONAL', vip: true },
 ]
@@ -227,6 +227,49 @@ export function Progression() {
             </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══ NOVEDADES 1.0.5 ═════════════════════════════════════════════════════════ */
+const NEWS = [
+  { I: Globe, n: 'RANKING', d: 'Mundial o de tu país: semanal, histórico y reto de hoy, con tu insignia y título. Opcional y necesita internet.', c: '#4EA1FF', chip: 'COMPITE' },
+  { I: Palette, n: 'PERSONALIZAR', d: 'Prueba temas, piezas, efectos, marcos e insignias con vista previa antes de usarlos.', c: '#FF5D8F', chip: 'A TU ESTILO' },
+  { I: Medal, n: 'LOGROS Y NIVELES', d: 'Logros por escalones, niveles hasta el 100 con ruta de premios y cofres con «Abrir todos».', c: '#FFC93C', chip: 'MÁS METAS' },
+  { I: Ticket, n: 'EVENTOS Y CÓDIGOS', d: 'Halloween, Día de Muertos, Navidad y más por tiempo limitado, y códigos canjeables para extras.', c: '#FF8A3D', chip: 'DE TEMPORADA' },
+  { I: Sparkles, n: '+40 EXTRAS', d: 'Más de 40 temas, piezas y efectos nuevos, algunos exclusivos, y fondos más fluidos.', c: '#B388FF', chip: 'NUEVOS' },
+  { I: Flame, n: 'RACHA Y TUTORIAL', d: 'Widget de racha para tu pantalla de inicio y un tutorial nuevo para empezar en segundos.', c: '#43D9A3', chip: 'MÁS FÁCIL' },
+]
+
+export function Novedades() {
+  return (
+    <section id="novedades" className="sec-prog">
+      <div className="wrap">
+        <Reveal>
+          <span className="kicker">Versión 1.0.5</span>
+          <h2 className="display">NOVEDADES <span className="shimmer" style={{ color: 'var(--yellow)' }}>1.0.5</span></h2>
+        </Reveal>
+        <div className="prog-grid">
+          {NEWS.map((p, i) => (
+            <Reveal key={p.n} delay={i * 0.09}>
+              <motion.div className="prog-card" style={{ '--c': p.c }} whileHover={{ y: -10 }} transition={{ type: 'spring', stiffness: 300, damping: 16 }}>
+                <motion.span className="prog-badge" whileHover={{ scale: 1.12, rotate: -8 }}>
+                  <p.I size={34} strokeWidth={2.2} />
+                </motion.span>
+                <div className="prog-name">{p.n}</div>
+                <div className="prog-desc">{p.d}</div>
+                <span className="prog-chip">{p.chip}</span>
+              </motion.div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.1}>
+          <div className="news-shots">
+            <img src={`${import.meta.env.BASE_URL}media/nov_personalizar.webp`} alt="Pantalla Personalizar de Blokku con estilos de piezas" loading="lazy" width="420" height="583" />
+            <img src={`${import.meta.env.BASE_URL}media/nov_logros.webp`} alt="Ruta de nivel de Blokku con premios por nivel" loading="lazy" width="420" height="801" />
+          </div>
+        </Reveal>
       </div>
     </section>
   )

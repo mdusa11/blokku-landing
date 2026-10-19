@@ -51,6 +51,7 @@ export function StickyNav() {
           <a href="#demo">Demo</a>
           <a href="#poderes">Poderes</a>
           <a href="#modos">Modos</a>
+          <a href="#novedades">Novedades</a>
           <a href="#faq">FAQ</a>
         </div>
         <a href={STORE_URL} target="_blank" rel="noopener noreferrer" className="btn3d stickynav-cta">

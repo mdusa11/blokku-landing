@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Play, Plus, Heart, Bot, Download } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
-import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
+import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Novedades, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
 import { HowToPlay, StoreBadges, STORE_URL } from './extras.jsx'
 import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
@@ -10,8 +10,9 @@ import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
   ['¿Blokku es gratis?', 'Sí, 100% gratis con anuncios. La única compra opcional es "Sin Anuncios" (solo en Android): un pago único que los quita para siempre. En iPhone no hay compras. Nada de suscripciones ni monedas.'],
-  ['¿Necesito internet?', 'No. Blokku funciona completamente offline — perfecto para el metro, el avión o donde sea.'],
-  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 4 modos de juego, reto diario y un feel de arrastre ultra pulido.'],
+  ['¿Necesito internet?', 'No para jugar: Blokku funciona offline — perfecto para el metro, el avión o donde sea. Solo el ranking mundial y por país necesita conexión.'],
+  ['¿Cómo funciona el ranking?', 'Es opcional: eliges un nombre visible y compites en la tabla semanal, la histórica o el reto de hoy, a nivel mundial o de tu país. Puedes borrar tus datos y salir del ranking cuando quieras desde Ajustes.'],
+  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 4 modos de juego, ranking, eventos de temporada y un feel de arrastre ultra pulido.'],
   ['¿Para qué edades es?', 'Para todos. Fácil de aprender en 10 segundos, difícil de dominar.'],
   ['¿Dónde lo descargo?', 'Ya está disponible gratis en Google Play (Android) y en el App Store (iPhone y iPad). Y puedes jugar la demo aquí arriba.'],
 ]
@@ -109,6 +110,7 @@ function Landing() {
       <Powers />
       <Modes />
       <Progression />
+      <Novedades />
       <Shots />
       <Faq />
       <FinalCta />
