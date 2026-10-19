@@ -4,16 +4,16 @@ import { Play, Plus, Heart, Bot, Download } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
-import { HowToPlay, PlayBadge, PLAY_URL } from './extras.jsx'
+import { HowToPlay, StoreBadges, STORE_URL } from './extras.jsx'
 import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
-  ['¿Blokku es gratis?', 'Sí, 100% gratis con anuncios. La única compra opcional es "Sin Anuncios": un pago único que los quita para siempre. Nada de suscripciones ni monedas.'],
+  ['¿Blokku es gratis?', 'Sí, 100% gratis con anuncios. La única compra opcional es "Sin Anuncios" (solo en Android): un pago único que los quita para siempre. En iPhone no hay compras. Nada de suscripciones ni monedas.'],
   ['¿Necesito internet?', 'No. Blokku funciona completamente offline — perfecto para el metro, el avión o donde sea.'],
-  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 3 modos de juego, reto diario y un feel de arrastre ultra pulido.'],
+  ['¿En qué se diferencia de otros block puzzles?', 'Poderes épicos (bomba, rayo, destructor…) gratis en cada partida, 4 modos de juego, reto diario y un feel de arrastre ultra pulido.'],
   ['¿Para qué edades es?', 'Para todos. Fácil de aprender en 10 segundos, difícil de dominar.'],
-  ['¿Dónde lo descargo?', 'Ya está disponible gratis en Google Play para Android. Por ahora no hay versión de iPhone, pero puedes jugar la demo aquí arriba.'],
+  ['¿Dónde lo descargo?', 'Ya está disponible gratis en Google Play (Android) y en el App Store (iPhone y iPad). Y puedes jugar la demo aquí arriba.'],
 ]
 
 function Faq() {
@@ -72,7 +72,7 @@ function FinalCta() {
           <div style={{ display: 'flex', gap: 18, justifyContent: 'center', flexWrap: 'wrap', marginTop: 40 }}>
             <motion.a
               className="btn3d"
-              href={PLAY_URL}
+              href={STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: 24, padding: '22px 52px' }}
@@ -82,11 +82,11 @@ function FinalCta() {
               <Download size={24} strokeWidth={3} /> DESCÁRGALO GRATIS
             </motion.a>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 26 }}>
-            <PlayBadge />
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap', marginTop: 26 }}>
+            <StoreBadges />
           </div>
           <p style={{ color: 'var(--muted)', marginTop: 20, fontFamily: 'var(--utility)', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <Bot size={17} /> Ya en Google Play · gratis · sin internet
+            <Bot size={17} /> Ya en Google Play y App Store · gratis · sin internet
           </p>
         </Reveal>
       </div>

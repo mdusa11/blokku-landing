@@ -509,6 +509,7 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
   width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent;
   border-left: 22px solid; border-image: linear-gradient(180deg, var(--blue), var(--green)) 1;
 }
+.playbadge .pb-apple { flex: none; }
 .playbadge .pb-txt { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.05; }
 .playbadge .pb-small { font-family: var(--utility); font-weight: 700; font-size: 11px; color: #cfd6ea; letter-spacing: .5px; }
 .playbadge .pb-big { font-family: var(--body); font-weight: 700; font-size: 20px; color: #fff; }

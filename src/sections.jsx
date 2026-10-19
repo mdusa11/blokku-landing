@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
-import { PLAY_URL } from './extras.jsx'
+import { STORE_URL, StoreBadges } from './extras.jsx'
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
 export function Hero() {
@@ -27,10 +27,13 @@ export function Hero() {
             Fácil de aprender, imposible de soltar.
           </motion.p>
           <motion.div className="hero-ctas" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, type: 'spring' }}>
-            <motion.a className="btn3d" href={PLAY_URL} target="_blank" rel="noopener noreferrer" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
+            <motion.a className="btn3d" href={STORE_URL} target="_blank" rel="noopener noreferrer" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>
               <Play size={20} strokeWidth={3} fill="currentColor" /> JUGAR GRATIS
             </motion.a>
             <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
+          </motion.div>
+          <motion.div className="hero-ctas" style={{ marginTop: 18 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
+            <StoreBadges />
           </motion.div>
           {/* Aviso de lanzamiento: va en el hero porque es lo primero que se
               ve sin hacer scroll. Repetido en la FAQ y en el CTA final. */}
@@ -40,12 +43,12 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.25 }}
           >
-            <Rocket size={15} /> ¡Ya disponible en Google Play! · Por ahora solo para Android
+            <Rocket size={15} /> ¡Ya disponible en Google Play y App Store!
           </motion.p>
           <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
             <span className="tag"><Gift size={15} /> GRATIS</span>
             <span className="tag"><WifiOff size={15} /> SIN INTERNET</span>
-            <span className="tag"><LayoutGrid size={15} /> 3 MODOS</span>
+            <span className="tag"><LayoutGrid size={15} /> 4 MODOS</span>
             <span className="tag"><Zap size={15} /> 5 PODERES</span>
           </motion.div>
         </div>
@@ -94,7 +97,7 @@ export function DemoSection() {
         <Reveal>
           <span className="kicker">Sin descargar nada</span>
           <h2 className="display">PRUÉBALO <span className="shimmer" style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
-          <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae 3 modos, 5 poderes, reto diario y logros — todo gratis.</p>
+          <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae 4 modos, 5 poderes, reto diario y logros — todo gratis.</p>
         </Reveal>
         <Reveal delay={0.15} style={{ marginTop: 54 }}>
           <DemoGame />
@@ -152,6 +155,7 @@ const MODES = [
   { n: 'CLÁSICO', d: 'Sin fin · cada línea cuenta para tu récord', I: InfinityIcon, chip: 'SIN FIN', bg: 'linear-gradient(160deg, #6fc4ff, #2b6ce0)' },
   { n: 'CONTRA RELOJ', d: '90 segundos · máxima puntuación · pura adrenalina', I: Timer, chip: '90 SEGUNDOS', bg: 'linear-gradient(160deg, #ff7ba6, #e0335f)' },
   { n: 'ZEN', d: 'Sin game over · solo tú y las piezas · relájate', I: Leaf, chip: 'CERO ESTRÉS', bg: 'linear-gradient(160deg, #ffd76f, #e09a2b)' },
+  { n: 'DESAFÍO DIARIO', d: 'Un puzzle nuevo cada día · con su racha', I: CalendarDays, chip: 'CADA DÍA', bg: 'linear-gradient(160deg, #b388ff, #6a3fd6)' },
 ]
 
 export function Modes() {
@@ -161,7 +165,7 @@ export function Modes() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Para cada mood</span>
-          <h2 className="display">3 MODOS <span className="shimmer" style={{ color: 'var(--green)' }}>DE JUEGO</span></h2>
+          <h2 className="display">4 MODOS <span className="shimmer" style={{ color: 'var(--green)' }}>DE JUEGO</span></h2>
         </Reveal>
         <div className="modes-grid">
           {MODES.map((m, i) => (
@@ -169,7 +173,7 @@ export function Modes() {
               <motion.div
                 className="mode-card"
                 style={{ background: m.bg }}
-                whileHover={{ y: -14, scale: 1.04, rotate: i === 1 ? 0 : i ? 1.5 : -1.5 }}
+                whileHover={{ y: -14, scale: 1.04, rotate: i % 2 ? 1.5 : -1.5 }}
                 transition={{ type: 'spring', stiffness: 280, damping: 15 }}
               >
                 <m.I className="mode-ghost" size={150} strokeWidth={1.4} aria-hidden />
@@ -193,7 +197,7 @@ const PROGS = [
   { I: Medal, n: 'LOGROS', d: 'Desbloquea decenas de medallas conforme mejoras', c: '#FFC93C', chip: 'COLECCIÓNALAS' },
   { I: TrendingUp, n: 'NIVELES', d: 'Sube de rango y récord con cada partida', c: '#FF5D8F', chip: 'SIN TECHO' },
   { I: CalendarDays, n: 'RETO DIARIO', d: 'Un puzzle nuevo cada día, con su racha', c: '#4EA1FF', chip: 'CADA DÍA' },
-  { I: Ban, n: 'SIN ANUNCIOS', d: 'Un pago único opcional y cero anuncios para siempre', c: '#B388FF', chip: 'OPCIONAL', vip: true },
+  { I: Ban, n: 'SIN ANUNCIOS', d: 'Un pago único opcional y cero anuncios para siempre (Android)', c: '#B388FF', chip: 'OPCIONAL', vip: true },
 ]
 
 export function Progression() {

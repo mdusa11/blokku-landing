@@ -49,7 +49,7 @@ export function Terminos() {
       <h3>3. Compras dentro de la App</h3>
       <p>
         La App es gratuita y completa: todos los modos, poderes y desbloqueables están disponibles sin pagar.
-        Existe <strong>una sola compra opcional</strong>, procesada por Google Play:
+        Existe <strong>una sola compra opcional</strong>, procesada por Google Play (solo en Android; en iOS no hay compras):
       </p>
       <ul>
         <li><strong>Sin Anuncios</strong> — pago único que elimina la publicidad para siempre.</li>
