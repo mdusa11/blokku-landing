@@ -16,7 +16,12 @@ export const STORE_URL = isIOS ? APP_STORE_URL : PLAY_URL
 export function PlayBadge({ href = PLAY_URL }) {
   return (
     <a className="playbadge" href={href} target="_blank" rel="noopener noreferrer" aria-label="Disponible en Google Play">
-      <span className="pb-tri" aria-hidden />
+      <svg className="pb-apple" viewBox="0 0 54 60" width="25" height="28" aria-hidden>
+        <path d="M4 2 34 30 4 58c-2-1-3-3-3-5V7c0-2 1-4 3-5Z" fill="#34A853" />
+        <path d="m34 30 9-9 9 5c3 2 3 6 0 8l-9 5Z" fill="#FBBC04" />
+        <path d="M4 2c1-1 3-1 5 0l34 19-9 9Z" fill="#4285F4" />
+        <path d="M4 58 34 30l9 9L9 58c-2 1-4 1-5 0Z" fill="#EA4335" />
+      </svg>
       <span className="pb-txt">
         <span className="pb-small">DISPONIBLE EN</span>
         <span className="pb-big">Google Play</span>
