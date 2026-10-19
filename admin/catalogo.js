@@ -2705,6 +2705,156 @@ export const CAT = {
    ]
   },
   {
+   "id": "p-theme_blokku",
+   "cid": "theme_blokku",
+   "nombre": "Noche Blokku",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_blokku",
+   "cid": "style_blokku",
+   "nombre": "Gema Blokku",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_blokku",
+   "cid": "effect_blokku",
+   "nombre": "Ensamble Blokku",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_blokku",
+   "cid": "frame_blokku",
+   "nombre": "Marco Blokku",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_blokku",
+   "cid": "badge_blokku",
+   "nombre": "Edición Blokku",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
    "id": "p-theme_taller",
    "cid": "theme_taller",
    "nombre": "Taller",

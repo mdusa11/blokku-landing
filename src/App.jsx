@@ -120,6 +120,7 @@ function Landing() {
           <p style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             © 2026 DUSA Solutions · Hecho con <Heart size={14} fill="var(--blue)" color="var(--blue)" /> en México
           </p>
+          <p className="sx-hint">Las gemas guardan un secreto…</p>
           <div className="links">
             <a href="#/terminos">Términos y condiciones</a>
             <a href="#/privacidad">Aviso de privacidad</a>

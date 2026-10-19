@@ -53,7 +53,7 @@ export function FallingGems({ count = 14, opacity = 0.16 }) {
 export const THEME = { blue: '#4EA1FF', pink: '#FF5D8F', yellow: '#FFC93C', green: '#43D9A3' }
 
 /* Wordmark BLOKKU multicolor */
-export function Logo({ size = 64 }) {
+export function Logo({ size = 64, onLetter, pulse }) {
   const letters = [
     ['B', THEME.blue], ['L', THEME.blue], ['O', THEME.blue],
     ['K', THEME.pink], ['K', THEME.yellow], ['U', THEME.green],
@@ -67,9 +67,14 @@ export function Logo({ size = 64 }) {
           animate={{ y: 0, opacity: 1, rotate: 0 }}
           transition={{ delay: 0.15 + i * 0.09, type: 'spring', stiffness: 320, damping: 14 }}
           whileHover={{ y: -12, rotate: i % 2 ? 6 : -6, scale: 1.12 }}
-          style={{ color: c, textShadow: '0 6px 0 rgba(0,0,0,.28), 0 16px 34px rgba(0,0,0,.45)', display: 'inline-block' }}
+          onClick={onLetter ? () => onLetter(i) : undefined}
+          style={{ position: 'relative', cursor: onLetter ? 'pointer' : undefined, touchAction: 'manipulation', color: c, textShadow: '0 6px 0 rgba(0,0,0,.28), 0 16px 34px rgba(0,0,0,.45)', display: 'inline-block' }}
         >
           {ch}
+          {pulse && pulse.i === i && (
+            <motion.i key={pulse.n} className="gem logo-pop" style={{ background: `linear-gradient(160deg, ${c}, ${c}cc)` }}
+              initial={{ y: 0, opacity: 1, scale: 0.4 }} animate={{ y: -46, opacity: 0, scale: 1 }} transition={{ duration: 0.7, ease: 'easeOut' }} />
+          )}
         </motion.span>
       ))}
     </span>
