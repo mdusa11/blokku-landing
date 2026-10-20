@@ -4,7 +4,8 @@ import { Play, Plus, Heart, Bot, Download } from 'lucide-react'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Novedades, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
-import { HowToPlay, StoreBadges, STORE_URL } from './extras.jsx'
+import { StoreBadges, STORE_URL } from './extras.jsx'
+import { HowToPlay } from './tutorial.jsx'
 import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */

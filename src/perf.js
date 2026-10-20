@@ -4,7 +4,7 @@
    - <video data-autopause>: play()/pause() según visibilidad.
    Un solo IntersectionObserver para todo; un MutationObserver engancha lo
    que React monte después (rutas, secciones perezosas). */
-const SEL = '.fgems, .marquee, .shots-viewport, .how-miniboard, .shimmer, .prog-vip, .btn3d, .float-y, .wiggle, .pulse-cta, video[data-autopause]'
+const SEL = '.fgems, .marquee, .shots-viewport, .tut-demo, .tut-prog, .shimmer, .prog-vip, .btn3d, .float-y, .wiggle, .pulse-cta, video[data-autopause]'
 
 export function startOffscreenPause() {
   if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return
