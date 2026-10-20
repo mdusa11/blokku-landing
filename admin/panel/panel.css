@@ -860,3 +860,27 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .er-dl dt{color:var(--muted)}.er-dl dd{margin:0;overflow-wrap:anywhere}
 .er-h{display:flex;align-items:center;gap:8px;margin:18px 0 8px}.er-h h4{margin:0;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;flex:1}
 @media (max-width:760px){.er-li{flex-wrap:wrap}.er-li .t{flex-basis:calc(100% - 60px)}.er-dl{grid-template-columns:90px 1fr}}
+/* ===== Métricas ===== */
+.kpis.k8{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (min-width:1560px){.kpis.k8{grid-template-columns:repeat(8,minmax(0,1fr))}}
+@media (max-width:760px){.kpis.k8{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mt-ch{height:260px}
+.mt-plot{position:relative;display:block}
+.mt-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.mt-nv{fill:var(--accent-2);opacity:.75}
+.mt-dot{position:absolute;width:7px;height:7px;margin:0 0 -3.5px -3.5px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);pointer-events:none}
+.mt-dot.hot{background:var(--accent-2);border-color:var(--accent-2)}
+.mt-cols{position:absolute;inset:0;display:flex}
+.mt-col{flex:1;min-width:0}
+.mt-col:hover{background:linear-gradient(180deg,transparent,var(--accent-soft));border-radius:6px}
+.mt-coh td,.mt-coh th{padding:9px 12px}
+.mt-c{background:color-mix(in srgb,var(--accent) calc(var(--p,0) * 42%),transparent)}
+.mt-c b{display:block;font-size:13.5px;white-space:nowrap}
+.mt-c span{display:block;font-size:11px;color:var(--muted)}
+.mt-minis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mt-mini{padding:10px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);min-width:0}
+.mt-mini span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-mini b{display:block;font-size:20px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.mt-mini small{display:block;font-size:11.5px;color:var(--faint)}
+.mt-spark{width:100%;height:46px;display:block}
+@media (max-width:420px){.mt-minis{grid-template-columns:repeat(2,minmax(0,1fr))}.mt-ch{height:220px}.mt-coh td,.mt-coh th{padding:8px 7px}.mt-c b{font-size:12.5px}}

@@ -2,8 +2,8 @@
 var SB_URL = 'https://fngbputjfnwtrcwaabue.supabase.co', SBK = 'sb_publishable_uSMrnJx7qRj2HU2yuyTs9A_y5eL514_';
 (function () { try { if (typeof PREVIEW !== 'undefined' && PREVIEW) { var o = new URLSearchParams(location.search).get('sb'); if (o && /^http:\/\/127\.0\.0\.1:\d+$/.test(o)) SB_URL = o; } } catch (e) { } })();
 var LEGACY = 'blokku_admin_doc', CACHE = 'bk_panel_cache_v2';
-var SQLF = { canjes: '1-canjes.sql', remoto: '2-remoto.sql', panel: '3-panel.sql', ranking: '4-ranking.sql', errores: '5-errores.sql', revocados: '6-revocados.sql' };
-var FNF = { resumen_canjes: 'canjes', config_remota: 'remoto', admin_codigos: 'remoto', admin_eventos: 'remoto', admin_avisos: 'remoto', admin_crear_codigos: 'remoto', admin_editar_codigo: 'remoto', admin_borrar_codigo: 'remoto', admin_guardar_evento: 'remoto', admin_borrar_evento: 'remoto', admin_guardar_aviso: 'remoto', admin_borrar_aviso: 'remoto', admin_ranking: 'ranking', admin_moderar: 'ranking', admin_ranking_resumen: 'ranking', admin_ranking_config: 'ranking', admin_errores: 'errores', admin_error_estado: 'errores', admin_revocados: 'revocados', admin_revocar: 'revocados', admin_quitar_revocado: 'revocados' };
+var SQLF = { canjes: '1-canjes.sql', remoto: '2-remoto.sql', panel: '3-panel.sql', ranking: '4-ranking.sql', errores: '5-errores.sql', revocados: '6-revocados.sql', metricas: '7-metricas.sql' };
+var FNF = { resumen_canjes: 'canjes', config_remota: 'remoto', admin_codigos: 'remoto', admin_eventos: 'remoto', admin_avisos: 'remoto', admin_crear_codigos: 'remoto', admin_editar_codigo: 'remoto', admin_borrar_codigo: 'remoto', admin_guardar_evento: 'remoto', admin_borrar_evento: 'remoto', admin_guardar_aviso: 'remoto', admin_borrar_aviso: 'remoto', admin_ranking: 'ranking', admin_moderar: 'ranking', admin_ranking_resumen: 'ranking', admin_ranking_config: 'ranking', admin_errores: 'errores', admin_error_estado: 'errores', admin_revocados: 'revocados', admin_revocar: 'revocados', admin_quitar_revocado: 'revocados', admin_metricas: 'metricas' };
 function key() {
   try { var k = sessionStorage.getItem('bk_k'); if (k) return k; } catch (e) { }
   try { var r = JSON.parse(localStorage.getItem('bk_k_rem') || 'null'); if (r && r.k && r.exp > Date.now()) return r.k; } catch (e) { }
@@ -369,7 +369,7 @@ function rload(k, quiet) {
     function (e) { o.err = e; }).then(function () { o.loading = false; repaint(); });
   return o.p;
 }
-function rloadAll() { ['codigos', 'eventos', 'avisos', 'canjes', 'config', 'rkres', 'errores'].forEach(function (k) { rload(k, true); }); }
+function rloadAll() { ['codigos', 'eventos', 'avisos', 'canjes', 'config', 'rkres', 'errores'].forEach(function (k) { rload(k, true); }); metLoad(true); }
 function rerr(o, what) {
   if (!o || !o.err) return '';
   var e = o.err;

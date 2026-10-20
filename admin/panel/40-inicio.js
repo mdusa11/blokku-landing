@@ -89,6 +89,7 @@ function vInicio() {
   out += '<div class="card"><div class="ch">' + ic('warn') + '<h3>Atención</h3><span class="sub">' + (al.length ? al.length + ' cosa' + (al.length > 1 ? 's' : '') : 'Todo en orden') + '</span></div>' +
     (al.length ? al.slice(0, 8).map(function (a) { return '<div class="alert ' + a.c + ' li clk" data-a="openx" data-r="' + a.r + '" data-o="' + esc(a.open || '') + '"><span class="ai">' + ic(a.i) + '</span><div class="t"><b>' + esc(a.t) + '</b>' + (a.s ? '<span>' + esc(a.s) + '</span>' : '') + '</div>' + ic('chr', 'faint') + '</div>'; }).join('') :
       '<div class="alert ok"><span class="ai">' + ic('check') + '</span><div class="t"><b>Nada urgente</b><span>No hay códigos agotados ni eventos por empezar o terminar.</span></div></div>') + '</div>';
+  out += mtCard();
   out += nowInApp();
   out += '</div><div class="col gap16">';
   /* pendientes */

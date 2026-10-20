@@ -22,8 +22,9 @@ Todo en Supabase (`fngbputjfnwtrcwaabue`), por RPC con la clave del panel (`p_cl
 | `4-ranking.sql` | `admin_ranking`, `admin_moderar`, `admin_ranking_resumen`, `admin_ranking_config` (y las del juego: `ranking_registrar`, `ranking_enviar`, `ranking_tabla`) | Ranking: jugadores, puntajes, moderación y reglas anti-trampa (Juego › Ranking). En el repo de Blokku es `supabase/ranking.sql` |
 | `5-errores.sql` | `admin_errores`, `admin_error_estado` (y `reportar_error`, que llama la app) | Proyecto › Errores. En el repo de Blokku es `supabase/errores.sql` |
 | `6-revocados.sql` | `admin_revocados`, `admin_revocar`, `admin_quitar_revocado` (y redefine `config_remota` con `codigos_revocados`) | Códigos › Revocados (app 1.0.6). Va después de `2-remoto.sql` y se vuelve a correr cada vez que se corra ese. En el repo de Blokku es `supabase/revocados.sql` |
+| `7-metricas.sql` | `admin_metricas` (y `registrar_actividad`, que llama la app 1.0.6+) | Métricas (activos, nuevos, retención D1/D7/D30, partidas por jugador, repartos) y su tarjeta en Inicio. Va después de `2-remoto.sql`; solo hace falta el día que salga la 1.0.6. En el repo de Blokku es `supabase/metricas.sql` |
 
-Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores; sin `6-revocados.sql`, solo Revocados.
+Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores; sin `6-revocados.sql`, solo Revocados. Sin `7-metricas.sql`, Métricas dice qué correr (sin aviso global: antes de la 1.0.6 no hace falta).
 
 ### Revocados
 
