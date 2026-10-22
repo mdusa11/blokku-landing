@@ -884,3 +884,4 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .mt-mini small{display:block;font-size:11.5px;color:var(--faint)}
 .mt-spark{width:100%;height:46px;display:block}
 @media (max-width:420px){.mt-minis{grid-template-columns:repeat(2,minmax(0,1fr))}.mt-ch{height:220px}.mt-coh td,.mt-coh th{padding:8px 7px}.mt-c b{font-size:12.5px}}
+.rk-pl{display:inline-flex;color:var(--muted);flex:none}.rk-pl svg.i{width:15px;height:15px}

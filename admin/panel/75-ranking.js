@@ -145,8 +145,10 @@ function rkTablaView(f) {
   });
   return h + '</tbody></table></div><div class="cb xs mut">' + plural(L.length, 'lugar', 'lugares') + (t.rows.length >= 200 ? ' · se muestran los primeros 200' : '') + '</div></div>';
 }
+function rkPlat(p) { return p === 'android' ? { n: 'Android', i: 'android' } : p === 'ios' ? { n: 'iPhone', i: 'apple' } : p === 'otra' ? { n: 'Otra plataforma', i: 'phone' } : null; }
+function rkPlatIc(p) { var x = rkPlat(p); return x ? '<span class="rk-pl" title="' + esc(x.n) + '">' + ic(x.i) + '</span>' : ''; }
 function rkName(r) {
-  return '<div class="row" style="gap:8px"><span class="rk-fl" title="' + esc(rkPais(r.pais)) + '">' + rkFlag(r.pais) + '</span><b>' + esc(r.nombre) + '</b>' +
+  return '<div class="row" style="gap:8px"><span class="rk-fl" title="' + esc(rkPais(r.pais)) + '">' + rkFlag(r.pais) + '</span><b>' + esc(r.nombre) + '</b>' + rkPlatIc(r.plataforma) +
     (r.sospechoso ? chip('sospechoso', 'warn', 'warn') : '') + (r.oculto ? chip('oculto', 'line', 'eyeoff') : '') + '</div>';
 }
 function rkSospView(s) {
@@ -183,7 +185,7 @@ function rkRules() {
 VIEWS['juego/ranking'] = vRanking;
 
 /* ---------- filtros ---------- */
-A.rkReload = function () { Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
+A.rkReload = function () { RKJ = {}; Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
 A.rkTab = function (el) { rkF().tab = el.dataset.v; paintPage(); };
 A.rkModo = function (el) { rkF().modo = el.dataset.v; paintPage(); };
 A.rkPer = function (el) { rkF().per = el.dataset.v; paintPage(); };
@@ -238,13 +240,45 @@ A.rkNombre = function (el) {
 };
 
 /* ---------- cajón de un jugador ---------- */
-var RKD = null;
+var RKD = null, RKJ = {};
+var RK_MODOS5 = [['clasico', 'Clásico'], ['reloj', 'Contra reloj'], ['diario', 'Reto diario'], ['zen', 'Zen'], ['evento', 'Evento']];
+function rkFicha(id) {
+  var o = RKJ[id];
+  if (!o) {
+    o = RKJ[id] = { d: null, err: null, loading: true };
+    rpc('admin_jugador', { p_id: id }, { nomiss: true }).then(function (r) { o.d = r; o.err = null; }, function (e) { o.err = e; })
+      .then(function () { o.loading = false; repaint(); });
+  }
+  return o;
+}
+function rkDetalle(r) {
+  var o = rkFicha(r.id), d = o.d, dash = '<span class="mut">—</span>';
+  var h = '<div class="dsec"><h4>Dispositivo y partidas</h4>';
+  if (o.loading) return h + '<div class="sk skl"></div></div>';
+  /* sin la función nueva usamos lo que trae la fila del ranking (o nada) */
+  var pl = d ? d.plataforma : r.plataforma, mo = d ? d.modelo : r.modelo, ve = d ? d.version_app : r.version_app;
+  var pm = d && d.por_modo || {}, tot = d ? Number(d.partidas) || 0 : 0, dias = d ? Number(d.dias_jugados) || 0 : 0, mej = d && d.mejores || {};
+  var P = rkPlat(pl), vacio = !P && !mo && !ve && !tot && !dias;
+  if (vacio) return h + '<p class="xs mut">Sin datos (versión anterior)' + (o.err && o.err.code === 'sin_sql' ? ': falta correr ' + SQLF.detalle + ' en Supabase' : o.err ? ': no se pudo cargar (' + esc(o.err.message) + ')' : '. Aparecen cuando el jugador mande un puntaje con la 1.0.7 y esté corrido ' + SQLF.detalle) + '.</p></div>';
+  h += '<div class="list"><div class="li"><div class="t"><b>Plataforma</b><span>' + (P ? ic(P.i) + ' ' + esc(P.n) : dash) + '</span></div></div>' +
+    '<div class="li"><div class="t"><b>Modelo</b><span>' + (mo ? esc(mo) : dash) + '</span></div></div>' +
+    '<div class="li"><div class="t"><b>Versión de la app</b><span>' + (ve ? esc(ve) : dash) + '</span></div></div>' +
+    '<div class="li"><div class="t"><b>Partidas totales</b><span>' + (tot ? nf(tot) : dash) + '</span></div></div>' +
+    '<div class="li"><div class="t"><b>Días jugados</b><span>' + (dias ? nf(dias) : dash) + '</span></div></div></div>';
+  h += '<table class="tbl mt12"><thead><tr><th>Modo</th><th class="num">Partidas</th><th class="num">Mejor puntaje</th></tr></thead><tbody>';
+  RK_MODOS5.forEach(function (m) {
+    var n = Number(pm[m[0]]) || 0, b = mej[m[0]];
+    h += '<tr><td>' + esc(m[1]) + '</td><td class="num">' + (n ? nf(n) : dash) + '</td><td class="num">' + (b != null ? '<b>' + nf(b) + '</b>' : dash) + '</td></tr>';
+  });
+  return h + '</tbody></table><p class="xs mut mt12">Los conteos son lo que la app reportó con sus últimos envíos al ranking. El mejor puntaje es el histórico (Zen y Evento no tienen ranking).</p></div>';
+}
 function rkOpenDr(id, modo, per, pers) {
+  delete RKJ[id];
   RKD = { id: id, modo: modo, per: per, pers: pers || [per] };
   drawer({
     live: true,
     title: function () { var r = RKD && rkRow(RKD.id, RKD.modo, RKD.per); return r ? esc(r.nombre) : 'Jugador'; },
-    sub: function () { var r = RKD && rkRow(RKD.id, RKD.modo, RKD.per); return r ? rkFlag(r.pais) + ' ' + esc(rkPais(r.pais)) + ' · ' + nf(r.puntos) + ' puntos' : ''; },
+    sub: function () { var r = RKD && rkRow(RKD.id, RKD.modo, RKD.per), P = r && rkPlat(r.plataforma); return r ? rkFlag(r.pais) + ' ' + esc(rkPais(r.pais)) + (P ? ' · ' + esc(P.n) : '') + ' · ' + nf(r.puntos) + ' puntos' : ''; },
     onClose: function () { RKD = null; },
     body: function () {
       var D = RKD, r = D && rkRow(D.id, D.modo, D.per);
@@ -254,6 +288,7 @@ function rkOpenDr(id, modo, per, pers) {
         '<div class="list mt12"><div class="li"><div class="t"><b>' + nf(r.puntos) + ' puntos</b><span>' + esc(rkModo(D.modo)) + ' · ' + D.pers.map(rkPerLabel).join(' + ') + '</span></div></div>' +
         '<div class="li"><div class="t"><b>Última jugada</b><span>' + esc(fdt(r.actualizado)) + ' · ' + esc(relT(r.actualizado)) + '</span></div></div>' +
         '<div class="li"><div class="t"><b>Se registró</b><span>' + esc(fdt(r.creado)) + '</span></div></div></div>';
+      h += rkDetalle(r);
       h += '<div class="dsec"><h4>Puntaje</h4><div class="col">' +
         (r.sospechoso ? '<button class="btn blk" data-a="rkAprobar" ' + a + '>' + ic('check') + 'Aprobar puntaje</button><p class="xs mut">Lo aceptas como legítimo y los jugadores ya lo ven.</p>' : '') +
         '<button class="btn blk dng" data-a="rkBorrar" ' + a + '>' + ic('trash') + 'Borrar este puntaje</button><p class="xs mut">Quita solo este puntaje; el jugador y sus demás puntajes siguen.</p></div></div>';
