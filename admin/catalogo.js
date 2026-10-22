@@ -2705,6 +2705,1200 @@ export const CAT = {
    ]
   },
   {
+   "id": "p-theme_blokku",
+   "cid": "theme_blokku",
+   "nombre": "Noche Blokku",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_blokku",
+   "cid": "style_blokku",
+   "nombre": "Gema Blokku",
+   "tipo": "Estilo de pieza",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_blokku",
+   "cid": "effect_blokku",
+   "nombre": "Ensamble Blokku",
+   "tipo": "Efecto de línea",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_blokku",
+   "cid": "frame_blokku",
+   "nombre": "Marco Blokku",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_blokku",
+   "cid": "badge_blokku",
+   "nombre": "Edición Blokku",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Blokku",
+   "gana": "código",
+   "detalle": "Solo código LAS4GEMAS (easter egg de la web: tocar las 4 gemas del logo)",
+   "formas": [
+    "Solo código LAS4GEMAS",
+    "Se encuentra como easter egg en blokku.online (logo del hero)",
+    "Se canjea en Ajustes › Canjear código (1.0.6)"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_tutankamon",
+   "cid": "theme_tutankamon",
+   "nombre": "Valle de los Reyes",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_tutankamon",
+   "cid": "style_tutankamon",
+   "nombre": "Oro y Lapislázuli",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_tutankamon",
+   "cid": "effect_tutankamon",
+   "nombre": "Arenas del Faraón",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_tutankamon",
+   "cid": "frame_tutankamon",
+   "nombre": "Cartucho Real",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_tutankamon",
+   "cid": "badge_tutankamon",
+   "nombre": "Tesoro de Tutankamón",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_tutankamon",
+   "cid": "title_tutankamon",
+   "nombre": "Faraón",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Tesoro de Tutankamón",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_monkeys",
+   "cid": "theme_monkeys",
+   "nombre": "Selva de los Monkeys",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_monkeys",
+   "cid": "style_monkeys",
+   "nombre": "Coctel Tropical",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_monkeys",
+   "cid": "effect_monkeys",
+   "nombre": "¡Bananazo!",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_monkeys",
+   "cid": "frame_monkeys",
+   "nombre": "Bambú y Lianas",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_monkeys",
+   "cid": "badge_monkeys",
+   "nombre": "Los Monkeys",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_monkeys",
+   "cid": "title_monkeys",
+   "nombre": "Rey de los Monkeys",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Los Monkeys",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_luchalibre",
+   "cid": "theme_luchalibre",
+   "nombre": "Arena de Lucha",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_luchalibre",
+   "cid": "style_luchalibre",
+   "nombre": "Máscaras",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_luchalibre",
+   "cid": "effect_luchalibre",
+   "nombre": "¡Plancha!",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_luchalibre",
+   "cid": "frame_luchalibre",
+   "nombre": "Cuerdas del Ring",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_luchalibre",
+   "cid": "badge_luchalibre",
+   "nombre": "Máscara de Oro",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_luchalibre",
+   "cid": "title_luchalibre",
+   "nombre": "Campeón del Ring",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Lucha Libre",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_piratas",
+   "cid": "theme_piratas",
+   "nombre": "Galeón de Medianoche",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_piratas",
+   "cid": "style_piratas",
+   "nombre": "Botín del Cofre",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_piratas",
+   "cid": "effect_piratas",
+   "nombre": "¡Andanada!",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_piratas",
+   "cid": "frame_piratas",
+   "nombre": "Timón y Catalejo",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_piratas",
+   "cid": "badge_piratas",
+   "nombre": "Los Piratas",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_piratas",
+   "cid": "title_piratas",
+   "nombre": "Capitán de los Siete Mares",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Piratas",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_reinos",
+   "cid": "theme_reinos",
+   "nombre": "La Muralla Helada",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_reinos",
+   "cid": "style_reinos",
+   "nombre": "Blasones de Valdraco",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_reinos",
+   "cid": "effect_reinos",
+   "nombre": "Aliento de Dragón",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_reinos",
+   "cid": "frame_reinos",
+   "nombre": "Bastión de Hielo",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_reinos",
+   "cid": "badge_reinos",
+   "nombre": "Corona de Valdraco",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_reinos",
+   "cid": "title_reinos",
+   "nombre": "Domador de Dragones",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Reino de Valdraco",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-theme_cyberpunk",
+   "cid": "theme_cyberpunk",
+   "nombre": "Cromópolis",
+   "tipo": "Tema",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-style_cyberpunk",
+   "cid": "style_cyberpunk",
+   "nombre": "Chips de Cromo",
+   "tipo": "Piezas",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-effect_cyberpunk",
+   "cid": "effect_cyberpunk",
+   "nombre": "Sobrecarga",
+   "tipo": "Efecto",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-frame_cyberpunk",
+   "cid": "frame_cyberpunk",
+   "nombre": "Cromo y Neón",
+   "tipo": "Marco",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-badge_cyberpunk",
+   "cid": "badge_cyberpunk",
+   "nombre": "Casco de Neón",
+   "tipo": "Insignia",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
+   "id": "p-title_cyberpunk",
+   "cid": "title_cyberpunk",
+   "nombre": "Leyenda de Neón",
+   "tipo": "Título",
+   "rareza": "Mítico",
+   "coleccion": "Cromópolis",
+   "gana": "código",
+   "detalle": "Solo por código o evento del panel (aún sin código creado)",
+   "formas": [
+    "Código dinámico desde el panel",
+    "Evento remoto desde el panel"
+   ],
+   "estado": "estreno programado",
+   "estreno": "1.0.6",
+   "plan": "dormido",
+   "_forzar": [
+    "cid",
+    "nombre",
+    "tipo",
+    "rareza",
+    "coleccion",
+    "gana",
+    "detalle",
+    "formas",
+    "estado",
+    "estreno"
+   ]
+  },
+  {
    "id": "p-theme_taller",
    "cid": "theme_taller",
    "nombre": "Taller",

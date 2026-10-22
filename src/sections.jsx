@@ -4,12 +4,14 @@ import {
   Bomb, Pipette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
   CalendarDays, TrendingUp, Ban, Rocket,
 } from 'lucide-react'
+import { useSecret, SecretModal } from './secret.jsx'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
 import DemoGame from './DemoGame.jsx'
 import { STORE_URL, StoreBadges } from './extras.jsx'
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
 export function Hero() {
+  const secret = useSecret()
   return (
     <div className="hero" id="inicio">
       <FallingGems count={18} opacity={0.18} />
@@ -18,7 +20,8 @@ export function Hero() {
           <motion.div initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 12 }} style={{ marginBottom: 26 }}>
             <AppIcon size={92} />
           </motion.div>
-          <h1><Logo size={'clamp(64px, 9vw, 110px)'} /></h1>
+          <h1><Logo size={'clamp(64px, 9vw, 110px)'} onLetter={secret.tap} pulse={secret.pulse} /></h1>
+          <SecretModal open={secret.open} onClose={secret.close} />
           <motion.p className="display hero-tagline" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}>
             EL PUZZLE MÁS ADICTIVO
           </motion.p>

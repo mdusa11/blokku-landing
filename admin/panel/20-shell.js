@@ -1,8 +1,8 @@
 /* ================= estructura: navegación, rutas, barra, buscador ================= */
 var NAV = [
-  { g: '', items: [['inicio', 'Inicio', 'home']] },
+  { g: '', items: [['inicio', 'Inicio', 'home'], ['metricas', 'Métricas', 'trend']] },
   { g: 'En vivo', k: 'vivo', ic: 'live', items: [['vivo/ahora', 'Ahora en la app', 'live'], ['vivo/avisos', 'Avisos y drops', 'bell'], ['vivo/eventos', 'Eventos', 'cal']] },
-  { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/canjes', 'Canjes', 'chart']] },
+  { g: 'Códigos', k: 'codigos', ic: 'ticket', items: [['codigos/rotativos', 'Rotativos', 'zap'], ['codigos/unicos', 'Únicos fijos', 'key'], ['codigos/stickers', 'Stickers', 'sticker'], ['codigos/revocados', 'Revocados', 'pause'], ['codigos/canjes', 'Canjes', 'chart']] },
   { g: 'Juego', k: 'juego', ic: 'game', items: [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['juego/ranking', 'Ranking', 'trophy']] },
   { g: 'Proyecto', k: 'proyecto', ic: 'folder', items: [['proyecto/pendientes', 'Pendientes', 'tasks'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas y decisiones', 'bulb'], ['proyecto/errores', 'Errores', 'warn']] }
 ];
@@ -59,7 +59,7 @@ function paintShell() {
   var R = ROUTES[cur];
   $('#top').innerHTML = '<div class="tt"><div class="tlogo">' + logoImg() + '<span>' + esc(R.t) + '</span></div><div class="crumb">' + (R.g ? esc(R.g) + ' <span class="faint">/</span> ' : '') + '<b>' + esc(R.t) + '</b></div></div>' +
     '<div class="tact"><button class="btn ghost ic sm tsrch" data-a="palette" aria-label="Buscar">' + ic('search') + '</button><span id="syncw"></span></div>';
-  var g = R.k || (cur === 'inicio' ? 'inicio' : cur === 'ajustes' ? 'mas' : '');
+  var g = R.k || (cur === 'inicio' ? 'inicio' : cur === 'ajustes' || cur === 'metricas' ? 'mas' : '');
   if (g === 'juego') g = 'mas';
   $('#bnav').innerHTML = BN.map(function (b) {
     var on = b[0] === g;
@@ -124,7 +124,7 @@ A.theme = function () { var d = !isDark(); document.documentElement.setAttribute
 function closeMore() { if (LAY.more) { LAY.more = null; drawerKill(); } }
 A.mclose = function () { setTimeout(closeMore, 0); };
 A.more = function () {
-  var list = [['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['codigos/canjes', 'Canjes', 'chart'], ['juego/ranking', 'Ranking', 'trophy'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas', 'bulb'], ['vivo/eventos', 'Eventos', 'cal'], ['codigos/unicos', 'Únicos fijos', 'key'], ['ajustes', 'Ajustes', 'sliders']];
+  var list = [['metricas', 'Métricas', 'trend'], ['juego/premios', 'Premios', 'gift'], ['juego/progresion', 'Progresión', 'trend'], ['juego/temporadas', 'Temporadas', 'spark'], ['codigos/canjes', 'Canjes', 'chart'], ['juego/ranking', 'Ranking', 'trophy'], ['proyecto/versiones', 'Versiones', 'layers'], ['proyecto/ideas', 'Ideas', 'bulb'], ['vivo/eventos', 'Eventos', 'cal'], ['codigos/unicos', 'Únicos fijos', 'key'], ['ajustes', 'Ajustes', 'sliders']];
   drawer({
     title: 'Más', auto: true, onClose: function () { LAY.more = null; },
     body: function () {

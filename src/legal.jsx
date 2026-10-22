@@ -124,6 +124,7 @@ export function Privacidad() {
         <li><strong>Registros de fallos y diagnóstico</strong> — si la App se cierra por un error, se envía un informe técnico (qué falló, modelo y sistema del dispositivo) para poder corregirlo. No incluye datos personales.</li>
         <li><strong>Progreso de juego</strong> — se guarda localmente en tu dispositivo.</li>
         <li><strong>Ranking (opcional)</strong> — si decides entrar al ranking, guardamos en nuestro servidor el apodo público que eliges, tus puntuaciones, la insignia y el título que muestras, un identificador aleatorio generado por la App y el país aproximado (deducido de la conexión, nunca por GPS). No pedimos correo, contraseña ni cuenta.</li>
+        <li><strong>Estadísticas anónimas de uso</strong> — una vez al día la App envía un resumen: qué día la abriste, cuántas partidas jugaste por modo, plataforma, versión de la App y país aproximado (deducido de la conexión). Va con un número aleatorio de esa instalación que se transforma (hash) antes de salir del teléfono; no incluye apodo, cuentas ni identificadores del dispositivo, y no guardamos la IP. Puedes apagarlo en Ajustes › Datos y privacidad («Enviar estadísticas anónimas»); «Eliminar mis datos» cambia ese número.</li>
         <li><strong>Códigos canjeados</strong> — contamos cuántas veces se usa cada código (sin saber quién lo usó).</li>
       </ul>
       <p>No recopilamos tu nombre real, dirección, contactos ni ubicación precisa.</p>
@@ -134,7 +135,7 @@ export function Privacidad() {
         <li>Mostrar el ranking mundial y por país.</li>
         <li>Mostrar anuncios (versión gratuita) y medir su rendimiento.</li>
         <li>Prevenir fraude y abuso.</li>
-        <li>Mejorar la App con métricas agregadas.</li>
+        <li>Mejorar la App con métricas agregadas (cuánta gente juega, cuántos vuelven y cuánto juegan).</li>
       </ul>
 
       <h3>3. Terceros que tratan datos</h3>
@@ -142,7 +143,7 @@ export function Privacidad() {
         <li><strong>Google AdMob</strong> (anuncios) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>Google Play Billing / Play Games Services</strong> — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>RevenueCat</strong> (gestión de compras y suscripciones) — <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
-        <li><strong>Supabase</strong> (servidor del ranking, eventos y registro de errores) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
+        <li><strong>Supabase</strong> (servidor del ranking, eventos, registro de errores y estadísticas anónimas de uso) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a></li>
         <li><strong>Firebase Crashlytics</strong> (informes de fallos) — <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">privacidad y seguridad en Firebase</a></li>
       </ul>
 
@@ -162,7 +163,7 @@ export function Privacidad() {
       <h3>6. Conservación y seguridad</h3>
       <p>
         Conservamos los datos de transacciones el tiempo requerido por obligaciones legales y de facturación. Los
-        datos técnicos se conservan en forma agregada. Los datos del ranking se guardan mientras participes y se
+        datos técnicos se conservan en forma agregada; las estadísticas anónimas de uso se borran a los 400 días. Los datos del ranking se guardan mientras participes y se
         borran al usar «Eliminar mis datos» en la App o al pedirlo por correo. Aplicamos medidas de seguridad administrativas y técnicas
         razonables para protegerlos.
       </p>

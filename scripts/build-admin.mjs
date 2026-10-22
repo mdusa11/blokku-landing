@@ -89,7 +89,7 @@ if (existsSync(CSV)) {
   const norm = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
   CODES = rest.filter((r) => r[ix.codigo]).map((r) => {
     const c = r[ix.codigo].trim();
-    return { h: createHash('sha256').update(c).digest('hex'), c, i: r[ix.cosmetico_id].trim(), n: r[ix.nombre].trim(), r: RAR[norm(r[ix.rareza])] || r[ix.rareza], t: r[ix.tipo].trim() };
+    return { h: createHash('sha256').update(c).digest('hex'), c, i: r[ix.cosmetico_id].trim(), n: r[ix.nombre].trim(), r: RAR[norm(r[ix.rareza])] || r[ix.rareza], t: r[ix.tipo].trim(), e: ix.estado != null ? String(r[ix.estado] || '').trim() : '' };
   });
   // Hash con el que la APP reconoce cada código (el que llega a Supabase al canjear).
   const norm2 = (x) => x.toUpperCase().replace(/[\s\-‐‑‒–—−]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');

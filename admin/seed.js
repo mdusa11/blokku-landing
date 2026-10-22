@@ -8,7 +8,7 @@ const p = (id, nombre, tipo, rareza, gana, detalle, estado = 'estreno programado
 
 export const SEED = {
   version: 1,
-  seedRev: 5,
+  seedRev: 6,
   actualizado: '2026-10-15',
   timeline: [
     { id: 't-104', titulo: 'Blokku 1.0.4', tipo: 'version', inicio: '2026-10-13', fin: '', estado: 'publicada', notas: 'Android publicada. iOS en revisión desde el 14-oct (build 5).', premios: [] },
@@ -23,6 +23,7 @@ export const SEED = {
     { id: 't-106', titulo: 'Blokku 1.0.6', tipo: 'version', inicio: '2027-01-11', fin: '', estado: 'idea', notas: 'Fecha tentativa.', premios: [] },
     { id: 't-nav26', titulo: 'Navidad 2026', tipo: 'evento', inicio: '2026-12-15', fin: '2026-12-26', estado: 'programado', notas: 'Evento remoto navidad26: 5 partidas. Da el paquete Noche Nevada. No vuelve.', premios: ['p-theme_navidad26', 'p-style_navidad26', 'p-effect_navidad26', 'p-frame_navidad26', 'p-badge_navidad26'], _forzar: ['estado', 'notas', 'premios'] },
     { id: 't-ny', titulo: 'Año Nuevo 2027', tipo: 'evento', inicio: '2026-12-28', fin: '2027-01-02', estado: 'programado', notas: 'Evento remoto anionuevo27: 5 partidas. Da el paquete Medianoche Dorada. No vuelve.', premios: ['p-theme_anionuevo27', 'p-style_anionuevo27', 'p-effect_anionuevo27', 'p-badge_anionuevo27'], _forzar: ['estado', 'notas', 'premios'] },
+    { id: 't-ee106', titulo: 'Blokku 1.0.6 + Edición Blokku (easter egg web)', tipo: 'hito', inicio: '', fin: '', estado: 'idea', notas: 'Rama web/1.0.6 lista (4 gemas del logo). Ese día: crear LAS4GEMAS en Supabase y mergear la rama. Da el paquete Edición Blokku.', premios: ['p-theme_blokku', 'p-style_blokku', 'p-effect_blokku', 'p-frame_blokku', 'p-badge_blokku'] },
     { id: 't-estrenos', titulo: 'Estreno semanal de premios', tipo: 'estreno', inicio: '2027-01-18', fin: '2027-12-31', estado: 'idea', notas: 'Un premio nuevo cada semana, desde la 1.0.6.', premios: [] },
     { id: 't-val', titulo: 'San Valentín 2027', tipo: 'evento', inicio: '2027-02-10', fin: '2027-02-15', estado: 'programado', notas: 'Evento remoto sanvalentin27: 5 partidas. Da el paquete Atardecer Rosa. No vuelve.', premios: ['p-theme_sanvalentin27', 'p-style_sanvalentin27', 'p-effect_sanvalentin27', 'p-frame_sanvalentin27', 'p-badge_sanvalentin27'], _forzar: ['estado', 'notas', 'premios'] },
     { id: 't-mue27', titulo: 'Día de Muertos 2027', tipo: 'evento', inicio: '2027-10-25', fin: '2027-11-02', estado: 'idea', notas: 'Otro diseño distinto al de 2026.', premios: ['p-mue27'] },

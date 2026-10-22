@@ -21,8 +21,14 @@ Todo en Supabase (`fngbputjfnwtrcwaabue`), por RPC con la clave del panel (`p_cl
 | `3-panel.sql` | `admin_panel`, `admin_guardar_seccion`, `admin_historial`, `admin_version_seccion`, `admin_guardar_imagen`, `admin_imagenes`, `admin_borrar_imagen` | Datos propios del panel |
 | `4-ranking.sql` | `admin_ranking`, `admin_moderar`, `admin_ranking_resumen`, `admin_ranking_config` (y las del juego: `ranking_registrar`, `ranking_enviar`, `ranking_tabla`) | Ranking: jugadores, puntajes, moderación y reglas anti-trampa (Juego › Ranking). En el repo de Blokku es `supabase/ranking.sql` |
 | `5-errores.sql` | `admin_errores`, `admin_error_estado` (y `reportar_error`, que llama la app) | Proyecto › Errores. En el repo de Blokku es `supabase/errores.sql` |
+| `6-revocados.sql` | `admin_revocados`, `admin_revocar`, `admin_quitar_revocado` (y redefine `config_remota` con `codigos_revocados`) | Códigos › Revocados (app 1.0.6). Va después de `2-remoto.sql` y se vuelve a correr cada vez que se corra ese. En el repo de Blokku es `supabase/revocados.sql` |
+| `7-metricas.sql` | `admin_metricas` (y `registrar_actividad`, que llama la app 1.0.6+) | Métricas (activos, nuevos, retención D1/D7/D30, partidas por jugador, repartos) y su tarjeta en Inicio. Va después de `2-remoto.sql`; solo hace falta el día que salga la 1.0.6. En el repo de Blokku es `supabase/metricas.sql` |
 
-Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores.
+Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores; sin `6-revocados.sql`, solo Revocados. Sin `7-metricas.sql`, Métricas dice qué correr (sin aviso global: antes de la 1.0.6 no hace falta).
+
+### Revocados
+
+Se revoca escribiendo el código en claro: el panel calcula en el navegador el mismo hash que la app (`62-revocados.js`: v2 = HMAC-SHA256 con `blokku-codes-v2|` para `BK-XXXX-XXXX-XXXX`; v1 = sha256 con `blokku-codes-v1|` para stickers) y a Supabase solo va el hash. La app compara contra los dos. `node scripts/test-revocados.mjs` revisa el hash contra los vectores de `test/revocados_test.dart` de Blokku.
 
 Acceso: la pantalla de clave está fuera del cifrado (con el ícono público). «Recordar en este dispositivo» guarda la clave 30 días en `localStorage['bk_k_rem']` (`{k, exp}`); si no, solo en `sessionStorage['bk_k']`. «Cerrar sesión en este dispositivo» borra ambas y los cachés del panel.
 
