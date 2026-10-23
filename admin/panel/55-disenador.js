@@ -232,7 +232,8 @@ function avForm(a, pre) {
   avProbe();
   var isNew = !a || !a.id, v = Object.assign({ tipo: 'tarjeta', titulo: {}, texto: {}, inicio: new Date(Date.now() - 60000).toISOString(), fin: addMs(7 * 864e5).toISOString(), accion: '', destino: '', premio: '', imagen: '', imagen_id: '', acento: '', version_menor: '', plataforma: '', repetir: 'una', activo: true, orden: 0 }, a || {}, pre || {});
   v.formato = avFmt(v);
-  var st = AV = { fmt: v.formato, bt: clone(avBtns(v)), imid: v.imagen_id || '', fresh: {}, orig: (a && a.imagen_id) || '', meta: null, saved: false, force: false };
+  var st = AV = { fmt: v.formato, bt: clone(avBtns(v)), imid: v.imagen_id || '', fresh: {}, orig: (a && a.imagen_id) || '', meta: null, saved: false, force: false, jug: [], jn: {}, jr: null, jq: '' };
+  avJugInit(v.jugadores);
   var oldSql = avSqlOld();
   formDrawer({
     wide: true, title: isNew ? 'Nuevo aviso' : 'Editar aviso', sub: isNew ? 'Elige un formato, llena lo necesario y mira cómo queda a la derecha.' : esc(EST_L[avEst(v)]) + ' · ' + nf(v.vistos) + ' vistos · ' + nf(v.clics) + ' clics',
@@ -251,7 +252,8 @@ function avForm(a, pre) {
       f += '<div class="fsec"><h4>Cuándo</h4><div class="fg">' + field('av_ini', 'Empieza', inp('av_ini', toLocalInput(v.inicio), { type: 'datetime-local', di: 'avPrev' })) + field('av_fin', 'Termina', inp('av_fin', toLocalInput(v.fin), { type: 'datetime-local', di: 'avPrev' })) + '</div>' +
         '<div class="xs mut" style="margin:-6px 0 4px">Atajos (empieza ahora y dura…):</div>' + presetBtns('av_ini,av_fin', [[36e5, '1 hora'], [864e5, '1 día'], [3 * 864e5, '3 días'], [7 * 864e5, '1 semana'], [30 * 864e5, '30 días']]) + '</div>';
       f += '<div class="fsec"><h4>A quién</h4>' + field('av_pl', 'Plataforma', sel('av_pl', v.plataforma || '', [['', 'Android e iOS'], ['android', 'Solo Android'], ['ios', 'Solo iOS']])) +
-        field('av_vm', 'Solo a apps con versión menor que…', inp('av_vm', v.version_menor, { ph: 'Vacío = todas. Ej. 1.0.6', max: 12 }), 'Ejemplo: pon 1.0.6 y solo lo verá quien tenga la 1.0.5 o anterior. Perfecto para «actualiza».') + '</div>';
+        field('av_vm', 'Solo a apps con versión menor que…', inp('av_vm', v.version_menor, { ph: 'Vacío = todas. Ej. 1.0.6', max: 12 }), 'Ejemplo: pon 1.0.6 y solo lo verá quien tenga la 1.0.5 o anterior. Perfecto para «actualiza».') +
+        field('av_jug', 'Solo para jugador(es)', '<div id="av_jw">' + avJugHtml() + '</div>', 'Búscalos por su nombre del ranking. Vacío = lo ven todos. Con jugadores elegidos, <b>solo ellos</b> lo reciben (necesitan la app 1.0.8 o más nueva y estar en el ranking); el servidor no se lo manda a nadie más. Máximo 200.') + '</div>';
       f += '<div class="fsec"><h4>Frecuencia</h4>' + radios('av_rep', v.repetir || 'una', [['una', 'Una vez', 'Una sola vez por teléfono.'], ['diaria', 'Una vez al día', 'Vuelve a salir cada día mientras esté vigente.'], ['siempre', 'Siempre', 'Cada vez que abre la app, hasta que termine.']]) + '</div>';
       f += '<div class="fsec"><h4>Más</h4><div class="fg">' + field('av_ord', 'Orden', inp('av_ord', v.orden || 0, { type: 'number', mode: 'numeric' }), 'Si hay varios, el número menor va primero.') + '<div class="f"><span class="fl">Estado</span>' + tog('av_act', v.activo !== false, 'Encendido') + '</div></div></div>';
       return '<div class="edl"><div>' + f + '</div><div class="pvs"><div id="av_pv">' + avisoPhone(avRead(v)) + '</div><div class="pvcap" id="av_pc">Así se verá en un teléfono</div></div></div>';
@@ -263,7 +265,7 @@ function avForm(a, pre) {
       el.addEventListener('dragover', function (e) { if (over(e)) { e.preventDefault(); var z = $('.dz', el); if (z) z.classList.add('over'); } });
       el.addEventListener('dragleave', function (e) { var z = $('.dz', el); if (z && !e.relatedTarget || (z && !z.contains(e.relatedTarget))) z.classList.remove('over'); });
       el.addEventListener('drop', function (e) { if (over(e)) { e.preventDefault(); var z = $('.dz', el); if (z) z.classList.remove('over'); avImgUp(e.dataTransfer.files[0]); } });
-      avTxtHints();
+      avTxtHints(); avJugPaint();
     },
     onClose: function () { if (!st.saved) Object.keys(st.fresh).forEach(function (id) { rpc('admin_borrar_imagen', { p_id: id }).catch(function () { }); }); }
   });
@@ -296,7 +298,7 @@ function avRead(base) {
     tipo: tipo, formato: fmt, titulo: { es: tes, en: drawerVal('av_ten').trim() || tes }, texto: { es: xes, en: drawerVal('av_xen').trim() || xes },
     inicio: fromLocalInput(drawerVal('av_ini')), fin: fromLocalInput(drawerVal('av_fin')),
     accion: m ? m.accion : null, destino: m ? m.destino : '', botones: bs, premio: pkSel('avp')[0] || '', imagen: drawerVal('av_img').trim(), imagen_id: drawerVal('av_imid') || '', acento: drawerVal('av_ac') || '',
-    version_menor: drawerVal('av_vm').trim(), plataforma: drawerVal('av_pl'), repetir: radioVal('av_rep') || 'una', activo: !!drawerVal('av_act'), orden: Math.floor(Number(drawerVal('av_ord')) || 0)
+    version_menor: drawerVal('av_vm').trim(), plataforma: drawerVal('av_pl'), jugadores: (AV.jug || []).slice(), repetir: radioVal('av_rep') || 'una', activo: !!drawerVal('av_act'), orden: Math.floor(Number(drawerVal('av_ord')) || 0)
   };
 }
 function avPrevNow() {
@@ -331,7 +333,13 @@ A.avSave = async function (el) {
   });
   if (o.imagen && !isHttps(o.imagen)) e.av_img = 'Debe ser una dirección https://';
   if (o.version_menor && !/^\d+(\.\d+){1,2}$/.test(o.version_menor)) e.av_vm = 'Números separados por punto, como 1.0.6';
+  if (o.jugadores && o.jugadores.length > 200) e.av_jug = 'Máximo 200 jugadores por aviso';
   if (!showErrs(e)) return;
+  if (o.jugadores && o.jugadores.length) {
+    // Sin 14-servidor.sql el servidor ignoraría la lista y el aviso saldría para TODOS: se comprueba antes.
+    try { await rpc('admin_buscar_jugadores', { p_q: '', p_ids: [] }, { nomiss: true }); }
+    catch (er0) { if (er0.code === 'sin_sql') { S.newSql.servidor = true; avJugPaint(); toast('Falta correr ' + SQLF.servidor + ' en Supabase: sin él este aviso saldría para todos', 'bad'); return; } }
+  }
   if (el.dataset.id) o.id = el.dataset.id;
   var force = AV.force; AV.force = false;
   busy(el, true);
