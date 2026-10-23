@@ -200,6 +200,20 @@ var AYUDA = {
       'Para mandar un mensaje a un jugador concreto, usa Avisos › «Solo para jugador(es)».'
     ]
   },
+  'juego/retos': {
+    que: 'Los retos entre amigos: un jugador termina una partida de Clásico, la app le da un código corto y su amigo juega las mismas piezas para ver quién saca más. Aquí ves cuántos retos se crean y se aceptan, y controlas los límites.',
+    ve: 'Al terminar una partida puede retar a un amigo con un enlace (blokku.online/r/CÓDIGO). Su amigo lo abre: si tiene Blokku, entra directo al reto; si no, ve una página con el puntaje a vencer y los botones de la tienda.',
+    cuando: 'Revisa la conversión (cuántos retos se aceptan) para saber si la función funciona. Baja el límite diario o apaga los retos si ves abuso o algo que falla.',
+    como: [
+      '<b>Qué versión lo soporta:</b> la app 2.0 o más nueva. Las versiones anteriores no tienen retos.',
+      '<b>Retos activos</b> es un interruptor de emergencia: apagado = no se crean retos nuevos. Apagar no borra nada.',
+      '<b>Retos por jugador al día</b> (1 a 200) limita cuántos puede crear cada jugador; por conexión el tope es 5 veces eso. <b>Días que dura un código</b> (1 a 365) solo cambia los retos nuevos.',
+      '<b>Aceptado</b> = el reto tiene al menos un intento de un amigo. <b>Conversión</b> = aceptados entre creados.',
+      '<b>Cuánto tarda:</b> la app guarda estos ajustes unas horas, así que un cambio puede tardar en llegar a todos.',
+      'Para que el enlace abra la app directo (en vez de la página) hay que publicar los archivos de <i>.well-known</i> del sitio; mira admin/README.md.',
+      H_HORA
+    ]
+  },
   'proyecto/pendientes': {
     que: 'Tu lista de cosas por hacer, de ti y de Claude, ordenadas en un tablero.',
     ve: 'Nada. Es solo para ti.',

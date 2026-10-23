@@ -30,6 +30,7 @@ Todo en Supabase (`fngbputjfnwtrcwaabue`), por RPC con la clave del panel (`p_cl
 | `11-jugador-detalle.sql` | `admin_jugador` (y redefine `ranking_enviar` y `admin_ranking`) | Ficha del jugador en Juego › Ranking: plataforma, modelo, versión, partidas por modo, mejor puntaje por modo y días jugados. Va después de `4-ranking.sql`/`8-nombres.sql` y antes de `9-limites.sql`. Sin él, el cajón dice «Sin datos (versión anterior)» |
 | `13-rank-envio.sql` | `admin_rank_envio` (y redefine `config_remota` con `rank_envio_*`) | Envíos al ranking a media partida (Juego › Ajustes del juego). Va después de `9-limites.sql` |
 | `14-servidor.sql` | `admin_servidor`, `admin_buscar_jugadores`, `mis_avisos` (la llama la app), `_srv_*`; redefine `config_remota` (con TODO lo de 13 más `ajustes`, `apagado`, `textos`) y `admin_guardar_aviso` (columna `avisos.jugadores`) | Juego › **Ajustes del juego** (valores con rango, interruptores, frases de Blokki) y Avisos › «Solo para jugador(es)». Va después de `13`, siempre el último; se vuelve a correr cada vez que se corra `2`, `6`, `9`, `10` o `13`. Sin él, la sección dice qué correr y el aviso por jugador no se deja guardar (saldría para todos). App 1.0.8+ |
+| `15-retos.sql` | `retos`, `reto_intentos`, `ajustes_app`; `retos_config`, `reto_crear`, `reto_ver`, `reto_jugar`, `reto_mios` (las llama la app) y `admin_retos` | Juego › **Retos** (estadísticas, interruptor, límite diario, días de caducidad, últimos 50 retos). Solo crea cosas nuevas y se puede volver a correr; va después de `4`, `9` y `14`. También lo usa el Worker (`/r/CODIGO`, vía `reto_ver`). App 2.0+ |
 
 Si falta una función (404 / PGRST202), el panel muestra qué archivo correr. Sin `3-panel.sql` el panel queda en solo lectura. Sin `4-ranking.sql` solo falla la sección Ranking (y su tarjeta en Inicio); sin `5-errores.sql`, solo Errores; sin `6-revocados.sql`, solo Revocados. Sin `7-metricas.sql`, Métricas dice qué correr (sin aviso global: antes de la 1.0.6 no hace falta).
 
@@ -51,7 +52,14 @@ El panel viejo guardaba en `localStorage['blokku_admin_doc']`. Si Supabase no ti
 
 ## Worker
 
-`worker.js` solo atiende `/play` y `/p` (QR de los stickers) y sirve `/admin` con `no-store` y `noindex`. Ya no hay API en Cloudflare.
+`worker.js` solo atiende `/play` y `/p` (QR de los stickers), `/r/CODIGO` (página del reto de un amigo) y sirve `/admin` con `no-store` y `noindex`. Ya no hay API en Cloudflare.
+
+`/r/CODIGO` (6 caracteres de `23456789ABCDEFGHJKMNPQRSTUVWXYZ`; otro formato redirige a `/`) llama a `reto_ver` de Supabase (timeout 3.5 s, caché de 60 s por código) y muestra el puntaje a vencer con botones a Google Play (con referrer `utm_campaign=CODIGO`) o App Store según el dispositivo. Todo dato del servidor se escapa. Si la app está instalada, la abren los App Links / Universal Links antes de llegar aquí; eso depende de `public/.well-known/`:
+
+- `assetlinks.json` (Android): lleva el SHA-256 del **certificado de firma de la app de Play App Signing** (Play Console › Configuración › Integridad de la app › Firma de apps). Mientras diga `PEGAR_AQUI_SHA256_DE_PLAY_APP_SIGNING` los enlaces NO abren la app. El SHA-256 de la clave de subida (`~/blokku-upload.jks`) solo sirve para pruebas con un build firmado localmente.
+- `apple-app-site-association` (iOS, sin extensión): `9JCD8GGN73.com.dusasolutions.blokku`, ruta `/r/*`. Se sirve como `application/json` por `public/_headers`. Además, la app iOS necesita el entitlement Associated Domains `applinks:blokku.online`.
+
+Prueba del Worker sin red: `node scripts/test-reto-worker.mjs`.
 
 ## Diseñador de avisos
 
