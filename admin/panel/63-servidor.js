@@ -32,11 +32,18 @@ var SV_TX = [
   ['blokki_party', 'Blokki celebrando', 'Hitos de racha. {n} = días', '¡{n} días seguidos! ¡Leyenda!', '{n} days in a row! Legend!']
 ];
 var SV_TIPS = 8;
+var SV_NC = [['racha', 'Racha en riesgo', 'Tiene racha de 3+ y no jugó ayer'], ['dias2', '2 días sin jugar', ''], ['dias4', '3 a 5 días sin jugar', ''], ['dias7', '6 o más días sin jugar', ''], ['noche', 'Noche (22:00 en adelante)', ''], ['record', 'Récord a la vista', 'Solo si ya tiene un récord'], ['generico', 'Genérico', 'También es el respaldo si falta otra categoría']];
+var SV_NMAX = 10, SV_NLEN = 120;
 var SV = { d: {}, ap: null, saving: '' };
 
 function svRows() { var o = rm('servidor'); return o && o.rows && typeof o.rows === 'object' && !Array.isArray(o.rows) ? o.rows : null; }
 function svAj() { var r = svRows(); return (r && r.ajustes) || {}; }
 function svTxS() { var r = svRows(); return (r && r.textos) || {}; }
+function svNotis() { var r = svRows(); return (r && r.notis && typeof r.notis === 'object' && !Array.isArray(r.notis)) ? r.notis : {}; }
+function svNList(n, l, c) { var v = n[l]; v = v && !Array.isArray(v) && typeof v === 'object' ? v[c] : null; return Array.isArray(v) ? v.filter(function (x) { return typeof x === 'string'; }) : []; }
+function svLibNow() { var r = svRows(); return (r && Array.isArray(r.liberar)) ? r.liberar : []; }
+function svLibOn() { return SV.lib != null ? SV.lib : svLibNow().indexOf('queplan') >= 0; }
+C.svLib = function (el) { SV.lib = el.checked; };
 function svOffNow() { var r = svRows(); return (r && Array.isArray(r.apagado)) ? r.apagado : []; }
 function svIsOff(k) { return SV.ap && k in SV.ap ? SV.ap[k] : svOffNow().indexOf(k) >= 0; }
 function svDraft(id, srv) { return id in SV.d ? SV.d[id] : (srv == null ? '' : String(srv)); }
@@ -86,10 +93,22 @@ function vServidor() {
     '<h4 style="margin:16px 0 8px">Tips (al tocar a Blokki por 2.ª vez, en orden)</h4>' +
     Array.apply(null, Array(SV_TIPS)).map(function (_, i) { return row('tip_' + (i + 1), 'Tip ' + (i + 1), 'vacío = no sale', '—', '—'); }).join('') +
     '<div class="row mt16"><button class="btn pri" data-a="svSaveTx"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveTx' ? '<span class="spin"></span>' : ic('check')) + 'Guardar frases</button><span class="xs mut">Máximo 200 caracteres. Frases cortas: caben en un globo chico.</span></div></div></div>';
+  // 5. Notificaciones de Blokki (clave notis; formato de BlokkiNotifs.remotePool)
+  var nt = svNotis();
+  h += '<div class="card sec"><div class="ch">' + ic('bell') + '<h3>Notificaciones de Blokki</h3><span class="sub grow">Español e inglés, por situación</span></div><div class="cb">' +
+    '<p class="xs mut" style="margin:0 0 12px">Un mensaje por línea (hasta ' + SV_NMAX + ' por situación, ' + SV_NLEN + ' caracteres cada uno). Si una situación queda vacía usa «Genérico»; si todo queda vacío ese idioma usa los textos de la app. Los demás idiomas no cambian.</p>' +
+    SV_NC.map(function (c) {
+      return '<div class="f"><label>' + esc(c[1]) + (c[2] ? ' <span class="xs mut">· ' + esc(c[2]) + '</span>' : '') + '</label><div class="grid g2">' +
+        ['es', 'en'].map(function (l) { var id = 'sv_nt_' + c[0] + '_' + l; return area(id, svDraft(id, svNList(nt, l, c[0]).join('\n')), { rows: 3, ph: l === 'es' ? 'Español, una por línea' : 'English, one per line', di: 'svIn' }); }).join('') + '</div></div>';
+    }).join('') +
+    '<div class="row mt16"><button class="btn pri" data-a="svSaveNt"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveNt' ? '<span class="spin"></span>' : ic('check')) + 'Guardar notificaciones</button><span class="xs mut">Aplican al reprogramar los avisos (al abrir la app).</span></div></div></div>';
+  // 6. Liberar paquetes bloqueados hasta aviso
+  h += '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Liberar paquetes</h3><span class="sub grow">' + (svLibOn() ? 'Qué Plan liberado' : 'Qué Plan bloqueado') + '</span></div><div class="cb"><div class="row nw" style="align-items:flex-start"><div class="grow"><b>Liberar «Qué Plan»</b><div class="xs mut">El paquete sale bloqueado en la app hasta que lo liberes aquí. Apagarlo lo vuelve a bloquear.</div></div>' +
+    tog('sv_lib', svLibOn(), 'Liberado', { dc: 'svLib' }) + '</div><div class="row mt16"><button class="btn pri" data-a="svSaveLib"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveLib' ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button></div></div></div>';
   return h;
 }
 VIEWS['juego/servidor'] = vServidor;
-A.svReload = function () { SV.d = {}; SV.ap = null; rload('servidor'); rload('config'); toast('Recargando…', 'info'); };
+A.svReload = function () { SV.d = {}; SV.ap = null; SV.lib = null; rload('servidor'); rload('config'); toast('Recargando…', 'info'); };
 
 /* ---------- validación (la misma que _srv_* en 14-servidor.sql) ---------- */
 function svInt(raw, lo, hi) { var t = String(raw == null ? '' : raw).trim(); return /^\d+$/.test(t) && Number(t) >= lo && Number(t) <= hi ? Number(t) : null; }
@@ -163,6 +182,32 @@ A.svSaveTx = function () {
   svSave('svSaveTx', function () {
     return rpc('admin_servidor', { p_textos: out }).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_tx_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Frases guardadas'); });
   });
+};
+
+A.svSaveNt = function () {
+  var errs = {}, srv = svNotis(), out = JSON.parse(JSON.stringify(srv));
+  ['es', 'en'].forEach(function (l) {
+    var langs = out[l] && !Array.isArray(out[l]) && typeof out[l] === 'object' ? out[l] : {};
+    SV_NC.forEach(function (c) {
+      var id = 'sv_nt_' + c[0] + '_' + l, raw = svDraft(id, svNList(srv, l, c[0]).join('\n'));
+      var lines = String(raw).split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+      if (lines.length > SV_NMAX) errs[id] = 'Máximo ' + SV_NMAX + ' mensajes (tiene ' + lines.length + ').';
+      else if (lines.some(function (x) { return x.length > SV_NLEN; })) errs[id] = 'Cada mensaje: máximo ' + SV_NLEN + ' caracteres.';
+      if (lines.length) langs[c[0]] = lines; else delete langs[c[0]];
+    });
+    if (Object.keys(langs).length) out[l] = langs; else delete out[l];
+  });
+  if (!showErrs(errs)) return;
+  if (JSON.stringify(out) === JSON.stringify(srv)) { toast('No hay cambios', 'info'); return; }
+  svSave('svSaveNt', function () {
+    return rpc('admin_servidor', { p_notis: out }).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_nt_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Notificaciones guardadas'); });
+  });
+};
+
+A.svSaveLib = function () {
+  var before = svLibNow(), rest = before.filter(function (k) { return k !== 'queplan'; }), list = svLibOn() ? rest.concat('queplan') : rest;
+  if (list.slice().sort().join() === before.slice().sort().join()) { toast('No hay cambios', 'info'); return; }
+  svSave('svSaveLib', function () { return rpc('admin_servidor', { p_liberar: list }).then(function () { SV.lib = null; toast(svLibOn() ? 'Qué Plan liberado' : 'Qué Plan bloqueado'); }); });
 };
 
 /* ================= AVISOS PARA JUGADORES CONCRETOS (avisos.jugadores, mis_avisos) ================= */
