@@ -48,7 +48,7 @@ function svOffNow() { var r = svRows(); return (r && Array.isArray(r.apagado)) ?
 function svIsOff(k) { return SV.ap && k in SV.ap ? SV.ap[k] : svOffNow().indexOf(k) >= 0; }
 function svDraft(id, srv) { return id in SV.d ? SV.d[id] : (srv == null ? '' : String(srv)); }
 I.svIn = function (el) { SV.d[el.id] = el.value; };
-C.svTog = function (el) { SV.ap = SV.ap || {}; SV.ap[el.dataset.k] = el.checked; };
+C.svTog = function (el) { SV.ap = SV.ap || {}; SV.ap[el.dataset.k] = !el.checked; var t = el.parentNode.querySelector('span:last-child'); if (t) t.textContent = el.checked ? 'Encendida' : 'Apagada'; };
 
 function svNumCard(title, icn, sub, spec, srvOf, pre, save, extra) {
   var h = '<div class="card sec"><div class="ch">' + ic(icn) + '<h3>' + esc(title) + '</h3><span class="sub grow">' + esc(sub) + '</span></div><div class="cb"><div class="grid g2">';
@@ -78,7 +78,7 @@ function vServidor() {
   // 3. Interruptores
   var nOff = SV_OFF.filter(function (x) { return svIsOff(x[0]); }).length;
   h += '<div class="card sec"><div class="ch">' + ic('pause') + '<h3>Interruptores</h3><span class="sub grow">' + (nOff ? plural(nOff, 'función apagada', 'funciones apagadas') : 'Todo encendido') + '</span></div><div class="cb"><div class="col gap12">' +
-    SV_OFF.map(function (x) { return '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(x[1]) + '</b><div class="xs mut">' + esc(x[2]) + '</div></div>' + tog('sv_off_' + x[0], svIsOff(x[0]), 'Apagada', { dc: 'svTog' }).replace('<input ', '<input data-k="' + x[0] + '" ') + '</div>'; }).join('') +
+    SV_OFF.map(function (x) { return '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(x[1]) + '</b><div class="xs mut">' + esc(x[2]) + '</div></div>' + tog('sv_off_' + x[0], !svIsOff(x[0]), svIsOff(x[0]) ? 'Apagada' : 'Encendida', { dc: 'svTog' }).replace('<input ', '<input data-k="' + x[0] + '" ') + '</div>'; }).join('') +
     '</div><div class="row mt16"><button class="btn pri" data-a="svSaveAp"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveAp' ? '<span class="spin"></span>' : ic('check')) + 'Guardar interruptores</button><span class="xs mut">Quien tenga la app abierta lo recibe en unos minutos; sin red usa lo último que supo.</span></div></div></div>';
   // 4. Textos
   var tx = svTxS();
