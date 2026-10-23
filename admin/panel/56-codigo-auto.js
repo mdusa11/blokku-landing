@@ -175,7 +175,7 @@ function caBtnHtml(i, b) {
   if (modo === 'auto') {
     h += '<input type="hidden" id="' + id + '_d" value="' + esc(val) + '"' + (b.codigo_auto ? ' data-own="1"' : '') + '>' +
       field(id + '_cp', 'Premios que da el código', picker('cab' + i, au.premios, { onChange: caChanged }), 'Puedes elegir varios. El código da todos.') +
-      '<div class="fg">' + field(id + '_u', 'Usos', inp(id + '_u', au.usos == null ? CA_USOS : au.usos, { type: 'number', min: 1, mode: 'numeric', di: 'avPrev' }) + '<div class="mt8">' + tog(id + '_sl', au.usos == null && !!b.codigo_auto, 'Sin límite', { dc: 'avPrevC' }) + '</div>', 'Cuántas personas pueden canjearlo.') +
+      '<div class="fg">' + field(id + '_u', 'Usos', inp(id + '_u', au.usos == null ? CA_USOS : au.usos, { type: 'number', min: 1, mode: 'numeric', di: 'avPrev' }) + '<div class="mt8">' + tog(id + '_sl', au.usos == null && !!b.codigo_auto, 'Sin límite de usos', { dc: 'avPrevC' }) + '</div>', 'Cuántas veces en total se puede canjear. Ejemplo: 20 = los primeros 20.') +
       field(id + '_x', 'Texto propio (opcional)', inp(id + '_x', au.texto || '', { ph: 'Ej. BLOKKU-OCT · vacío = al azar', max: 20, di: 'avPrev' }), '4 a 20 letras o números.') + '</div>' +
       '<div class="xs mut" style="margin:-2px 0 6px">Al guardar, el panel crea el código y lo hace caducar cuando termina el aviso. Si lo vuelves a encender o mueves las fechas y ya no sirve, genera otro solo.</div>' +
       '<div id="' + id + '_w">' + caWarnHtml(i) + '</div>';

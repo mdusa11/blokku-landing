@@ -1,5 +1,5 @@
 /* ================= CÓDIGOS: rotativos, únicos, stickers, canjes ================= */
-var CEST_L = [['todos', 'Todos'], ['activo', 'Activos'], ['agotado', 'Agotados'], ['caducado', 'Caducados'], ['desactivado', 'Desactivados']];
+var CEST_L = [['todos', 'Todos'], ['activo', 'Activos ahora'], ['agotado', 'Agotados'], ['caducado', 'Vencidos'], ['desactivado', 'Apagados']];
 function cFilt() {
   var f = S.f.cr || {}, q = f.q || '';
   return rows('codigos').filter(function (c) {
@@ -13,7 +13,7 @@ function crRow(c) {
   var e = cEst(c), lim = c.usos_max != null, P = c.cosmeticos || [];
   return '<div class="cr" data-a="codeOpen" data-id="' + esc(c.id) + '" role="link" tabindex="0"><div class="c-co" style="min-width:0"><span class="code">' + esc(c.mostrar) + '</span>' + (c.etiqueta ? ' <span class="chip line" style="margin-left:4px">' + esc(c.etiqueta) + '</span>' : '') + '<small class="mt4">Creado ' + esc(fdt(c.creado, 1)) + '</small></div>' +
     '<div class="c-pr row nw" style="min-width:0">' + thumbs(P, 3) + '<span class="sm ell">' + esc(P.map(cname).join(' + ')) + '</span></div>' +
-    '<div class="c-us"><b>' + nf(c.usos) + (lim ? '<span class="mut" style="font-weight:500"> / ' + nf(c.usos_max) + '</span>' : '') + '</b><small>' + (lim ? 'usos' : 'sin límite') + '</small>' + (lim ? '<div class="bar mt4' + (e === 'agotado' ? ' warn' : '') + '"><i style="width:' + Math.min(100, c.usos * 100 / c.usos_max) + '%"></i></div>' : '') + '</div>' +
+    '<div class="c-us"><b>' + nf(c.usos) + (lim ? '<span class="mut" style="font-weight:500"> / ' + nf(c.usos_max) + '</span>' : '') + '</b><small>' + (lim ? 'usos gastados' : 'sin límite de usos') + '</small>' + (lim ? '<div class="bar mt4' + (e === 'agotado' ? ' warn' : '') + '"><i style="width:' + Math.min(100, c.usos * 100 / c.usos_max) + '%"></i></div>' : '') + '</div>' +
     '<div class="c-pl sm">' + nf(c.android) + ' <span class="mut">Android</span><br>' + nf(c.ios) + ' <span class="mut">iOS</span></div>' +
     '<div class="c-ca sm">' + (c.caduca ? '<span title="' + esc(fdt(c.caduca)) + '">' + (new Date(c.caduca) > Date.now() ? 'Caduca ' : 'Caducó ') + relT(c.caduca) + '</span>' : '<span class="mut">Sin caducidad</span>') + '<small>' + (c.ultimo ? 'Último canje ' + relT(c.ultimo) : 'Sin canjes') + '</small></div>' +
     '<div class="c-st">' + estChip(e) + '</div></div>';
@@ -24,7 +24,7 @@ function vRotativos() {
   R.forEach(function (c) { tot += c.usos || 0; if (c.ultimo && ymd(new Date(c.ultimo)) === hoy) hoyN++; });
   var h = pageHead('Códigos rotativos', 'Códigos que creas aquí y funcionan al instante en la app, sin actualizarla. Puedes limitar usos, ponerles fecha de fin y apagarlos.',
     '<button class="btn" data-a="crExport"' + (R.length ? '' : ' disabled') + '>' + ic('down') + 'CSV</button><button class="btn pri" data-a="genOpen">' + ic('plus') + 'Crear códigos</button>',
-    ['Cada código da <b>todos</b> los premios que elijas.', '<b>Usos</b>: cuántas personas pueden canjearlo. «Sin límite» sirve para un código público.', '<b>Caducidad</b>: después de esa fecha la app responde «caducado».', '<b>Desactivar</b> lo apaga al momento (quien ya lo canjeó se queda con su premio). Solo se pueden borrar los que nadie ha usado.', 'Tienen el formato BK-XXXX-XXXX-XXXX, o el texto que tú elijas (por ejemplo BLOKKU-OCT).']);
+    ['Cada código da <b>todos</b> los premios que elijas.']);
   h += rerr(o, 'los códigos');
   h += '<div class="kpis mb16">' + kpi('zap', 'Activos', nf(act), 'listos para canjearse') + kpi('trophy', 'Canjes totales', nf(tot), 'de todos los rotativos') + kpi('clock', 'Con canje hoy', nf(hoyN), 'códigos usados hoy') + kpi('ticket', 'Creados', nf(R.length), 'en total') + '</div>';
   var pr = [], et = [];
@@ -35,7 +35,7 @@ function vRotativos() {
     '<div class="row">' + searchBox('cr_q', f.q, 'Buscar código, etiqueta o premio…', 'crQ') + '<select class="sel" style="flex:0 1 220px" data-c="crP" aria-label="Premio">' + opts([['', 'Cualquier premio']].concat(pr.map(function (x) { return [x, cname(x)]; })), f.p) + '</select><select class="sel" style="flex:0 1 200px" data-c="crT" aria-label="Etiqueta">' + opts([['', 'Cualquier etiqueta']].concat(et.map(function (x) { return [x, x]; })), f.t) + '</select></div></div>';
   var L = cFilt();
   if (o.rows == null && !o.err) h += skel(4);
-  else if (!L.length) h += '<div class="card">' + emptyBox('zap', R.length ? 'Ningún código con esos filtros' : 'Todavía no hay códigos', R.length ? 'Quita algún filtro para ver más.' : 'Crea el primero: elige premios y cuántos usos tiene.', R.length ? '' : '<button class="btn pri" data-a="genOpen">' + ic('plus') + 'Crear códigos</button>') + '</div>';
+  else if (!L.length) h += '<div class="card">' + emptyBox('zap', R.length ? 'Ningún código con esos filtros' : 'Todavía no hay códigos', R.length ? 'Ningún código cumple los filtros de arriba. Quita alguno (o escribe otra búsqueda) para ver más.' : 'Todavía no creaste ningún código rotativo. Crea el primero: elige premios, cuántos usos tiene y hasta cuándo sirve.', R.length ? '' : '<button class="btn pri" data-a="genOpen">' + ic('plus') + 'Crear códigos</button>') + '</div>';
   else h += '<div class="list"><div class="cr hd"><span>Código</span><span>Premios</span><span>Usos</span><span class="c-pl">Plataformas</span><span>Caducidad</span><span>Estado</span></div>' + L.slice(0, f.lim).map(crRow).join('') + '</div>' + (L.length > f.lim ? '<div class="row mt12"><button class="btn" data-a="crMore">Ver ' + Math.min(60, L.length - f.lim) + ' más (quedan ' + (L.length - f.lim) + ')</button></div>' : '<p class="xs mut mt8">' + plural(L.length, 'código') + '</p>');
   return h;
 }
@@ -63,14 +63,14 @@ function codeDrawer(id) {
       h += '<div class="kpis mt16" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="kpi"><div class="kl">Usos</div><div class="kn">' + nf(c.usos) + (lim ? '<small>de ' + nf(c.usos_max) + '</small>' : '') + '</div>' + (lim ? '<div class="bar mt8"><i style="width:' + Math.min(100, c.usos * 100 / c.usos_max) + '%"></i></div>' : '<div class="ks">sin límite</div>') + '</div><div class="kpi"><div class="kl">Android</div><div class="kn">' + nf(c.android) + '</div></div><div class="kpi"><div class="kl">iOS</div><div class="kn">' + nf(c.ios) + '</div></div></div>';
       h += '<div class="dsec"><h4>Premios que da</h4><div class="row">' + (c.cosmeticos || []).map(function (x) { return '<button class="pkc" data-a="premOpenCid" data-c="' + esc(x) + '" style="padding-right:10px">' + cthumb(x) + esc(cname(x)) + '</button>'; }).join('') + '</div></div>';
       h += '<div class="dsec"><h4>Datos</h4><dl class="dkv"><dt>Estado</dt><dd>' + estChip(e) + '</dd><dt>Último canje</dt><dd>' + (c.ultimo ? fdt(c.ultimo) + ' (' + relT(c.ultimo) + ')' : 'Nadie lo ha canjeado') + '</dd><dt>Avisos que lo usan</dt><dd>' + (av.length ? av.map(function (a) { return '<a href="#/vivo/avisos?open=av:' + esc(a.id) + '">' + esc(ml(a.titulo) || 'aviso') + '</a> (' + EST_L[avEst(a)].toLowerCase() + ')'; }).join(', ') : 'Ninguno') + '</dd></dl></div>';
-      h += '<div class="dsec"><h4>Cambiar</h4>' + field('cd_um', 'Usos máximos', inp('cd_um', c.usos_max == null ? '' : c.usos_max, { type: 'number', min: 1, ph: 'Vacío = sin límite', mode: 'numeric' }), 'Ya tiene ' + plural(c.usos, 'uso') + '. Vacío quita el límite.') +
-        field('cd_ca', 'Caducidad', inp('cd_ca', toLocalInput(c.caduca), { type: 'datetime-local' }), 'Vacío = no caduca.') + field('cd_et', 'Etiqueta', inp('cd_et', c.etiqueta, { max: 60, ph: 'Para ubicarlo, ej. giveaway-tiktok' })) +
+      h += '<div class="dsec"><h4>Cambiar</h4>' + field('cd_um', 'Usos máximos', inp('cd_um', c.usos_max == null ? '' : c.usos_max, { type: 'number', min: 1, ph: 'Vacío = sin límite', mode: 'numeric' }), 'Cuántas veces en total se puede canjear. Ya se ha usado ' + plural(c.usos, 'vez', 'veces') + '. Si pones un número menor o igual a eso, el código queda «Agotado». Vacío quita el límite.') +
+        field('cd_ca', 'Caducidad', inp('cd_ca', toLocalInput(c.caduca), { type: 'datetime-local' }), 'Hora de México. Después de esta hora la app responde «caducado». Vacío = nunca caduca.') + field('cd_et', 'Etiqueta', inp('cd_et', c.etiqueta, { max: 60, ph: 'Para ubicarlo, ej. giveaway-tiktok' }), 'Solo para ti: sirve para filtrar la lista. Los jugadores no la ven.') +
         '<button class="btn pri" data-a="codeSave" data-id="' + esc(c.id) + '">' + ic('check') + 'Guardar cambios</button></div>';
       return h;
     },
     foot: function () {
       var c = rows('codigos').find(function (x) { return x.id === id; }); if (!c) return '';
-      return (c.usos === 0 ? '<button class="btn ghost dng" data-a="codeDel" data-id="' + esc(c.id) + '">' + ic('trash') + 'Borrar</button>' : '') + '<span class="sp"></span><button class="btn ' + (c.activo ? 'dng' : 'pri') + '" data-a="codeTog" data-id="' + esc(c.id) + '">' + ic(c.activo ? 'pause' : 'play') + (c.activo ? 'Desactivar' : 'Activar') + '</button>';
+      return (c.usos === 0 ? '<button class="btn ghost dng" data-a="codeDel" data-id="' + esc(c.id) + '">' + ic('trash') + 'Borrar</button>' : '') + '<span class="sp"></span><button class="btn ' + (c.activo ? 'dng' : 'pri') + '" data-a="codeTog" data-id="' + esc(c.id) + '">' + ic(c.activo ? 'pause' : 'play') + (c.activo ? 'Apagar código' : 'Encender código') + '</button>';
     }
   });
 }
@@ -80,6 +80,10 @@ A.codeSave = async function (el) {
   if (um !== '' && !(Math.floor(Number(um)) >= 1)) e.cd_um = 'Un número de 1 en adelante, o vacío';
   if (ca && !fromLocalInput(ca)) e.cd_ca = 'Fecha no válida';
   if (!showErrs(e)) return;
+  var nUm = um === '' ? null : Math.floor(Number(um)), nCa = fromLocalInput(ca), cambios = [];
+  if (nUm !== (c.usos_max == null ? null : c.usos_max)) cambios.push(['Usos máximos', (c.usos_max == null ? 'sin límite' : nf(c.usos_max)) + ' → <b>' + (nUm == null ? 'sin límite' : nf(nUm)) + '</b>' + (nUm != null && nUm <= (c.usos || 0) ? ' (ya se usó ' + plural(c.usos, 'vez', 'veces') + ': el código quedará <b>Agotado</b>)' : '')]);
+  if ((nCa ? new Date(nCa).getTime() : null) !== (c.caduca ? new Date(c.caduca).getTime() : null)) cambios.push(['Caducidad', (c.caduca ? esc(fdt(c.caduca)) : 'nunca') + ' → <b>' + (nCa ? esc(fdt(nCa)) : 'nunca') + '</b> (hora de México)' + (nCa && new Date(nCa) <= new Date() ? ' (esa hora ya pasó: el código quedará <b>Vencido</b>)' : '')]);
+  if (cambios.length && !await confirmDlg({ title: '¿Guardar estos cambios en ' + c.mostrar + '?', text: 'Aplican al instante para cualquiera que lo intente canjear.', html: cbox(cambios), ok: 'Sí, guardar', icon: 'ticket' })) return;
   busy(el, true);
   try {
     await rpc('admin_editar_codigo', { p_id: c.id, p_cambios: { usos_max: um === '' ? null : Math.floor(Number(um)), caduca: fromLocalInput(ca), etiqueta: drawerVal('cd_et').trim() } });
@@ -89,6 +93,7 @@ A.codeSave = async function (el) {
 A.codeTog = async function (el) {
   var c = rows('codigos').find(function (x) { return x.id === el.dataset.id; }); if (!c) return;
   if (c.activo && !await confirmDlg({ title: '¿Desactivar ' + c.mostrar + '?', text: 'Deja de funcionar al instante. Quien ya lo canjeó conserva su premio. Lo puedes volver a activar.', ok: 'Desactivar', danger: true, icon: 'pause' })) return;
+  if (!c.activo && !await confirmDlg({ title: '¿Volver a encender ' + c.mostrar + '?', text: 'Vuelve a funcionar al instante, siempre que no esté agotado ni vencido. Cualquiera que lo tenga podrá canjearlo.', ok: 'Sí, encender', icon: 'play' })) return;
   try { await rpc('admin_editar_codigo', { p_id: c.id, p_cambios: { activo: !c.activo } }); toast(c.activo ? 'Código desactivado' : 'Código activado'); await rload('codigos'); drawerRefresh(); } catch (er) { toast(er.message, 'bad'); }
 };
 A.codeDel = async function (el) {
@@ -102,17 +107,17 @@ A.genOpen = function () { genForm(); };
 function genForm() {
   var out = null;
   formDrawer({
-    title: 'Crear códigos', sub: 'Funcionan en cuanto los creas.',
+    title: 'Crear códigos', sub: 'Funcionan al instante en cuanto los creas. Cada código da todos los premios que elijas.',
     body: function () {
-      if (out) return '<div class="ban info" style="margin-top:0">' + ic('check') + '<div class="tx"><b>' + (out.length === 1 ? 'Código creado' : nf(out.length) + ' códigos creados') + '</b>Ya funcionan en la app. Cópialos o descárgalos.</div></div>' +
+      if (out) return '<div class="ban info" style="margin-top:0">' + ic('check') + '<div class="tx"><b>' + (out.length === 1 ? 'Código creado' : nf(out.length) + ' códigos creados') + '</b>Ya funcionan en la app. Cópialos o descárgalos ahora: después los encuentras en la lista de Rotativos.</div></div>' +
         '<div class="row mt16"><button class="btn" data-a="genCopy">' + ic('copy') + 'Copiar todos</button><button class="btn" data-a="genCsv">' + ic('down') + 'Descargar CSV</button></div>' +
         '<div class="row mt16">' + out.slice(0, 200).map(function (c) { return '<span class="code">' + esc(c.mostrar) + '</span>'; }).join('') + '</div>' + (out.length > 200 ? '<p class="xs mut mt8">… y ' + (out.length - 200) + ' más en el CSV.</p>' : '');
-      return '<div class="fsec">' + field('gn_pr', 'Premios que da cada código', picker('gen', [])) + '</div><div class="fsec"><div class="fg">' +
-        field('gn_n', 'Cantidad', inp('gn_n', 1, { type: 'number', min: 1, mode: 'numeric', di: 'genN' }), 'De 1 a 500.') +
-        field('gn_u', 'Usos por código', inp('gn_u', 1, { type: 'number', min: 1, mode: 'numeric' }) + '<div class="mt8">' + tog('gn_sl', false, 'Sin límite', { dc: 'genSL' }) + '</div>') + '</div>' +
-        field('gn_ca', 'Caducidad', inp('gn_ca', '', { type: 'datetime-local' }), 'Vacío = no caduca.') + presetBtns(',gn_ca', [[864e5, 'Mañana'], [7 * 864e5, '1 semana'], [30 * 864e5, '1 mes']]) +
+      return '<div class="fsec">' + field('gn_pr', 'Premios que da cada código', picker('gen', []), 'Elige uno o varios. Quien canjee el código recibe todos.') + '</div><div class="fsec"><div class="fg">' +
+        field('gn_n', 'Cantidad', inp('gn_n', 1, { type: 'number', min: 1, mode: 'numeric', di: 'genN' }), 'Cuántos códigos distintos crear, de 1 a 500. Cada uno tiene su propio texto al azar.') +
+        field('gn_u', 'Usos por código', inp('gn_u', 1, { type: 'number', min: 1, mode: 'numeric' }) + '<div class="mt8">' + tog('gn_sl', false, 'Sin límite de usos', { dc: 'genSL' }) + '</div>', 'Cuántas veces se puede canjear cada código. 1 = de un solo uso; 100 = hasta 100 canjes.') + '</div>' +
+        field('gn_ca', 'Caducidad', inp('gn_ca', '', { type: 'datetime-local' }), 'Hora de México. Después de esta hora el código ya no sirve. Vacío = no caduca.') + presetBtns(',gn_ca', [[864e5, 'Mañana'], [7 * 864e5, '1 semana'], [30 * 864e5, '1 mes']]) +
         '<div class="mt16"></div>' + field('gn_et', 'Etiqueta', inp('gn_et', '', { max: 60, ph: 'Ej. giveaway-tiktok' }), 'Te ayuda a encontrarlos y filtrarlos después.') +
-        field('gn_tx', 'Texto propio', inp('gn_tx', '', { max: 20, ph: 'Ej. BLOKKU-OCTUBRE' }), 'Solo cuando creas 1. 4 a 20 letras o números. Vacío = al azar.') + '</div>';
+        field('gn_tx', 'Texto propio', inp('gn_tx', '', { max: 20, ph: 'Ej. BLOKKU-OCTUBRE' }), 'Solo cuando creas 1 código. 4 a 20 letras o números, sin acentos. Vacío = el sistema inventa uno (BK-XXXX-XXXX-XXXX).') + '</div>';
     },
     foot: function () { return out ? '<button class="btn" data-a="genAgain">' + ic('plus') + 'Crear más</button><span class="sp"></span><button class="btn pri" data-a="drClose">Listo</button>' : '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="genGo">' + ic('zap') + 'Crear</button>'; },
     onMount: function () { if (!out) genSync(); }
@@ -122,9 +127,10 @@ function genForm() {
     if (!sel2.length) e.gn_pr = 'Elige al menos un premio';
     if (!(n >= 1 && n <= 500)) e.gn_n = 'De 1 a 500';
     if (!sl && !(u >= 1)) e.gn_u = 'Un número de 1 en adelante, o «Sin límite»';
-    if (ca && (!fromLocalInput(ca) || new Date(ca) <= new Date())) e.gn_ca = 'Elige una fecha futura';
+    if (ca && (!fromLocalInput(ca) || new Date(fromLocalInput(ca)) <= new Date())) e.gn_ca = 'Elige una fecha futura';
     if (tx && n === 1 && !/^[A-Za-z0-9 -]{4,24}$/.test(tx)) e.gn_tx = '4 a 20 letras o números';
     if (!showErrs(e)) return;
+    if (!await confirmDlg({ title: n === 1 ? '¿Crear este código?' : '¿Crear ' + nf(n) + ' códigos?', text: 'Quedan activos al instante.', html: cbox([['Premios', esc(sel2.map(cname).join(' + '))], ['Usos por código', sl ? 'sin límite' : nf(u)], ['Caducidad', ca ? esc(fdt(fromLocalInput(ca))) + ' (hora de México)' : 'nunca caduca'], ['A quién', 'Cualquiera que tenga el código y la app 1.0.5 o más nueva podrá canjearlo.']]), ok: 'Sí, crear', icon: 'ticket' })) return;
     busy(el, true, 'Creando…');
     try {
       out = await rpc('admin_crear_codigos', { p_cosmeticos: sel2, p_cantidad: n, p_usos_max: sl ? null : u, p_caduca: fromLocalInput(ca), p_etiqueta: drawerVal('gn_et').trim(), p_texto: n === 1 && tx ? tx : null }, { timeout: 60000 }) || [];
@@ -145,7 +151,7 @@ function ucRow(c) {
   if (c.e === 'revocado') return '<div class="uc"><span class="code">••••-••••-' + esc(c.c.slice(-4)) + '</span>' + chipN('Revocado desde 1.0.6', 'warn') + '<span class="xs mut">Ya no se acepta; quien lo canjeó conserva todo.</span><span class="xs ' + (cjCount(c.a) ? 'b' : 'mut') + ' nowrap">' + (cjCount(c.a) ? plural(cjCount(c.a), 'canje') : 'sin canjes') + '</span></div>';
   var h = c.h, show = !!S.reveal[h], e = cst(h), n = note(h), cj = cjCount(c.a);
   return '<div class="uc"><span class="code">' + (show ? esc(c.c) : '••••-••••-••••') + '</span><div class="mini"><button class="btn xs ic" data-a="ucRev" data-h="' + h + '" aria-label="' + (show ? 'Ocultar' : 'Ver') + '" title="' + (show ? 'Ocultar' : 'Ver') + '">' + ic(show ? 'eyeoff' : 'eye') + '</button><button class="btn xs ic" data-a="ucCopy" data-h="' + h + '" aria-label="Copiar" title="Copiar">' + ic('copy') + '</button></div>' +
-    '<div class="c-st">' + seg('ucSt" data-h="' + h, e, CST) + '</div><input class="in sm c-nt" id="ucn_' + h.slice(0, 16) + '" data-c="ucNote" data-h="' + h + '" value="' + esc(n && n.n || '') + '" placeholder="¿A quién o dónde?" aria-label="Nota">' +
+    '<div class="c-st">' + seg('ucSt" data-h="' + h, e, CST) + '</div><input class="in sm c-nt" id="ucn_' + h.slice(0, 16) + '" data-c="ucNote" data-h="' + h + '" value="' + esc(n && n.n || '') + '" placeholder="Nota: ¿a quién o dónde se lo diste?" aria-label="Nota (solo para ti)">' +
     '<span class="xs ' + (cj ? 'b' : 'mut') + ' nowrap">' + (cj ? plural(cj, 'canje') : 'sin canjes') + '</span></div>';
 }
 function cjCount(a) { var n = 0; rows('canjes').forEach(function (r) { if (r.h === a) n += Number(r.n) || 0; }); return n; }
@@ -153,14 +159,15 @@ function vUnicos() {
   rm('canjes');
   var all = typeof CODES !== 'undefined' ? CODES : [], f = S.f.uc = S.f.uc || { e: 'todos', r: '' };
   if (S.f.uq != null) { f.q = S.f.uq; S.f.uq = null; }
-  if (!all.length) return pageHead('Códigos únicos fijos', 'Códigos de un solo uso que vienen dentro de la app.') + '<div class="card">' + emptyBox('key', 'No hay códigos en este panel', 'El archivo privado de códigos no estaba al compilar el panel.') + '</div>';
+  if (!all.length) return pageHead('Códigos únicos fijos', 'Códigos de un solo uso que vienen dentro de la app.') + '<div class="card">' + emptyBox('key', 'No hay códigos en este panel', 'El archivo privado de códigos no estaba cuando se armó el panel, así que esta lista sale vacía. Pídele a Claude que vuelva a compilar el panel con el archivo codigos-canje.csv.') + '</div>';
   var mas = all.filter(function (c) { return c.i === '*'; }), ind = all.filter(function (c) { return c.i !== '*'; });
   var disp = ind.filter(function (c) { return cst(c.h) === 'disponible'; }).length, pub = ind.filter(function (c) { return cst(c.h) === 'publicado'; }).length, reg = ind.filter(function (c) { return cst(c.h) === 'regalado'; }).length;
   var h = pageHead('Códigos únicos fijos', 'Los ' + ind.length + ' códigos que vienen dentro de la app (5 por premio). Lleva el control de cuáles ya diste y a quién.', '',
     ['Cada código desbloquea <b>un</b> premio y vive dentro de la app, así que funciona sin internet.', 'Marca cada uno como <b>Disponible</b>, <b>Publicado</b> (lo pusiste en redes) o <b>Regalado</b> (se lo diste a alguien), y anota a quién.', 'Los códigos solo existen dentro de este panel cifrado: nunca se guardan en Supabase; ahí solo va el estado y tu nota.', 'Los <b>canjes</b> los cuenta Supabase desde la 1.0.5 (anónimos).']);
+  h += '<div class="rule">' + ic('info') + '<div>Marcar «Disponible», «Publicado» o «Regalado» y escribir notas es <b>solo tu control</b>: no cambia nada para los jugadores. Para dejar de aceptar un código, usa «Revocados».</div></div>';
   h += '<div class="kpis mb16">' + kpi('key', 'Disponibles', nf(disp), 'de ' + nf(ind.length)) + kpi('mega', 'Publicados', nf(pub), 'en redes o en público') + kpi('gift', 'Regalados', nf(reg), 'a alguien en concreto') + kpi('trophy', 'Canjeados', nf(ind.reduce(function (a, c) { return a + (cjCount(c.a) ? 1 : 0); }, 0)), 'códigos con al menos un canje') + '</div>';
   if (mas.length) h += '<div class="card mb16" style="border-color:var(--warn-line)"><div class="ch">' + ic('warn') + '<h3>Códigos maestros</h3><span class="sub">Desbloquea TODOS los cosméticos (menos los del staff). No lo publiques ni lo regales a la ligera.</span></div><div class="ub" style="padding-top:12px">' + mas.map(ucRow).join('') + '</div></div>';
-  h += '<div class="col gap12 mb16">' + fchips('ucE', f.e, [['todos', 'Todos'], ['disponible', 'Con disponibles'], ['publicado', 'Con publicados'], ['regalado', 'Con regalados']]) + '<div class="row">' + searchBox('uc_q', f.q, 'Buscar premio…', 'ucQ') + '<select class="sel" style="flex:0 1 200px" data-c="ucR" aria-label="Rareza">' + opts([['', 'Todas las rarezas']].concat(RAR.map(function (r) { return [r, r]; })), f.r) + '</select></div></div>';
+  h += '<div class="col gap12 mb16">' + fchips('ucE', f.e, [['todos', 'Todos'], ['disponible', 'Con códigos disponibles'], ['publicado', 'Con códigos publicados'], ['regalado', 'Con códigos regalados']]) + '<div class="row">' + searchBox('uc_q', f.q, 'Buscar premio…', 'ucQ') + '<select class="sel" style="flex:0 1 200px" data-c="ucR" aria-label="Rareza">' + opts([['', 'Todas las rarezas']].concat(RAR.map(function (r) { return [r, r]; })), f.r) + '</select></div></div>';
   var g = {}, ord = [];
   ind.forEach(function (c) { if (!g[c.i]) { g[c.i] = { n: c.n, r: c.r, l: [] }; ord.push(c.i); } g[c.i].l.push(c); });
   var rowsH = '';
@@ -171,7 +178,7 @@ function vUnicos() {
     rowsH += '<div class="ug' + (op ? ' open' : '') + '"><button class="ugh" data-a="ucGrp" data-c="' + esc(cid) + '" aria-expanded="' + !!op + '">' + cthumb(cid, 'sm') + '<span class="grow"><b style="display:block;font-size:14.5px">' + esc(o.n) + '</b><span class="xs mut">' + d + ' de ' + o.l.length + ' disponibles' + (cj ? ' · ' + plural(cj, 'canje') : '') + '</span></span>' + rr(o.r) + '<span class="hide-sm" style="width:80px"><span class="bar"><i style="width:' + Math.round(d * 100 / o.l.length) + '%"></i></span></span>' + ic('chr', 'chev') + '</button>' +
       (op ? '<div class="ub">' + o.l.map(ucRow).join('') + '</div>' : '') + '</div>';
   });
-  h += '<div class="list">' + (rowsH || emptyBox('search', 'Ningún premio con ese filtro', 'Prueba con otra búsqueda.')) + '</div>';
+  h += '<div class="list">' + (rowsH || emptyBox('search', 'Ningún premio con ese filtro', 'Prueba con otra palabra o toca «Todos».')) + '</div>';
   return h;
 }
 A.ucGrp = function (el) { var k = 'u_' + el.dataset.c; S.open[k] = !S.open[k]; paintPage(); };
@@ -190,7 +197,7 @@ function vStickers() {
   var L = items('cupones');
   var h = pageHead('Stickers', 'Los códigos impresos en los stickers. Son permanentes y cualquiera puede usarlos las veces que quiera.', '<button class="btn pri" data-a="cupNew">' + ic('plus') + 'Agregar sticker</button>',
     ['Estos códigos viven dentro de la app (desde la 1.0.4) y no caducan.', 'Los <b>canjes</b> se cuentan desde la 1.0.5.', 'Puedes subir fotos de cada sticker y anotar dónde los repartiste.']);
-  if (!L.length) return h + '<div class="card">' + emptyBox('sticker', 'Sin stickers', '', '') + '</div>';
+  if (!L.length) return h + '<div class="card">' + emptyBox('sticker', 'Sin stickers en la lista', 'Agrega aquí los stickers que imprimas para llevar la cuenta de qué da cada uno y dónde los repartiste. Ojo: agregar uno aquí no crea el código en la app.', '') + '</div>';
   h += '<div class="grid g2">' + L.map(function (c) {
     var ps = (c.premios || []).map(prem).filter(Boolean), n = v1count(c.codigo);
     return '<div class="card pad"><div class="row nw" style="align-items:flex-start"><div class="grow"><div class="row"><span class="code big">' + esc(c.codigo) + '</span><button class="btn sm ic" data-a="copy" data-t="' + esc(c.codigo) + '" aria-label="Copiar">' + ic('copy') + '</button></div><p class="mt8 b">' + esc(c.da) + '</p><p class="sm mut">' + esc([c.tipo, c.vigencia, c.donde].filter(Boolean).join(' · ')) + '</p></div><div style="text-align:right"><div style="font-size:26px;font-weight:800">' + nf(n) + '</div><div class="xs mut">canjes</div></div></div>' +
@@ -210,7 +217,7 @@ function cupForm(c) {
   var isNew = !c, v = c || { id: uid('c'), codigo: '', da: '', premios: [], tipo: 'permanente', vigencia: 'Sin caducidad', donde: 'Stickers', notas: '' };
   formDrawer({
     title: isNew ? 'Agregar sticker' : 'Editar sticker',
-    body: function () { return field('cu_co', 'Código', inp('cu_co', v.codigo, { max: 40, auto: isNew })) + field('cu_da', 'Qué da', inp('cu_da', v.da, { ph: 'Ej. Piezas Dusa' })) + field('cu_pr', 'Premios', picker('cup', v.premios || [], { by: 'id' })) + '<div class="fg">' + field('cu_ti', 'Tipo', inp('cu_ti', v.tipo)) + field('cu_vi', 'Vigencia', inp('cu_vi', v.vigencia)) + '</div>' + field('cu_do', 'Dónde se reparte', inp('cu_do', v.donde)) + field('cu_no', 'Notas', area('cu_no', v.notas)); },
+    body: function () { return '<div class="rule">' + ic('info') + '<div>Esto es solo tu lista de control. Cambiarla <b>no modifica</b> el código dentro de la app.</div></div>' + field('cu_co', 'Código', inp('cu_co', v.codigo, { max: 40, auto: isNew }), 'Tal como está impreso en el sticker.') + field('cu_da', 'Qué da', inp('cu_da', v.da, { ph: 'Ej. Piezas Dusa' }), 'Descripción corta para ti.') + field('cu_pr', 'Premios', picker('cup', v.premios || [], { by: 'id' })) + '<div class="fg">' + field('cu_ti', 'Tipo', inp('cu_ti', v.tipo), 'Ej. permanente.') + field('cu_vi', 'Vigencia', inp('cu_vi', v.vigencia), 'Ej. Sin caducidad.') + '</div>' + field('cu_do', 'Dónde se reparte', inp('cu_do', v.donde), 'Ej. Stickers en la expo, paquete a creadores…') + field('cu_no', 'Notas', area('cu_no', v.notas)); },
     foot: function () { return (isNew ? '' : '<button class="btn ghost dng" data-a="cupDel" data-id="' + esc(v.id) + '">' + ic('trash') + 'Borrar</button>') + '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="cupSave" data-id="' + esc(v.id) + '" data-new="' + (isNew ? 1 : '') + '">' + ic('check') + 'Guardar</button>'; }
   });
 }
@@ -231,8 +238,8 @@ function vCanjes() {
   if (o.rows == null) return h + '<div class="kpis">' + '<div class="kpi"><div class="sk" style="height:70px"></div></div>'.repeat(4) + '</div>';
   var Ag = cjAgg(), t = dn(todayS()), sum = function (n) { var s = 0; for (var i = 0; i < n; i++) s += Ag.day[iso(t - i)] || 0; return s; };
   var rng = S.f.cjr || 30;
-  h += '<div class="kpis">' + kpi('trophy', 'Total', nf(Ag.tot), 'desde la 1.0.5') + kpi('clock', 'Hoy', nf(Ag.day[todayS()] || 0), 'ayer ' + nf(Ag.day[iso(t - 1)] || 0)) + kpi('chart', 'Últimos 7 días', nf(sum(7)), '', spark(lastDays(Ag.day, 14).map(function (x) { return x.v; }))) + kpi('cal', 'Últimos 30 días', nf(sum(30)), '') + '</div>';
-  if (!Ag.tot) h += '<div class="card mt16">' + emptyBox('chart', 'Todavía nadie ha canjeado un código fijo', 'Cuando alguien canjee un sticker o un código único con la 1.0.5, aparecerá aquí.') + '</div>';
+  h += '<div class="kpis">' + kpi('trophy', 'Total de canjes', nf(Ag.tot), 'códigos fijos, desde la 1.0.5') + kpi('clock', 'Hoy', nf(Ag.day[todayS()] || 0), 'ayer ' + nf(Ag.day[iso(t - 1)] || 0)) + kpi('chart', 'Últimos 7 días', nf(sum(7)), '', spark(lastDays(Ag.day, 14).map(function (x) { return x.v; }))) + kpi('cal', 'Últimos 30 días', nf(sum(30)), '') + '</div>';
+  if (!Ag.tot) h += '<div class="card mt16">' + emptyBox('chart', 'Todavía nadie ha canjeado un código fijo', 'Cuando alguien canjee un sticker o un código único con la app 1.0.5 o más nueva, aparecerá aquí. Si esperabas canjes, pulsa «Actualizar».') + '</div>';
   else {
     var D = lastDays(Ag.day, rng).map(function (x) { var p = x.d.split('-'); return { label: +p[2] + ' ' + MES[+p[1] - 1].slice(0, 3), v: x.v, hot: x.d === todayS(), tip: fd(x.d) + ': ' + plural(x.v, 'canje') }; });
     h += '<div class="card mt16"><div class="ch">' + ic('chart') + '<h3>Por día</h3><span class="grow"></span>' + seg('cjRng', rng, [[14, '14 días'], [30, '30 días'], [90, '90 días']]) + '</div><div class="cb">' + bars(D, { label: 'Canjes por día', ticks: rng > 30 ? 9 : 8 }) + '</div></div>';

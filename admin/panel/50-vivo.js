@@ -19,10 +19,29 @@ function gantt(rowsL, from, to, o) {
     var a = P(r.a), b = P(r.b), w = Math.max(b - a, .8), cut = (r.a < from ? ' l' : '') + (r.b > to ? ' r' : '');
     h += '<div class="gr" data-a="' + (r.act || 'openx') + '" data-r="' + esc(r.r || '') + '" data-o="' + esc(r.o || '') + '" role="link" tabindex="0" title="' + esc(r.label + ' · ' + r.tip) + '"><div class="gl">' + esc(r.label) + '<small>' + esc(r.sub || '') + '</small></div><div class="gt"><div class="gb' + (r.ghost ? ' ghost' : '') + (r.off ? ' off' : '') + cut + '" style="left:' + a.toFixed(2) + '%;width:' + w.toFixed(2) + '%;--gc:' + (r.c || '#5b4cf0') + '">' + (w > 14 ? esc(r.inner || '') : '') + '</div></div></div>';
   });
-  if (!rowsL.length) h += '<div class="empty" style="padding:20px">Nada programado en estas semanas.</div>';
+  if (!rowsL.length) h += '<div class="empty" style="padding:20px">Nada programado en estas semanas. Cuando crees un evento o un aviso con fechas dentro de este rango, aparecerá aquí como una barra.</div>';
   h += '</div></div>';
   if (o.legend) h += '<div class="glg">' + o.legend.map(function (l) { return '<span><i style="--gc:' + l[0] + '"></i>' + esc(l[1]) + '</span>'; }).join('') + '</div>';
   return h;
+}
+/* ---------- textos de confirmación: qué va a pasar y a quién ---------- */
+var LLEGA = 'Los teléfonos lo reciben en unos minutos (como máximo unos 15).';
+function avAud(o) {
+  if (o.jugadores && o.jugadores.length) return 'Solo a ' + plural(o.jugadores.length, 'jugador', 'jugadores') + ' que elegiste (con la app 1.0.8 o más nueva).';
+  var pl = o.plataforma === 'android' ? 'jugadores de Android' : o.plataforma === 'ios' ? 'jugadores de iPhone' : 'jugadores de Android y de iPhone';
+  return 'A todos los ' + pl + (o.version_menor ? ' que tengan una app anterior a la ' + esc(o.version_menor) : ' con la app 1.0.5 o más nueva') + '.';
+}
+function avWhen(o) {
+  var n = Date.now(), a = new Date(o.inicio).getTime(), b = new Date(o.fin).getTime();
+  return esc(fdt(o.inicio)) + ' → ' + esc(fdt(o.fin)) + ' (hora de México). ' + (b <= n ? '<b>Ojo:</b> esas fechas ya pasaron, así que no se mostrará hasta que cambies las fechas.' : a > n ? 'Todavía no empieza: saldrá ' + esc(relT(o.inicio)) + '.' : 'Ya empezó: sale en cuanto lo reciban.');
+}
+function avFreq(o) { return { una: 'una sola vez por teléfono', diaria: 'una vez al día mientras esté vigente', siempre: 'cada vez que abra la app mientras esté vigente' }[o.repetir] || 'una sola vez por teléfono'; }
+function avConfirmar(o, titulo, okTxt) {
+  return confirmDlg({ title: titulo, text: '«' + (ml(o.titulo) || 'sin título') + '» (' + AV_FMT[avFmt(o)] + ').', html: cbox([['A quién', avAud(o)], ['Cuándo', avWhen(o)], ['Cuántas veces lo ve cada quien', esc(avFreq(o))], ['Cuánto tarda', LLEGA]]), ok: okTxt, icon: 'bell' });
+}
+function evConfirmar(o, titulo, okTxt) {
+  var n = Date.now(), a = new Date(o.inicio).getTime(), b = new Date(o.fin).getTime();
+  return confirmDlg({ title: titulo, text: '«' + (o.nombre.es || o.id) + '»: ' + goalTxt(o.meta, o.objetivo) + '.', html: cbox([['A quién', 'A todos los jugadores con la app 1.0.5 o más nueva.'], ['Cuándo', esc(fdt(o.inicio)) + ' → ' + esc(fdt(o.fin)) + ' (hora de México). ' + (b <= n ? '<b>Ojo:</b> esas fechas ya pasaron, así que no se verá.' : a > n ? 'Se anuncia en el menú y empieza ' + esc(relT(o.inicio)) + '.' : 'Ya empezó.')], ['Premios', esc((o.premios || []).map(cname).join(' + ') || '—')], ['Cuánto tarda', LLEGA]]), ok: okTxt, icon: 'cal' });
 }
 function liveRows(from, to) {
   var out = [];
@@ -77,7 +96,7 @@ function vAhora() {
   ['eventos', 'avisos', 'codigos', 'config'].forEach(function (k) { rm(k); });
   var h = pageHead('Ahora en la app', 'Lo que ve cualquier persona que abra Blokku en este momento, y lo que viene en las próximas semanas. Todo esto cambia sin publicar una versión nueva.',
     '<button class="btn" data-a="liveReload">' + ic('refresh') + 'Actualizar</button><button class="btn pri" data-a="tplDrop">' + ic('zap') + 'Lanzar drop</button>',
-    ['La app revisa Supabase <b>al abrirse y cada pocos minutos</b>. Lo que cambies aquí llega sin actualizar la app.', '<b>Eventos</b>: retos con fecha (por ejemplo «juega 5 partidas») que dan premios.', '<b>Avisos</b>: una <b>tarjeta</b> en el menú o un <b>drop</b> (ventana emergente). Pueden llevar un botón para canjear, ver un evento, abrir una página o actualizar.', 'La línea de tiempo junta lo remoto (morado y rosa) con lo que tienes planeado en el calendario (rayado).']);
+    undefined);
   h += rerr(RM.eventos, 'los eventos') || rerr(RM.avisos, 'los avisos'); avProbe();
   var LD = liveDrops();
   if (LD.length) h += '<div class="sec" style="margin-top:0"><div class="sech"><h2>Drops en vivo</h2><span class="sub">Se actualiza solo cada 15 segundos.</span></div><div class="grid g2">' + LD.map(dropLive).join('') + '</div></div>';
@@ -93,7 +112,7 @@ function vAhora() {
     var ev = c.eventos || [], av = c.avisos || [], cards = av.filter(function (a) { return avFmt(a) === 'tarjeta'; }), banners = av.filter(function (a) { return avFmt(a) === 'banner'; }), drops = av.filter(function (a) { return avFmt(a) === 'ventana' || avFmt(a) === 'imagen'; });
     var inner = ev.map(eventCardPrev).join('') + cards.map(cardPrev).join('');
     h += '<div class="card pad"><div class="pvwrap" data-keep="pvw" style="justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding:6px 4px 10px">' +
-      '<div><div class="phone-sm">' + phone(inner || '<p style="font-size:12px;opacity:.7;text-align:center;margin:20px 0">Sin eventos ni tarjetas remotas</p>', '', banners.map(bannerPrev).join('')) + '</div><div class="pvcap">Menú principal</div></div>' +
+      '<div><div class="phone-sm">' + phone(inner || '<p style="font-size:12px;opacity:.7;text-align:center;margin:20px 0">Sin eventos ni tarjetas remotas: el menú se ve como viene de fábrica</p>', '', banners.map(bannerPrev).join('')) + '</div><div class="pvcap">Menú principal</div></div>' +
       drops.map(function (a) { return '<div><div class="phone-sm">' + avisoPhone(a) + '</div><div class="pvcap">' + AV_FMT[avFmt(a)] + ': ' + esc(ml(a.titulo) || '¡Salió un código!') + '</div><div class="pvnote">' + targetTxt(a) + '</div></div>'; }).join('') +
       '</div>' + ((c.eventos_apagados || []).length ? '<p class="xs mut mt8">Apagados (la app deja de mostrarlos aunque los traiga de fábrica): ' + c.eventos_apagados.map(esc).join(', ') + '</p>' : '') +
       '<p class="xs mut mt8">La tarjeta y el drop se filtran en cada teléfono por plataforma y versión. Hora del servidor: ' + fdt(c.ahora) + '.</p></div>';
@@ -117,7 +136,7 @@ function avCard(a) {
     (e === 'activo' ? '<div class="bar mt8" style="max-width:360px"><i style="width:' + Math.round(el * 100) + '%"></i></div>' : '') +
     (avBtns(a).length ? '<div class="row mt8 sm mut">' + avBtns(a).map(function (b) { return '<span class="chip line">' + esc(btLabel(b)) + '</span>' + (b.destino ? '<span class="mono xs" style="overflow-wrap:anywhere">' + esc(b.destino) + '</span>' : '<span class="xs">' + esc((BT_ACC.filter(function (x) { return x[0] === b.accion; })[0] || [0, ''])[1]) + '</span>'); }).join(' ') + '</div>' : '') +
     caListHtml(a) +
-    '<div class="row mt12" style="gap:18px"><div><b style="font-size:18px">' + nf(v) + '</b> <span class="xs mut">vistos</span></div><div><b style="font-size:18px">' + nf(c) + '</b> <span class="xs mut">clics</span></div><div><b style="font-size:18px">' + pct(c, v) + '</b> <span class="xs mut">CTR</span></div></div>' +
+    '<div class="row mt12" style="gap:18px"><div><b style="font-size:18px">' + nf(v) + '</b> <span class="xs mut">veces visto</span></div><div><b style="font-size:18px">' + nf(c) + '</b> <span class="xs mut">toques en el botón</span></div><div><b style="font-size:18px">' + pct(c, v) + '</b> <span class="xs mut" title="De cada 100 que lo vieron, cuántos tocaron el botón">tocaron el botón</span></div></div>' +
     '<div class="row mt12"><button class="btn sm" data-a="avEdit" data-id="' + esc(a.id) + '">' + ic('edit') + 'Editar</button><button class="btn sm" data-a="avTog" data-id="' + esc(a.id) + '">' + ic(a.activo ? 'pause' : 'play') + (a.activo ? 'Apagar' : 'Encender') + '</button><button class="btn sm ghost" data-a="avDup" data-id="' + esc(a.id) + '">' + ic('dup') + 'Duplicar</button><button class="btn sm ghost dng" data-a="avDel" data-id="' + esc(a.id) + '">' + ic('trash') + 'Borrar</button></div></div>' +
     '<button class="avpv" data-a="avEdit" data-id="' + esc(a.id) + '" aria-label="Vista previa"><div class="avpvi">' + avisoPhone(a) + '</div></button></div></div>';
 }
@@ -127,14 +146,14 @@ function vAvisos() {
   var cnt = function (k) { return R.filter(function (a) { return avFilt(a, k); }).length; };
   var h = pageHead('Avisos y drops', 'Mensajes que aparecen en la app sin actualizarla. Tú eliges el formato, los botones, la imagen y el color, o arrancas desde una plantilla.',
     '<button class="btn" data-a="tplDrop">' + ic('zap') + 'Lanzar drop</button><button class="btn pri" data-a="avNew">' + ic('plus') + 'Nuevo aviso</button>',
-    ['<b>Tarjeta</b>: sale en el menú principal, debajo de «Jugar». El jugador la cierra con la ✕. Con imagen, ésta va como franja arriba.', '<b>Ventana</b>: emergente al abrir la app (o con ella abierta). Úsala para algo importante, como un código con pocos lugares o «actualiza».', '<b>Imagen</b>: emergente donde una imagen grande es la protagonista. Ideal para promos de otras apps.', '<b>Banner</b>: una franja delgada arriba del menú; toda la franja es el botón.', '<b>Botones</b> (hasta 2): abrir un link, ir a la tienda, abrir un evento, canjear un código, abrir Personalizar, jugar, ir al reto diario o solo cerrar. Cada uno puede ser principal (dorado) o secundario.', '<b>Frecuencia</b>: «una vez» se muestra una sola vez por teléfono; «diaria» una vez al día; «siempre» cada vez que abre la app mientras esté vigente.', '<b>Versión menor que…</b>: solo lo ven teléfonos con una versión más vieja. Ideal para «actualiza».', 'Los <b>vistos</b> y <b>clics</b> los manda la app; el CTR es clics ÷ vistos.']);
+    ['<b>Formatos:</b> <b>Tarjeta</b> sale en el menú principal, debajo de «Jugar» (el jugador la cierra con la ✕; con imagen, ésta va como franja arriba). <b>Ventana</b> es emergente al abrir la app: úsala para algo importante, como un código con pocos lugares o «actualiza». <b>Imagen</b> es una ventana donde una imagen grande es la protagonista (ideal para promos de otras apps). <b>Banner</b> es una franja delgada arriba del menú; toda la franja es el botón.', '<b>Botones</b> (hasta 2): abrir un link, ir a la tienda, abrir un evento, canjear un código, abrir Personalizar, jugar, ir al reto diario o solo cerrar. Cada uno puede ser principal (dorado) o secundario.', '<b>Versión menor que…</b> sirve para mostrárselo solo a quien tiene una app vieja. Ideal para «actualiza».']);
   h += rerr(RM.avisos, 'los avisos'); avProbe();
   if (R.length && R[0].version_menor === undefined) h += '<div class="ban">' + ic('warn') + '<div class="tx"><b>Falta volver a correr 2-remoto.sql en Supabase</b>Hasta entonces los avisos no guardan versión, plataforma, frecuencia ni el botón de tienda.</div></div>';
   h += '<div class="sech"><h2>Plantillas</h2><span class="sub">Un toque y se abre el editor con todo prellenado.</span></div>' + tplTiles();
-  h += '<div class="sec"><div class="row mb16">' + fchips('avF', f, [['todos', 'Todos', R.length], ['activo', 'Activos', cnt('activo')], ['proximo', 'Próximos', cnt('proximo')], ['fin', 'Terminados y apagados', cnt('fin')], ['tarjeta', 'Tarjetas', cnt('tarjeta')], ['ventana', 'Ventanas', cnt('ventana')], ['imagen', 'Imágenes', cnt('imagen')], ['banner', 'Banners', cnt('banner')], ['upd', 'Actualizaciones', cnt('upd')], ['promo', 'Promos', cnt('promo')]]) + '</div>';
+  h += '<div class="sec"><div class="row mb16">' + fchips('avF', f, [['todos', 'Todos', R.length], ['activo', 'Activos ahora', cnt('activo')], ['proximo', 'Programados', cnt('proximo')], ['fin', 'Vencidos y apagados', cnt('fin')], ['tarjeta', 'Tarjetas', cnt('tarjeta')], ['ventana', 'Ventanas', cnt('ventana')], ['imagen', 'Imágenes', cnt('imagen')], ['banner', 'Banners', cnt('banner')], ['upd', 'Actualizaciones', cnt('upd')], ['promo', 'Promos', cnt('promo')]]) + '</div>';
   var L = R.filter(function (a) { return avFilt(a, f); });
   if (RM.avisos && RM.avisos.rows == null && !RM.avisos.err) h += skel(3);
-  else if (!L.length) h += '<div class="card">' + emptyBox('bell', R.length ? 'Ningún aviso con ese filtro' : 'Todavía no hay avisos', R.length ? 'Prueba con «Todos».' : 'Crea uno desde cero o usa una plantilla de arriba.', R.length ? '' : '<button class="btn pri" data-a="avNew">' + ic('plus') + 'Nuevo aviso</button>') + '</div>';
+  else if (!L.length) h += '<div class="card">' + emptyBox('bell', R.length ? 'Ningún aviso con ese filtro' : 'Todavía no hay avisos', R.length ? 'Ningún aviso cumple ese filtro. Toca «Todos» para ver la lista completa.' : 'Mientras no haya avisos, los jugadores no ven mensajes extra en la app. Crea uno desde cero o usa una plantilla de arriba.', R.length ? '' : '<button class="btn pri" data-a="avNew">' + ic('plus') + 'Nuevo aviso</button>') + '</div>';
   else h += '<div class="col gap12">' + L.map(avCard).join('') + '</div>';
   return h + '</div>';
 }
@@ -145,6 +164,7 @@ A.avDup = function (el) { var a = rows('avisos').find(function (x) { return x.id
 A.avTog = async function (el) {
   var a = rows('avisos').find(function (x) { return x.id === el.dataset.id; }); if (!a) return;
   var o = clone(a); o.activo = !a.activo; delete o.vistos; delete o.clics; delete o.actualizado;
+  if (o.activo ? !await avConfirmar(o, '¿Encender este aviso?', 'Sí, encender') : !await confirmDlg({ title: '¿Apagar este aviso?', text: '«' + (ml(a.titulo) || 'sin título') + '» deja de mostrarse a los jugadores. Se puede volver a encender cuando quieras; no se pierde nada.', html: cbox([['Cuánto tarda', LLEGA]]), ok: 'Sí, apagar', icon: 'pause' })) return;
   try {
     if (o.activo && caCanj({ botones: avBtns(o) }).length) { o.botones = avBtns(o); if (!await caGate(o, caAskList)) return; }
     await rpc('admin_guardar_aviso', { p_aviso: o }); a.activo = o.activo; toast(o.activo ? 'Aviso encendido' : 'Aviso apagado'); rload('avisos'); rload('config'); paintPage(); } catch (e) { toast(e.message, 'bad'); }
@@ -163,12 +183,12 @@ function openDrop() {
     wide: true, title: 'Lanzar drop', sub: 'Un código con pocos lugares que aparece como ventana a quien tenga la app abierta.',
     body: function () {
       var f = '<div class="fsec"><h4>Premio</h4>' + field('dr_pr', 'Qué gana quien lo canjee', picker('drp', [], { onChange: dropPrevNow })) + '</div>';
-      f += '<div class="fsec"><h4>Código</h4><div class="fg">' + field('dr_us', 'Lugares (cuántos pueden canjearlo)', inp('dr_us', 10, { type: 'number', min: 1, mode: 'numeric', di: 'drPrev' })) + field('dr_tx', 'Texto del código (opcional)', inp('dr_tx', '', { ph: 'Ej. NAVIDAD26 · vacío = al azar', max: 20, di: 'drPrev' }), '4 a 20 letras o números.') + '</div>' +
-        '<div class="fg">' + field('dr_n', 'Dura', inp('dr_n', 15, { type: 'number', min: 1, mode: 'numeric', di: 'drPrev' })) + field('dr_u', 'Unidad', sel('dr_u', 'min', [['min', 'minutos'], ['h', 'horas'], ['d', 'días']], { dc: 'drPrevC' })) + '</div></div>';
-      f += '<div class="fsec"><h4>Mensaje</h4>' + field('dr_ti', 'Título', inp('dr_ti', '¡Salió un código!', { max: 60, di: 'drPrev' })) + field('dr_te', 'Texto', inp('dr_te', '', { ph: 'Vacío = «Quedan N lugares. ¡Canjéalo ya!»', max: 120, di: 'drPrev' })) + '</div>';
+      f += '<div class="fsec"><h4>Código</h4><div class="fg">' + field('dr_us', 'Lugares (cuántos pueden canjearlo)', inp('dr_us', 10, { type: 'number', min: 1, mode: 'numeric', di: 'drPrev' }), 'Número de personas. Ejemplo: 10 = los primeros 10 que lo canjeen; después el código se acaba.') + field('dr_tx', 'Texto del código (opcional)', inp('dr_tx', '', { ph: 'Ej. NAVIDAD26 · vacío = al azar', max: 20, di: 'drPrev' }), '4 a 20 letras o números.') + '</div>' +
+        '<div class="fg">' + field('dr_n', 'Dura', inp('dr_n', 15, { type: 'number', min: 1, mode: 'numeric', di: 'drPrev' }), 'Empieza en cuanto lo lances. Máximo 90 días.') + field('dr_u', 'Unidad', sel('dr_u', 'min', [['min', 'minutos'], ['h', 'horas'], ['d', 'días']], { dc: 'drPrevC' }), 'Ejemplo: 15 + minutos = dura 15 minutos.') + '</div></div>';
+      f += '<div class="fsec"><h4>Mensaje</h4>' + field('dr_ti', 'Título', inp('dr_ti', '¡Salió un código!', { max: 60, di: 'drPrev' }), 'Lo que se lee en grande arriba de la ventana. Máximo 60 letras.') + field('dr_te', 'Texto', inp('dr_te', '', { ph: 'Vacío = «Quedan N lugares. ¡Canjéalo ya!»', max: 120, di: 'drPrev' }), 'Una frase corta bajo el título. Máximo 120 letras.') + '</div>';
       return '<div class="edl"><div>' + f + '</div><div class="pvs"><div id="dr_pv"></div><div class="pvcap">Así le saldrá a quien tenga la app abierta</div></div></div>';
     },
-    foot: function () { return '<span class="xs mut grow">Se crea un código y un aviso «drop» con la misma duración.</span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="dropGo">' + ic('zap') + 'Lanzar ahora</button>'; },
+    foot: function () { return '<span class="xs mut grow">Al lanzar, te pediremos confirmar. Se crea un código y una ventana con la misma duración.</span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="dropGo">' + ic('zap') + 'Lanzar ahora</button>'; },
     onMount: function () { dropPrevNow(); }
   });
 }
@@ -186,6 +206,7 @@ A.dropGo = async function (el) {
   if (!(d.n >= 1) || d.ms > 90 * 864e5) e.dr_n = 'De 1 minuto a 90 días';
   if (d.code && !/^[A-Za-z0-9 -]{4,24}$/.test(d.code)) e.dr_tx = '4 a 20 letras o números';
   if (!showErrs(e)) return;
+  if (!await confirmDlg({ title: '¿Lanzar este drop ahora?', text: 'Se crea un código y una ventana que empieza YA.', html: cbox([['Premio', esc(d.sel.map(cname).join(' + '))], ['Lugares', nf(d.u) + ' (cada canje gasta uno; al llegar a 0 el código se acaba)'], ['Código', d.code ? esc(d.code.toUpperCase()) : 'uno al azar (te lo mostramos al terminar)'], ['Dura', esc(fdt(addMs(d.ms))) + ' (hora de México): ' + esc(String(d.n)) + ' ' + ({ min: 'minutos', h: 'horas', d: 'días' }[drawerVal('dr_u')] || '')], ['A quién', 'A todos los jugadores de Android y de iPhone con la app 1.0.5 o más nueva. Les sale al abrir la app o al volver a ella.'], ['Cuánto tarda', LLEGA]]), ok: 'Sí, lanzar ahora', icon: 'zap' })) return;
   busy(el, true, 'Lanzando…');
   var fin = addMs(d.ms).toISOString(), c;
   try {
@@ -204,9 +225,9 @@ A.tplSeason = function () {
     wide: true, title: 'Cupón de temporada', sub: 'Un código que sirve hasta una fecha y una ventana emergente para canjearlo.',
     body: function () {
       var f = '<div class="fsec"><h4>Premio</h4>' + field('se_pr', 'Qué da el cupón', picker('sep', [], { onChange: seasonPrev })) + '</div>';
-      f += '<div class="fsec"><h4>Código</h4><div class="fg">' + field('se_tx', 'Texto del código', inp('se_tx', '', { ph: 'Ej. MUERTOS26 · vacío = al azar', max: 20, di: 'sePrev' }), '4 a 20 letras o números.') + field('se_us', 'Usos', inp('se_us', '', { type: 'number', min: 1, ph: 'Vacío = sin límite', mode: 'numeric' })) + '</div></div>';
-      f += '<div class="fsec"><h4>Temporada</h4><div class="fg">' + field('se_ini', 'Empieza', inp('se_ini', toLocalInput(new Date()), { type: 'datetime-local' })) + field('se_fin', 'Termina (el código caduca)', inp('se_fin', toLocalInput(addMs(14 * 864e5)), { type: 'datetime-local' })) + '</div>' + presetBtns('se_ini,se_fin', [[7 * 864e5, '1 semana'], [14 * 864e5, '2 semanas'], [30 * 864e5, '1 mes']]) + '</div>';
-      f += '<div class="fsec"><h4>Ventana</h4>' + field('se_ti', 'Título', inp('se_ti', 'Cupón de temporada', { max: 80, di: 'sePrev' })) + field('se_te', 'Texto', area('se_te', 'Canjea este código antes de que se acabe la temporada.', { rows: 2, di: 'sePrev' })) + field('se_et', 'Etiqueta (para ubicarlo)', inp('se_et', 'temporada', { max: 60 })) + '</div>';
+      f += '<div class="fsec"><h4>Código</h4><div class="fg">' + field('se_tx', 'Texto del código', inp('se_tx', '', { ph: 'Ej. MUERTOS26 · vacío = al azar', max: 20, di: 'sePrev' }), '4 a 20 letras o números.') + field('se_us', 'Usos', inp('se_us', '', { type: 'number', min: 1, ph: 'Vacío = sin límite', mode: 'numeric' }), 'Cuántas veces en total se puede canjear. Vacío = sin límite.') + '</div></div>';
+      f += '<div class="fsec"><h4>Temporada</h4><div class="fg">' + field('se_ini', 'Empieza', inp('se_ini', toLocalInput(new Date()), { type: 'datetime-local' }), 'Hora de México.') + field('se_fin', 'Termina (el código caduca)', inp('se_fin', toLocalInput(addMs(14 * 864e5)), { type: 'datetime-local' }), 'Hora de México. Después de esta hora el código ya no sirve.') + '</div>' + presetBtns('se_ini,se_fin', [[7 * 864e5, '1 semana'], [14 * 864e5, '2 semanas'], [30 * 864e5, '1 mes']]) + '</div>';
+      f += '<div class="fsec"><h4>Ventana</h4>' + field('se_ti', 'Título', inp('se_ti', 'Cupón de temporada', { max: 80, di: 'sePrev' })) + field('se_te', 'Texto', area('se_te', 'Canjea este código antes de que se acabe la temporada.', { rows: 2, di: 'sePrev' })) + field('se_et', 'Etiqueta (para ubicarlo)', inp('se_et', 'temporada', { max: 60 }), 'Solo para ti: te ayuda a encontrar este código en la lista de Rotativos.') + '</div>';
       return '<div class="edl"><div>' + f + '</div><div class="pvs"><div id="se_pv"></div><div class="pvcap">Ventana al abrir la app</div></div></div>';
     },
     foot: function () { return '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="seasonGo">' + ic('spark') + 'Crear cupón y ventana</button>'; },
@@ -225,6 +246,7 @@ A.seasonGo = async function (el) {
   if (fin && new Date(fin) <= new Date()) e.se_fin = 'Esa fecha ya pasó';
   if (!drawerVal('se_ti').trim()) e.se_ti = 'Escribe un título';
   if (!showErrs(e)) return;
+  if (!await confirmDlg({ title: '¿Crear el cupón y la ventana?', text: 'Se crea un código y una ventana emergente para canjearlo.', html: cbox([['Premio', esc(sel2.map(cname).join(' + '))], ['Usos', us ? nf(Math.floor(Number(us))) : 'sin límite'], ['Cuándo', esc(fdt(ini)) + ' → ' + esc(fdt(fin)) + ' (hora de México). El código caduca al terminar.'], ['A quién', 'A todos los jugadores de Android y de iPhone con la app 1.0.5 o más nueva.'], ['Cuánto tarda', LLEGA]]), ok: 'Sí, crear', icon: 'spark' })) return;
   busy(el, true, 'Creando…');
   try {
     var r = await rpc('admin_crear_codigos', { p_cosmeticos: sel2, p_cantidad: 1, p_usos_max: us ? Math.floor(Number(us)) : null, p_caduca: fin, p_etiqueta: drawerVal('se_et').trim(), p_texto: tx || null });
@@ -250,13 +272,13 @@ function vEventos() {
   var R = rows('eventos').slice().sort(function (a, b) { var o = { activo: 0, proximo: 1, inactivo: 2, terminado: 3 }; return o[evEst(a)] - o[evEst(b)] || new Date(a.inicio) - new Date(b.inicio); });
   var h = pageHead('Eventos', 'Retos con fecha que dan premios («juega 5 partidas entre tal y tal día»). Se crean, mueven o apagan aquí y la app los toma sola.',
     '<button class="btn pri" data-a="evNew">' + ic('plus') + 'Nuevo evento</button>',
-    ['La app muestra el evento en el menú <b>desde 45 días antes</b> («Empieza en N días») y cuenta el progreso solo mientras está activo.', 'Los ids <b>muertos26</b> y <b>pionero</b> son los eventos que la 1.0.5 trae de fábrica: si los editas aquí, cambias sus fechas o premios sin versión nueva.', '<b>Apagar</b> deja de mostrarlo y de contar progreso. <b>Borrar</b> lo quita y la app lo apaga aunque ya lo tuviera guardado.', 'Las horas son las de tu teléfono o computadora (hora de México).']);
+    undefined);
   h += rerr(RM.eventos, 'los eventos');
   if (RM.eventos && RM.eventos.rows == null && !RM.eventos.err) h += skel(3);
-  else if (!R.length) h += '<div class="card">' + emptyBox('cal', 'Sin eventos remotos', 'Crea el primero: elige fechas, una meta y los premios.', '<button class="btn pri" data-a="evNew">' + ic('plus') + 'Nuevo evento</button>') + '</div>';
+  else if (!R.length) h += '<div class="card">' + emptyBox('cal', 'Sin eventos remotos', 'Ahora la app solo muestra los eventos que trae de fábrica. Crea el primero: elige fechas, una meta (por ejemplo jugar 5 partidas) y los premios.', '<button class="btn pri" data-a="evNew">' + ic('plus') + 'Nuevo evento</button>') + '</div>';
   else h += '<div class="grid g2">' + R.map(evCard).join('') + '</div>';
   var off = ((cfg.rows && cfg.rows.eventos_apagados) || []).filter(function (id) { return !R.some(function (e) { return e.id === id; }); });
-  if (off.length) h += '<div class="sec"><div class="sech"><h2>Borrados</h2><span class="sub">La app los mantiene apagados. Crear uno con el mismo id lo revive.</span></div><div class="row">' + off.map(function (id) { return '<span class="code">' + esc(id) + '</span>'; }).join('') + '</div></div>';
+  if (off.length) h += '<div class="sec"><div class="sech"><h2>Borrados</h2><span class="sub">La app los mantiene apagados. Si creas otro evento con el mismo id, vuelve a funcionar.</span></div><div class="row">' + off.map(function (id) { return '<span class="code">' + esc(id) + '</span>'; }).join('') + '</div></div>';
   return h;
 }
 A.evNew = function () { evForm(null); };
@@ -265,6 +287,7 @@ A.evDup = function (el) { var e = rows('eventos').find(function (x) { return x.i
 A.evTog = async function (el) {
   var e = rows('eventos').find(function (x) { return x.id === el.dataset.id; }); if (!e) return;
   var o = clone(e); o.activo = !e.activo; delete o.actualizado;
+  if (o.activo ? !await evConfirmar(o, '¿Encender este evento?', 'Sí, encender') : !await confirmDlg({ title: '¿Apagar este evento?', text: '«' + (ml(e.nombre) || e.id) + '» deja de mostrarse y de contar el progreso de los jugadores. Se puede volver a encender; no se pierde nada.', html: cbox([['Cuánto tarda', LLEGA]]), ok: 'Sí, apagar', icon: 'pause' })) return;
   try { await rpc('admin_guardar_evento', { p_evento: o }); toast(o.activo ? 'Evento encendido' : 'Evento apagado'); rload('eventos'); rload('config'); } catch (er) { toast(er.message, 'bad'); }
 };
 A.evDel = async function (el) {
@@ -282,10 +305,10 @@ function evForm(e, pre) {
       var f = '<div class="fsec"><h4>Nombre</h4>' + field('ev_id', 'Id (no se puede cambiar después)', inp('ev_id', v.id, { ph: 'Ej. navidad26', max: 40, dis: !isNew, di: 'evPrev' }), 'Minúsculas, números y _. Usa muertos26 o pionero para mover los que trae la app.') +
         field('ev_nes', 'Nombre', inp('ev_nes', (v.nombre || {}).es, { ph: 'Ej. Navidad', max: 60, di: 'evPrev' })) + field('ev_des', 'Descripción', area('ev_des', (v.descripcion || {}).es, { rows: 2, ph: 'Ej. Juega 5 partidas y llévate…' })) +
         '<details class="help" style="margin:0 0 12px"><summary>' + ic('chr', 'chev') + 'Versión en inglés (opcional)</summary><div style="margin-top:10px">' + field('ev_nen', 'Nombre en inglés', inp('ev_nen', (v.nombre || {}).en, { max: 60 })) + field('ev_den', 'Descripción en inglés', area('ev_den', (v.descripcion || {}).en, { rows: 2 })) + '</div></details></div>';
-      f += '<div class="fsec"><h4>Cuándo</h4><div class="fg">' + field('ev_ini', 'Empieza', inp('ev_ini', toLocalInput(v.inicio), { type: 'datetime-local', di: 'evPrev' })) + field('ev_fin', 'Termina', inp('ev_fin', toLocalInput(v.fin), { type: 'datetime-local', di: 'evPrev' })) + '</div>' + presetBtns('ev_ini,ev_fin', [[3 * 864e5, '3 días'], [7 * 864e5, '1 semana'], [14 * 864e5, '2 semanas'], [30 * 864e5, '1 mes']]) + '</div>';
-      f += '<div class="fsec"><h4>Meta</h4><div class="fg">' + field('ev_meta', 'Qué hay que hacer', sel('ev_meta', v.meta, [['partidas', 'Jugar partidas'], ['lineas', 'Limpiar líneas'], ['puntos', 'Hacer puntos en una partida'], ['retos', 'Completar retos diarios']], { dc: 'evPrevC' })) + field('ev_obj', 'Cantidad', inp('ev_obj', v.objetivo, { type: 'number', min: 1, mode: 'numeric', di: 'evPrev' })) + '</div><div class="sm mut" id="ev_goal" style="margin:-6px 0 8px">En la app dirá: <b style="color:var(--text)">' + esc(goalTxt(v.meta, v.objetivo)) + '</b></div></div>';
-      f += '<div class="fsec"><h4>Premios</h4>' + field('ev_pr', 'Qué da al completarlo', picker('evp', v.premios || [], { onChange: evPrevNow })) + '</div>';
-      f += '<div class="fsec"><h4>Estado</h4>' + tog('ev_act', v.activo !== false, 'Encendido') + '</div>';
+      f += '<div class="fsec"><h4>Cuándo</h4><div class="fg">' + field('ev_ini', 'Empieza', inp('ev_ini', toLocalInput(v.inicio), { type: 'datetime-local', di: 'evPrev' }), 'Hora de México. Desde 45 días antes se anuncia en el menú.') + field('ev_fin', 'Termina', inp('ev_fin', toLocalInput(v.fin), { type: 'datetime-local', di: 'evPrev' }), 'Hora de México. Después de esta hora ya no cuenta progreso.') + '</div>' + presetBtns('ev_ini,ev_fin', [[3 * 864e5, '3 días'], [7 * 864e5, '1 semana'], [14 * 864e5, '2 semanas'], [30 * 864e5, '1 mes']]) + '</div>';
+      f += '<div class="fsec"><h4>Meta</h4><div class="fg">' + field('ev_meta', 'Qué hay que hacer', sel('ev_meta', v.meta, [['partidas', 'Jugar partidas'], ['lineas', 'Limpiar líneas'], ['puntos', 'Hacer puntos en una partida'], ['retos', 'Completar retos diarios']], { dc: 'evPrevC' })) + field('ev_obj', 'Cantidad', inp('ev_obj', v.objetivo, { type: 'number', min: 1, mode: 'numeric', di: 'evPrev' }), 'Un número entero. Ejemplo: 5 partidas, 30 líneas, 2,000 puntos.') + '</div><div class="sm mut" id="ev_goal" style="margin:-6px 0 8px">En la app dirá: <b style="color:var(--text)">' + esc(goalTxt(v.meta, v.objetivo)) + '</b></div></div>';
+      f += '<div class="fsec"><h4>Premios</h4>' + field('ev_pr', 'Qué da al completarlo', picker('evp', v.premios || [], { onChange: evPrevNow }), 'Elige uno o varios; el jugador recibe todos al completar la meta.') + '</div>';
+      f += '<div class="fsec"><h4>Estado</h4>' + tog('ev_act', v.activo !== false, 'Mostrar este evento a los jugadores') + '<div class="fnote" style="margin-top:8px">Encendido = los jugadores lo ven y cuentan progreso (dentro de las fechas). Apagado = no se muestra, aunque esté en fechas.</div></div>';
       return '<div class="edl"><div>' + f + '</div><div class="pvs"><div id="ev_pv"></div><div class="pvcap">Tarjeta del evento en el menú</div></div></div>';
     },
     foot: function () { return (isNew ? '' : '<button class="btn ghost dng" data-a="evDel" data-id="' + esc(v.id) + '">' + ic('trash') + 'Borrar</button>') + '<span class="sp"></span><button class="btn" data-a="drClose">Cancelar</button><button class="btn pri" data-a="evSave" data-new="' + (isNew ? 1 : '') + '">' + ic('check') + (isNew ? 'Crear evento' : 'Guardar') + '</button>'; },
@@ -305,6 +328,7 @@ A.evSave = async function (el) {
   if (!(o.objetivo > 0)) e.ev_obj = 'Mayor que 0';
   if (!o.premios.length) e.ev_pr = 'Elige al menos un premio';
   if (!showErrs(e)) return;
+  if (o.activo && !await evConfirmar(o, isNew ? '¿Publicar este evento?' : '¿Guardar los cambios del evento?', isNew ? 'Sí, publicar' : 'Sí, guardar')) return;
   busy(el, true);
   try { await rpc('admin_guardar_evento', { p_evento: o }); toast(isNew ? 'Evento creado' : 'Evento guardado'); drawerKill(); rload('eventos'); rload('config'); }
   catch (er) { busy(el, false); toast(er.message, 'bad'); }

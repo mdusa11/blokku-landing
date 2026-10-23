@@ -99,11 +99,8 @@ function rkCountries() {
 function vRanking() {
   var f = rkF(), o = rkRes();
   var h = pageHead('Ranking', 'Los jugadores de Blokku y sus puntajes. Aquí ves todo, incluso lo que los jugadores no ven, y limpias trampas.', '<button class="btn" data-a="rkReload">' + ic('refresh') + 'Actualizar</button>',
-    ['Cada instalación se registra sola con un nombre y compite en tres modos: <b>Clásico</b>, <b>Contra reloj</b> y <b>Reto diario</b>. Cuenta solo el mejor puntaje por modo y periodo.',
-      'Un puntaje <b>sospechoso</b> se acepta pero no sale para los jugadores hasta que lo <b>apruebes</b>; si es trampa, bórralo. Un jugador <b>oculto</b> desaparece de todas las tablas.',
-      'Las tablas muestran hasta 200 lugares. Puedes ver semanas y días anteriores con el selector de fecha.',
-      'Las <b>reglas anti-trampa</b> (abajo) deciden qué se rechaza y qué se marca como sospechoso.']);
-  if (o.err && o.err.code === 'sin_sql') return h + '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.ranking, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Ábrelo, copia todo el texto, pégalo en Supabase › SQL Editor y presiona Run.') + '</div>';
+    undefined);
+  if (o.err && o.err.code === 'sin_sql') return h + '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.ranking, 'Sin ese archivo el ranking no funciona. Está en Escritorio › Blokku › 02-Documentos › Supabase. Ábrelo, copia todo el texto, pégalo en Supabase › SQL Editor y presiona Run.') + '</div>';
   if (o.err) h += rkRetry(rerr(o, 'el resumen del ranking'));
   h += rkKpis() + '<div class="sec">' + rkCountries() + '</div>';
   var S1 = rkSosp(), nS = S1.loading ? '…' : S1.list.length;
@@ -127,12 +124,12 @@ function rkTablaView(f) {
     (f.per !== 'historico' ? '<div class="col gap4"><label class="fl" for="rk_fecha">' + (f.per === 'dia' ? 'Día' : 'Semana del') + '</label><div class="row" style="gap:6px"><input class="in sm" type="date" id="rk_fecha" data-c="rkFecha" value="' + esc(f.fecha) + '" max="' + todayS() + '" style="width:auto">' + (hoy ? '' : '<button class="btn sm" data-a="rkHoy">Hoy</button>') + '</div></div>' : '') +
     '<div class="col gap4"><label class="fl" for="rk_pais">Ámbito</label><select class="sel sm" id="rk_pais" data-c="rkPais" style="width:auto;min-width:170px">' +
     opts([['', '🌍 Mundial']].concat(paises.map(function (c) { return [c, rkFlag(c) + ' ' + rkPais(c)]; })), pa) + '</select></div>' +
-    '<div class="col gap4" style="padding-bottom:6px">' + tog('rk_vis', f.vis, 'Ver como los jugadores', { dc: 'rkVis' }) + '</div></div></div>';
+    '<div class="col gap4" style="padding-bottom:6px">' + tog('rk_vis', f.vis, 'Ver como los jugadores', { dc: 'rkVis', on: 'Como lo ven ellos', off: 'Ver todo' }) + '<span class="xs mut">Encendido = esconde sospechosos y ocultos, igual que los jugadores. Apagado = ves todo.</span>' + '</div></div></div>';
   if (t.err && t.err.code === 'sin_sql') return h + emptyBox('db', 'Falta correr ' + SQLF.ranking, 'Está en Escritorio › Blokku › 02-Documentos › Supabase.') + '</div>';
   if (t.err) return h + '<div class="cb">' + rkRetry(rerr(t, 'la tabla')) + '</div></div>';
   if (t.rows == null) return h + skel(5) + '</div>';
   var L = t.rows.filter(function (r) { return !f.vis || (!r.sospechoso && !r.oculto); });
-  if (!L.length) return h + emptyBox('trophy', t.rows.length ? 'Nada que mostrar a los jugadores' : 'Todavía no hay puntajes aquí', t.rows.length ? 'Todos los puntajes de esta tabla están ocultos o son sospechosos.' : 'Cuando alguien juegue este modo en este periodo, aparecerá.') + '</div>';
+  if (!L.length) return h + emptyBox('trophy', t.rows.length ? 'Nada que mostrar a los jugadores' : 'Todavía no hay puntajes aquí', t.rows.length ? 'Todos los puntajes de esta tabla están ocultos o son sospechosos.' : 'Nadie ha mandado un puntaje en este modo, periodo y ámbito. Cuando alguien juegue con la app conectada, aparecerá. Prueba con «Histórico» o con otro modo.') + '</div>';
   h += '<div class="tw" data-keep="rk"><table class="tbl"><thead><tr><th style="width:56px">Lugar</th><th>Jugador</th><th class="num">Puntos</th><th class="rk-up">Actualizado</th><th></th></tr></thead><tbody>';
   L.forEach(function (r, i) {
     var a = 'data-id="' + esc(r.id) + '" data-m="' + esc(f.modo) + '" data-p="' + esc(per) + '"';
@@ -155,7 +152,7 @@ function rkSospView(s) {
   var h = '<div class="card"><div class="ch">' + ic('warn') + '<h3>Puntajes sospechosos</h3><span class="sub grow">Histórico, esta semana y hoy · los 3 modos</span></div>';
   if (s.err && !s.list.length) return h + '<div class="cb">' + rkRetry(rerr({ err: s.err }, 'los sospechosos')) + '</div></div>';
   if (s.loading && !s.list.length) return h + skel(3) + '</div>';
-  if (!s.list.length) return h + emptyBox('check', 'Nada sospechoso', 'No hay puntajes por revisar en esta semana. Los jugadores ven todo lo demás con normalidad.') + '</div>';
+  if (!s.list.length) return h + emptyBox('check', 'Nada sospechoso', 'No hay puntajes por revisar (histórico, esta semana y hoy). Un puntaje se marca «sospechoso» cuando rebasa las reglas anti-trampa; mientras tanto nadie lo ve. Los de semanas anteriores se ven en Tablas con el selector de fecha.') + '</div>';
   h += '<div class="list" style="border:0;box-shadow:none;border-radius:0">';
   s.list.forEach(function (x) {
     var a = 'data-id="' + esc(x.id) + '" data-m="' + esc(x.modo) + '" data-p="' + esc(x.pers[0]) + '" data-ps="' + esc(x.pers.join(',')) + '"';
@@ -214,8 +211,10 @@ function rkRun(undo, calls, ok, bad) {
 }
 function rkMod(id, ch) { return rpc('admin_moderar', { p_id: id, p_cambios: ch }); }
 function rkPers(el) { return el.dataset.ps ? el.dataset.ps.split(',') : [el.dataset.p]; }
-A.rkAprobar = function (el) {
-  var id = el.dataset.id, m = el.dataset.m, ps = rkPers(el), un = ps.map(function (p) { return rkPatch(id, { sospechoso: false }, m, p); });
+A.rkAprobar = async function (el) {
+  var id = el.dataset.id, m = el.dataset.m, ps = rkPers(el), r0 = rkRow(id, m, ps[0]);
+  if (!await confirmDlg({ title: '¿Aprobar este puntaje?', text: r0 ? nf(r0.puntos) + ' puntos de ' + r0.nombre + ' en ' + rkModo(m) + ' (' + ps.map(rkPerLabel).join(' y ') + ').' : 'El puntaje queda aprobado.', html: cbox([['Qué pasa', 'Deja de ser «sospechoso» y lo ven todos los jugadores en las tablas.'], ['A quién', 'A todos los jugadores que abran el ranking.'], ['Cuánto tarda', 'Aparece la próxima vez que cada jugador abra o actualice la tabla.']]), ok: 'Sí, aprobar', icon: 'check' })) return;
+  var un = ps.map(function (p) { return rkPatch(id, { sospechoso: false }, m, p); });
   rkRun(function () { un.forEach(function (u) { u(); }); }, ps.map(function (p) { return rkMod(id, { aprobar: { modo: m, periodo: p } }); }), 'Puntaje aprobado: ya lo ven los jugadores', 'No se pudo aprobar');
 };
 A.rkBorrar = async function (el) {
@@ -226,13 +225,17 @@ A.rkBorrar = async function (el) {
   if (LAY.dr) drawerKill();
   rkRun(function () { un.forEach(function (u) { u(); }); }, ps.map(function (p) { return rkMod(id, { borrar: { modo: m, periodo: p } }); }), 'Puntaje borrado', 'No se pudo borrar');
 };
-A.rkOculto = function (el) {
-  var id = el.dataset.id, v = el.dataset.v === '1', u = rkPatch(id, { oculto: v });
+A.rkOculto = async function (el) {
+  var id = el.dataset.id, v = el.dataset.v === '1', rr0 = Object.keys(RK.t).reduce(function (a, k) { return a || (RK.t[k].rows || []).filter(function (r) { return r.id === id; })[0]; }, null);
+  if (!await confirmDlg({ title: v ? '¿Ocultar a ' + (rr0 ? rr0.nombre : 'este jugador') + '?' : '¿Mostrar a ' + (rr0 ? rr0.nombre : 'este jugador') + ' otra vez?', text: v ? 'Desaparece de todas las tablas y modos. No se borra nada.' : 'Vuelve a aparecer en todas las tablas con sus puntajes.', html: cbox([['A quién', 'Todos los jugadores dejan de verlo (o vuelven a verlo) en el ranking.'], ['Cuánto tarda', 'La próxima vez que abran o actualicen la tabla.'], ['Se puede deshacer', 'Sí, en cualquier momento.']]), ok: v ? 'Sí, ocultar' : 'Sí, mostrar', danger: v, icon: v ? 'eyeoff' : 'eye' })) return;
+  var u = rkPatch(id, { oculto: v });
   rkRun(u, [rkMod(id, { oculto: v })], v ? 'Jugador oculto: ya no sale en ninguna tabla' : 'Jugador visible otra vez', 'No se pudo cambiar');
 };
-A.rkNombre = function (el) {
+A.rkNombre = async function (el) {
   var id = el.dataset.id, ni = document.getElementById('rk_nn'), n = el.dataset.n != null ? el.dataset.n : (ni ? ni.value.replace(/\s+/g, ' ').trim() : '');
   if (n.length < 2 || n.length > 16) { toast('El nombre debe tener entre 2 y 16 caracteres', 'bad'); if (ni) ni.focus(); return; }
+  var old = Object.keys(RK.t).reduce(function (a, k) { return a || (RK.t[k].rows || []).filter(function (r) { return r.id === id; })[0]; }, null);
+  if (!await confirmDlg({ title: '¿Cambiar el nombre?', text: (old ? '«' + old.nombre + '» → ' : '') + '«' + n + '».', html: cbox([['A quién', 'Todos los jugadores verán el nombre nuevo en las tablas.'], ['Cuánto tarda', 'La próxima vez que abran o actualicen la tabla.']]), ok: 'Sí, cambiar nombre', icon: 'edit' })) return;
   var u = rkPatch(id, { nombre: n });
   rkRun(u, [rkMod(id, { nombre: n })], 'Nombre cambiado a «' + n + '»', 'No se pudo renombrar').then(function (ok) {
     if (ok) Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); });
@@ -297,7 +300,7 @@ function rkOpenDr(id, modo, per, pers) {
       h += '<div class="dsec"><h4>Jugador</h4><div class="col">' +
         '<button class="btn blk" data-a="rkOculto" data-id="' + esc(r.id) + '" data-v="' + (r.oculto ? 0 : 1) + '">' + ic(r.oculto ? 'eye' : 'eyeoff') + (r.oculto ? 'Mostrar jugador' : 'Ocultar jugador') + '</button>' +
         '<p class="xs mut">' + (r.oculto ? 'Vuelve a aparecer en todas las tablas.' : 'Desaparece de todas las tablas y modos, sin borrar nada.') + '</p></div></div>';
-      h += '<div class="dsec"><h4>Renombrar</h4><div class="f" style="margin-bottom:8px"><label for="rk_nn">Nombre nuevo (2 a 16 caracteres)</label>' + inp('rk_nn', '', { max: 16, ph: r.nombre }) + '</div>' +
+      h += '<div class="dsec"><h4>Renombrar</h4><div class="f" style="margin-bottom:8px"><label for="rk_nn">Nombre nuevo (2 a 16 caracteres)</label>' + inp('rk_nn', '', { max: 16, ph: r.nombre }) + '<div class="hint">Lo ven todos los jugadores en las tablas. «Poner Jugador» es el nombre neutral por si el anterior era ofensivo.</div></div>' +
         '<div class="row"><button class="btn" data-a="rkNombre" data-id="' + esc(r.id) + '">' + ic('edit') + 'Guardar nombre</button><button class="btn" data-a="rkNombre" data-id="' + esc(r.id) + '" data-n="Jugador">Poner «Jugador»</button></div></div>';
       return h;
     },
@@ -361,6 +364,8 @@ A.rkCfgSave = async function () {
   });
   if (!showErrs(errs)) return;
   if (!chg.length) { toast('No hay cambios', 'info'); return; }
+  var lab = {}; RK_CFG.forEach(function (c) { lab[c[0]] = c[1]; });
+  if (!await confirmDlg({ title: '¿Guardar las reglas anti-trampa?', text: 'Aplican a los puntajes nuevos al instante. Los puntajes ya guardados no cambian.', html: cbox(chg.map(function (c) { return [lab[c[0]], nf(rkCfgVal(c[0])) + ' → <b>' + nf(c[1]) + '</b>']; }).concat([['Ojo', 'Si pones los límites demasiado bajos, puntajes legítimos se marcarán como sospechosos o se rechazarán.']])), ok: 'Sí, guardar reglas', icon: 'lock' })) return;
   S.view.rkSaving = true; paintPage();
   try {
     await Promise.all(chg.map(function (c) { return rpc('admin_ranking_config', { p_clave_cfg: c[0], p_valor: c[1] }); }));

@@ -103,10 +103,19 @@ function iso(n) { return new Date(n * 864e5).toISOString().slice(0, 10); }
 function dayMs(s, end) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2], end ? 23 : 0, end ? 59 : 0, end ? 59 : 0).getTime(); }
 function fd(s, yr) { if (!s) return ''; var p = s.split('-'); var y = +p[0] !== new Date().getFullYear() || yr; return +p[2] + ' ' + MES[+p[1] - 1].slice(0, 3) + (y ? ' ' + p[0] : ''); }
 function fdr(a, b) { return b && b !== a ? fd(a) + ' – ' + fd(b) : fd(a); }
+var MXF = null;
+function mxParts(v) {
+  var d = new Date(v); if (isNaN(d)) return null;
+  try {
+    if (!MXF) MXF = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Mexico_City', year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    var o = {}; MXF.formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+    return { y: +o.year, m: +o.month, d: +o.day, h: +o.hour, i: +o.minute };
+  } catch (e) { var x = new Date(d.getTime() - 6 * 36e5); return { y: x.getUTCFullYear(), m: x.getUTCMonth() + 1, d: x.getUTCDate(), h: x.getUTCHours(), i: x.getUTCMinutes() }; }
+}
+/* «23 oct, 10:30» siempre en hora de México (sin año si es el año en curso) */
 function fdt(v, noTime) {
-  if (!v) return '—'; var d = new Date(v); if (isNaN(d)) return '—';
-  var s = d.getDate() + ' ' + MES[d.getMonth()].slice(0, 3) + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : '');
-  return noTime ? s : s + ', ' + z2(d.getHours()) + ':' + z2(d.getMinutes());
+  if (!v) return '—'; var p = mxParts(v); if (!p) return '—'; var cur = mxParts(Date.now());
+  return p.d + ' ' + MES[p.m - 1].slice(0, 3) + (p.y !== cur.y ? ' ' + p.y : '') + (noTime ? '' : ', ' + z2(p.h) + ':' + z2(p.i));
 }
 function relDay(s) { var d = dn(s) - dn(todayS()); return d === 0 ? 'hoy' : d === 1 ? 'mañana' : d === -1 ? 'ayer' : d > 1 ? 'en ' + d + ' días' : 'hace ' + (-d) + ' días'; }
 function relT(v) {
@@ -116,8 +125,9 @@ function relT(v) {
   return ms > 0 ? 'en ' + n + ' ' + u : 'hace ' + n + ' ' + u;
 }
 function ago(t) { return t ? relT(t) : ''; }
-function toLocalInput(v) { if (!v) return ''; var d = new Date(v); if (isNaN(d)) return ''; return ymd(d) + 'T' + z2(d.getHours()) + ':' + z2(d.getMinutes()); }
-function fromLocalInput(v) { if (!v) return null; var d = new Date(v); return isNaN(d) ? null : d.toISOString(); }
+/* los campos de fecha y hora del panel son hora de México (UTC−6 fija, sin horario de verano) */
+function toLocalInput(v) { if (!v) return ''; var d = new Date(v); if (isNaN(d)) return ''; return new Date(d.getTime() - 6 * 36e5).toISOString().slice(0, 16); }
+function fromLocalInput(v) { if (!v || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) return null; var d = new Date(v.slice(0, 16) + ':00-06:00'); return isNaN(d) ? null : d.toISOString(); }
 function addMs(ms) { return new Date(Date.now() + ms); }
 
 /* ---------- toasts ---------- */
@@ -219,6 +229,8 @@ function confirmDlg(o) {
   return modal('<div class="mb"><div class="mi' + (o.danger ? ' bad' : '') + '">' + ic(o.icon || (o.danger ? 'trash' : 'help')) + '</div><h3>' + esc(o.title) + '</h3>' + (o.text ? '<p>' + esc(o.text) + '</p>' : '') + (o.html || '') + '</div>' +
     '<div class="mf"><button class="btn" data-m="no">' + esc(o.cancel || 'Cancelar') + '</button><button class="btn ' + (o.danger ? 'dng solid' : 'pri') + '" data-m="ok">' + esc(o.ok || 'Aceptar') + '</button></div>').then(function (v) { return v === 'ok'; });
 }
+/* caja de detalle para confirmaciones: lines = [[título, html ya escapado], …] */
+function cbox(lines) { return '<div class="conf-box">' + lines.map(function (l) { return '<div><b>' + esc(l[0]) + ':</b> ' + l[1] + '</div>'; }).join('') + '</div>'; }
 function promptDlg(o) {
   return modal('<div class="mb"><h3>' + esc(o.title) + '</h3>' + (o.text ? '<p>' + esc(o.text) + '</p>' : '') + '<div class="f mt16"><label for="pdv">' + esc(o.label || '') + '</label><input class="in" id="pdv" autofocus value="' + esc(o.value || '') + '" placeholder="' + esc(o.ph || '') + '"></div></div>' +
     '<div class="mf"><button class="btn" data-m="no">Cancelar</button><button class="btn pri" data-m="ok">' + esc(o.ok || 'Guardar') + '</button></div>', {
@@ -268,8 +280,18 @@ function fchips(name, cur, opts) {
 function opts(list, cur) { return list.map(function (o) { var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join(''); }
 function searchBox(id, val, ph, act) { return '<label class="srch"><span class="sr">' + esc(ph) + '</span>' + ic('search') + '<input class="in" id="' + id + '" data-i="' + act + '" value="' + esc(val || '') + '" placeholder="' + esc(ph) + '" autocomplete="off"></label>'; }
 function help(items) { return '<details class="help"><summary>' + ic('chr', 'chev') + '¿Cómo funciona?</summary><div class="hb">' + (Array.isArray(items) ? '<ul>' + items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : items) + '</div></details>'; }
+/* bloque «¿Para qué sirve?» (textos en 15-ayuda.js, por ruta) */
+function whyHtml(r) {
+  var a = AYUDA[r || S.route]; if (!a) return '';
+  return '<div class="why"><div class="whh">' + ic('help') + '¿Para qué sirve?</div><dl>' +
+    '<dt>Qué es</dt><dd>' + a.que + '</dd><dt>Qué ve el jugador</dt><dd>' + a.ve + '</dd><dt>Cuándo usarlo</dt><dd>' + a.cuando + '</dd></dl></div>';
+}
+function howHtml(r, extra) {
+  var a = AYUDA[r || S.route], L = ((a && a.como) || []).concat(extra || []);
+  return L.length ? help(L) : '';
+}
 function pageHead(title, lead, acts, helpItems) {
-  return '<div class="ph"><div class="tx"><h1>' + esc(title) + '</h1><p class="lead">' + lead + '</p>' + (helpItems ? help(helpItems) : '') + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+  return '<div class="ph"><div class="tx"><h1>' + esc(title) + '</h1><p class="lead">' + lead + '</p>' + whyHtml() + howHtml(null, helpItems) + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
 }
 function ring(p, size) {
   size = size || 44; var r = size / 2 - 4, c = 2 * Math.PI * r, o = c * (1 - Math.max(0, Math.min(1, p)));
@@ -279,7 +301,8 @@ function field(id, label, inner, hint) { return '<div class="f" id="f_' + id + '
 function inp(id, val, o) { o = o || {}; return '<input class="in" id="' + id + '" type="' + (o.type || 'text') + '" value="' + esc(val == null ? '' : val) + '"' + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.max ? ' maxlength="' + o.max + '"' : '') + (o.min != null ? ' min="' + o.min + '"' : '') + (o.dis ? ' disabled' : '') + (o.auto ? ' autofocus' : '') + (o.di ? ' data-i="' + o.di + '"' : '') + (o.mode ? ' inputmode="' + o.mode + '"' : '') + ' autocomplete="off">'; }
 function area(id, val, o) { o = o || {}; return '<textarea class="ta" id="' + id + '"' + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.di ? ' data-i="' + o.di + '"' : '') + (o.rows ? ' rows="' + o.rows + '"' : '') + '>' + esc(val || '') + '</textarea>'; }
 function sel(id, val, list, o) { o = o || {}; return '<select class="sel" id="' + id + '"' + (o.dc ? ' data-c="' + o.dc + '"' : '') + '>' + opts(list, val) + '</select>'; }
-function tog(id, on, label, o) { o = o || {}; return '<label class="tog"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + (o.dc ? ' data-c="' + o.dc + '"' : '') + '><span class="sw"></span><span>' + esc(label) + '</span></label>'; }
+/* interruptor: encendido (verde) = funciona / se muestra. La etiqueta de estado se ve siempre. o.on / o.off cambian el texto del estado */
+function tog(id, on, label, o) { o = o || {}; return '<label class="tog"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + (o.dc ? ' data-c="' + o.dc + '"' : '') + '><span class="sw"></span>' + (label ? '<span class="tl">' + esc(label) + '</span>' : '') + '<em class="ts" data-on="' + esc(o.on || 'Encendido') + '" data-off="' + esc(o.off || 'Apagado') + '"></em></label>'; }
 function radios(name, cur, list) {
   return '<div class="opts' + (list.length > 2 && list.every(function (x) { return !x[2] || x[2].length < 70; }) ? ' h' : '') + '">' + list.map(function (o) { return '<label class="opt"><input type="radio" name="' + name + '" value="' + esc(o[0]) + '"' + (String(o[0]) === String(cur) ? ' checked' : '') + '><div><b>' + esc(o[1]) + '</b>' + (o[2] ? '<span>' + esc(o[2]) + '</span>' : '') + '</div></label>'; }).join('') + '</div>';
 }

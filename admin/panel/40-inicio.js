@@ -66,6 +66,7 @@ function vInicio() {
   var h = new Date().getHours(), sal = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches', d = new Date();
   var out = '<div class="hero"><h1>' + sal + ', Manuel</h1><p>' + DSEM[d.getDay()].replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + d.getDate() + ' de ' + MES[d.getMonth()] + '. Esto es lo que pasa hoy en Blokku.</p>' +
     '<div class="row"><button class="btn w" data-a="qDrop">' + ic('zap') + 'Lanzar drop</button><button class="btn" data-a="qAviso">' + ic('bell') + 'Nuevo aviso</button><button class="btn" data-a="qCodes">' + ic('ticket') + 'Crear códigos</button><button class="btn" data-a="qPend">' + ic('plus') + 'Pendiente</button></div></div>';
+  out += '<div style="margin:14px 0 0">' + whyHtml('inicio') + howHtml('inicio') + '</div>';
   /* KPIs */
   var rkr = rm('rkres'), cj = rm('canjes'), A = cjAgg(), d14 = lastDays(A.day, 14), w1 = d14.slice(7).reduce(function (a, x) { return a + x.v; }, 0), w0 = d14.slice(0, 7).reduce(function (a, x) { return a + x.v; }, 0);
   var hoy = A.day[todayS()] || 0, ayer = A.day[iso(dn(todayS()) - 1)] || 0;
@@ -80,7 +81,7 @@ function vInicio() {
     kpi('zap', 'Códigos activos', ld(RM.codigos) || nf(cact), nf(cuse) + ' canjes de rotativos', '', 'codigos/rotativos') +
     kpi('cal', 'Eventos', ld(RM.eventos) || nf(eact) + '<small>activos</small>', eprox ? nf(eprox) + ' próximo' + (eprox > 1 ? 's' : '') : 'Ninguno próximo', '', 'vivo/eventos') +
     kpi('trophy', 'Jugadores en ranking', ld(rkr) || (rkr.err ? '—' : nf(rkr.rows.jugadores)), rkr.err ? (rkr.err.code === 'sin_sql' ? 'Falta correr ' + SQLF.ranking : 'Sin datos') : nf(rkr.rows.activos_7d) + ' activos en 7 días', '', 'juego/ranking') +
-    kpi('bell', 'Avisos activos', ld(RM.avisos) || nf(aact.length), aact.length ? nf(vs) + ' vistos · ' + pct(cl, vs) + ' de clics' : 'Ninguno en la app ahora', '', 'vivo/avisos') +
+    kpi('bell', 'Avisos activos', ld(RM.avisos) || nf(aact.length), aact.length ? nf(vs) + ' vistos · ' + pct(cl, vs) + ' tocaron el botón' : 'Ninguno en la app ahora', '', 'vivo/avisos') +
     (erNuevos() ? kpi('warn', 'Errores nuevos', nf(erNuevos()), erFatales() ? nf(erFatales()) + ' fatal' + (erFatales() > 1 ? 'es' : '') + ' · sin revisar' : 'Sin revisar', '', 'proyecto/errores') : '') +
     '</div>';
   /* columnas */
@@ -88,7 +89,7 @@ function vInicio() {
   out += '<div class="split sec"><div class="col gap16">';
   out += '<div class="card"><div class="ch">' + ic('warn') + '<h3>Atención</h3><span class="sub">' + (al.length ? al.length + ' cosa' + (al.length > 1 ? 's' : '') : 'Todo en orden') + '</span></div>' +
     (al.length ? al.slice(0, 8).map(function (a) { return '<div class="alert ' + a.c + ' li clk" data-a="openx" data-r="' + a.r + '" data-o="' + esc(a.open || '') + '"><span class="ai">' + ic(a.i) + '</span><div class="t"><b>' + esc(a.t) + '</b>' + (a.s ? '<span>' + esc(a.s) + '</span>' : '') + '</div>' + ic('chr', 'faint') + '</div>'; }).join('') :
-      '<div class="alert ok"><span class="ai">' + ic('check') + '</span><div class="t"><b>Nada urgente</b><span>No hay códigos agotados ni eventos por empezar o terminar.</span></div></div>') + '</div>';
+      '<div class="alert ok"><span class="ai">' + ic('check') + '</span><div class="t"><b>Nada urgente</b><span>No hay códigos agotados ni por vencer, eventos por empezar o terminar, errores nuevos ni puntajes sospechosos.</span></div></div>') + '</div>';
   out += mtCard();
   out += nowInApp();
   out += '</div><div class="col gap16">';
@@ -120,7 +121,7 @@ function nowInApp() {
   if (o.err) return h + '<div class="cb mut">' + esc(o.err.message) + '</div></div>';
   if (!c) return h + '<div class="cb"><div class="sk skl"></div><div class="sk skl" style="width:60%"></div></div></div>';
   var ev = c.eventos || [], av = c.avisos || [], off = c.eventos_apagados || [];
-  if (!ev.length && !av.length) h += '<div class="cb mut">Nada remoto: la app solo muestra lo que trae de fábrica.</div>';
+  if (!ev.length && !av.length) h += '<div class="cb mut">Nada remoto: los jugadores ven la app como viene de fábrica. Cuando enciendas un evento o un aviso, aparecerá aquí.</div>';
   ev.forEach(function (e) { var on = new Date(e.inicio) <= new Date(); h += '<div class="li clk" data-a="openx" data-r="vivo/eventos" data-o="ev:' + esc(e.id) + '">' + cthumb((e.premios || [])[0], 'sm') + '<div class="t"><b>' + esc(ml(e.nombre) || e.id) + '</b><span>' + esc(goalTxt(e.meta, e.objetivo)) + ' · ' + (on ? 'termina ' + relT(e.fin) : 'se anuncia; empieza ' + relT(e.inicio)) + '</span></div>' + chip(on ? 'En curso' : 'Anunciado', on ? 'ok' : 'ac') + '</div>'; });
   av.forEach(function (a) { h += '<div class="li clk" data-a="openx" data-r="vivo/avisos" data-o="av:' + esc(a.id) + '"><div class="th sm" style="--tc:' + (a.tipo === 'drop' ? '#e64aa0' : '#5b4cf0') + '">' + ic(a.tipo === 'drop' ? 'zap' : 'bell') + '</div><div class="t"><b>' + esc(ml(a.titulo) || (a.tipo === 'drop' ? '¡Salió un código!' : 'Aviso')) + '</b><span>' + (a.tipo === 'drop' ? 'Drop (ventana emergente)' : 'Tarjeta en el menú') + ' · ' + targetTxt(a) + '</span></div>' + chip('Visible', 'ok') + '</div>'; });
   if (off.length) h += '<div class="cb xs mut">Eventos apagados (la app los ignora): ' + off.map(esc).join(', ') + '</div>';

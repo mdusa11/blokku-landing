@@ -374,5 +374,8 @@ function rerr(o, what) {
   if (!o || !o.err) return '';
   var e = o.err;
   if (e.code === 'sin_sql') return '';
-  return '<div class="ban bad">' + ic('warn') + '<div class="tx"><b>No se pudo leer ' + esc(what) + '</b>' + esc(e.message) + (e.code === 'red' ? '. Revisa tu conexión. Si Supabase se pausó por inactividad, reactívalo en supabase.com.' : '') + '<div class="acts"><button class="btn sm" data-a="rretry">' + ic('refresh') + 'Reintentar</button></div></div></div>';
+  var que = e.code === 'red' ? 'No hay conexión con el servidor (o no respondió a tiempo). <b style="display:inline">Qué hacer:</b> revisa tu internet y presiona «Reintentar». Si tu internet está bien, entra a supabase.com: los proyectos gratis se pausan por inactividad y hay que reactivarlos.'
+    : e.code === 'auth' ? 'La clave del panel no coincide con la del servidor. <b style="display:inline">Qué hacer:</b> cierra sesión (abajo a la izquierda) y vuelve a entrar con la clave correcta.'
+    : '<b style="display:inline">Qué hacer:</b> presiona «Reintentar». Si sigue igual, cópiale este mensaje a Claude: «' + esc(e.message) + '».';
+  return '<div class="ban bad">' + ic('warn') + '<div class="tx"><b>No se pudo cargar ' + esc(what) + '</b>' + que + '<div class="acts"><button class="btn sm" data-a="rretry">' + ic('refresh') + 'Reintentar</button></div></div></div>';
 }

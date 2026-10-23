@@ -19,7 +19,7 @@ function pCard(p) {
 function vPremios() {
   var f = S.f.pr = S.f.pr || { t: '', r: '', g: '', pl: '', q: '' }, L = pFilt(), P = items('premios');
   var h = pageHead('Premios', 'Todo lo que se puede ganar en Blokku: temas, estilos de pieza, marcos, efectos e insignias. Toca uno para ver cómo se gana.', '<button class="btn" data-a="premNew">' + ic('plus') + 'Premio futuro</button>',
-    ['El catálogo viene del código de la app: nombre, rareza y formas de ganarlo se actualizan solos cuando Claude regenera los datos.', 'Lo tuyo se guarda aparte y no se pisa: <b>plan</b> (normal, solo código, dormido), <b>notas</b> e <b>imágenes</b>.', '<b>Solo código</b>: hoy solo se consigue con un código. <b>Dormido</b>: existe pero no se ofrece por ahora.']);
+    undefined);
   var cnt = function (t) { return P.filter(function (p) { return grp(p.tipo) === t; }).length; };
   h += '<div class="col gap12 mb16">' + fchips('prT', f.t, [['', 'Todos', P.length]].concat(TIPOS.map(function (t) { return [t[0], t[1], cnt(t[0])]; }))) +
     '<div class="row">' + searchBox('pr_q', f.q, 'Buscar premio, meta o id…', 'prQ') +
@@ -108,7 +108,7 @@ function sc(p, sub) { return '<div class="sc" data-a="premOpen" data-id="' + esc
 function vProgresion() {
   var v = S.f.pg || 'niveles';
   var h = pageHead('Progresión', 'Cómo avanza un jugador: niveles del 1 al 100, logros por escalones, metas especiales y la racha de retos diarios. Así está en el juego.', '',
-    ['XP para llegar al nivel L: <b>125 · (L − 1)²</b>. Cada partida da 20 XP base más líneas (tope 3.000).', 'Los logros tienen 5 escalones: Bronce, Plata, Oro, Diamante e Imposible (200 · 500 · 1.500 · 5.000 · 15.000 XP).', 'Toca cualquier premio para ver todas sus formas de ganarlo.']);
+    undefined);
   h += '<div class="mb16">' + seg('pgV', v, [['niveles', 'Niveles', 'trend'], ['logros', 'Logros', 'trophy'], ['metas', 'Metas especiales', 'star'], ['racha', 'Racha y marcos', 'flag']]) + '</div>';
   if (v === 'logros') return h + pgLogros();
   if (v === 'metas') return h + pgMetas();
@@ -167,7 +167,7 @@ function vTemporadas() {
   rm('eventos');
   var C = S.f.cal = S.f.cal || { y: new Date().getFullYear(), m: new Date().getMonth(), sel: todayS(), v: 'mes' };
   var h = pageHead('Temporadas', 'El calendario completo: versiones, eventos, temporadas e hitos que planeas, junto con los eventos remotos que ya están en la app.', '<button class="btn pri" data-a="tlNew">' + ic('plus') + 'Agregar al calendario</button>',
-    ['Lo <b>morado oscuro</b> es un evento remoto: ya está en Supabase y la app lo usa.', 'Lo demás es tu plan. Para que un evento planeado llegue a la app, créalo en En vivo › Eventos.', 'Las ideas se ven en gris.']);
+    undefined);
   h += '<div class="row mb16">' + seg('calV', C.v, [['mes', 'Mes', 'cal'], ['linea', 'Línea de tiempo', 'trend'], ['lista', 'Lista', 'list']]) + '</div>';
   var L = calItems();
   if (C.v === 'linea') {

@@ -86,12 +86,7 @@ function vMetricas() {
   var rng = mtRng(), o = met(rng), r = o.rows;
   var h = pageHead('Métricas', 'Cuánta gente juega Blokku, cuántos vuelven y cuánto juegan. Anónimo: un resumen por teléfono y día, sin nombres.',
     seg('mtRng', rng, [[7, '7 días'], [30, '30 días'], [90, '90 días']]) + '<button class="btn" data-a="mtReload">' + ic('refresh') + 'Actualizar</button>',
-    ['<b>Activo</b>: abrió la app ese día, aunque no jugara. Cada teléfono cuenta una vez por día.',
-      '<b>Nuevo</b>: la primera vez que se ve ese teléfono. Quien ya jugaba antes de la 1.0.6 no cuenta como nuevo (entra como «de antes»).',
-      '<b>Retención día 1 / 7 / 30</b>: de los que llegaron un día, cuántos abrieron la app justo 1, 7 o 30 días después. Los «…» son días que aún no terminan.',
-      '<b>Partidas por jugador</b>: partidas terminadas por cada teléfono activo en un día (media y mediana).',
-      'La app manda el resumen al abrirse y al terminar partidas; sin red lo guarda y lo manda después. Quien apaga «Enviar estadísticas anónimas» en Ajustes no aparece. «Eliminar mis datos» crea un id nuevo.',
-      'El país sale de la conexión (como en el ranking); la IP no se guarda.']);
+    undefined);
   if (o.err && o.err.code === 'sin_sql') return h + '<div class="card">' + mtSinSql() + '</div>';
   if (o.err) h += rerr(o, 'las métricas').replace('data-a="rretry"', 'data-a="mtReload"');
   if (r == null && !o.err) return h + mtKpis(null, '<span class="sk" style="display:inline-block;width:48px;height:26px"></span>') + '<div class="card mt16"><div class="cb"><div class="sk" style="height:220px"></div></div></div>';

@@ -10,6 +10,10 @@ ADMIN_KEY="<clave>" node scripts/build-admin.mjs
 
 Los códigos únicos se leen en el build desde `~/Desktop/Blokku/04-Seguridad-NO-COMPARTIR/codigos-canje.csv` (o `CODES_CSV=ruta`) y solo viajan dentro del contenido cifrado. En Supabase solo se guarda el estado y la nota de cada código, por su sha256, nunca el código. No metas códigos en `seed.js`: el repo es público.
 
+## Textos de ayuda
+
+Los bloques «¿Para qué sirve?» y «¿Cómo funciona?» de cada sección viven en `admin/panel/15-ayuda.js` (objeto `AYUDA`, una entrada por ruta); `pageHead` los pinta solos. Los interruptores usan `tog()`: verde «Encendido» = funciona / se muestra, y el texto del estado sale solo (`on`/`off` lo cambian). Las fechas se muestran y se capturan en hora de México (UTC−6 fijo).
+
 ## Dónde vive cada cosa
 
 Todo en Supabase (`fngbputjfnwtrcwaabue`), por RPC con la clave del panel (`p_clave`). Los SQL están en el repo de Blokku (`supabase/`) y en el Escritorio (`Blokku/02-Documentos/Supabase`):

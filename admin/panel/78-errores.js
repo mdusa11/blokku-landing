@@ -36,10 +36,7 @@ function erKpis() {
 function vErrores() {
   var f = erF(), o = rm('errores');
   var h = pageHead('Errores', 'Fallos de la app que llegan desde los teléfonos, agrupados por tipo. Un renglón por error, con cuántas veces pasó.', '<button class="btn" data-a="erReload">' + ic('refresh') + 'Actualizar</button>',
-    ['Cada error se agrupa por su «firma» (tipo y primeras líneas del stack): si pasa 50 veces, ves un renglón con <b>×50</b>.',
-      'Los <b>nuevos</b> son los que no has abierto. Al abrir uno queda como <b>visto</b>. Si marcas uno como <b>resuelto</b> y vuelve a pasar en una versión distinta, regresa a nuevo.',
-      '<b>Copiar</b> en el detalle arma un reporte listo para pegarle a Claude.',
-      'Aquí solo llegan errores de Dart. Los cierres nativos (Android/iOS) se ven en Firebase Crashlytics.']);
+    undefined);
   if (o.err && o.err.code === 'sin_sql') return h + '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.errores, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Ábrelo, copia todo el texto, pégalo en Supabase › SQL Editor y presiona Run.') + '</div>' + erCrashCard();
   if (o.err) h += rerr(o, 'los errores').replace('data-a="rretry"', 'data-a="erReload"');
   h += erKpis();

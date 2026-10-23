@@ -3,15 +3,15 @@
 // dato: la app lo baja con la config remota y lo valida igual que aquí. Sin
 // valor = el de fábrica de la app. Las reglas viven en lib/services/ajustes_remotos.dart.
 var SV_AJ = [
-  ['mision_premio_pct', 'Premio de las misiones diarias', 25, 300, 100, '%', 'XP que dan al reclamarlas. 150 = una vez y media.'],
-  ['mision_meta_pct', 'Meta de las misiones diarias', 50, 200, 100, '%', 'Cuánto hay que hacer. 50 = la mitad (mínimo 1). Qué 3 misiones tocan cada día no cambia.'],
-  ['xp_pct', 'XP por línea y por partida', 25, 300, 100, '%', 'Sube o baja el XP que da jugar (con el mismo tope de 3 000 por partida).'],
-  ['reto_diario_seg', 'Duración del reto diario', 60, 600, 180, 'segundos', 'Las piezas y el tablero del día no cambian. Cámbialo SOLO entre días: si dos jugadores del mismo día tienen tiempos distintos, el ranking del día no es justo.'],
-  ['aviso_sesion_min', 'Tiempo fuera para contar como sesión nueva', 5, 720, 30, 'minutos', 'Al volver a la app tras este tiempo, los avisos «siempre» y el siguiente modal vuelven a salir.'],
-  ['refresco_min', 'Cada cuánto la app pide esta configuración', 5, 120, 15, 'minutos', 'Con la app abierta o al volver de segundo plano. Más bajo = cambios más rápidos, más peticiones.']
+  ['mision_premio_pct', 'Premio de las misiones diarias', 25, 300, 100, '%', '100 % = normal; 150 % = 50 % más XP al reclamar una misión; 50 % = la mitad.'],
+  ['mision_meta_pct', 'Meta de las misiones diarias', 50, 200, 100, '%', 'Cuánto hay que hacer en cada misión. 100 % = normal; 50 % = la mitad (mínimo 1); 200 % = el doble. Qué 3 misiones tocan cada día no cambia.'],
+  ['xp_pct', 'XP por línea y por partida', 25, 300, 100, '%', '100 % = normal; 150 % = 50 % más XP por línea y por partida; 50 % = la mitad. El tope sigue siendo 3,000 XP por partida.'],
+  ['reto_diario_seg', 'Duración del reto diario', 60, 600, 180, 'segundos', 'Cuánto dura el reto diario (180 = 3 minutos). Las piezas y el tablero del día no cambian. Cámbialo SOLO de madrugada, entre un día y otro: si dos jugadores del mismo día tienen tiempos distintos, el ranking del día no es justo.'],
+  ['aviso_sesion_min', 'Tiempo fuera para contar como sesión nueva', 5, 720, 30, 'minutos', 'Cuánto tiempo fuera de la app cuenta como «sesión nueva». Ejemplo: 30 = si regresa después de 30 minutos, los avisos de frecuencia «Siempre» vuelven a salir.'],
+  ['refresco_min', 'Cada cuánto la app pide esta configuración', 5, 120, 15, 'minutos', 'Con la app abierta o al volver de segundo plano. Ejemplo: 15 = cada 15 minutos. Más bajo = tus cambios llegan más rápido, pero la app hace más peticiones.']
 ];
 var SV_POD = [['bomb', 'Bomba', 1], ['lightning', 'Rayo', 1], ['undo', 'Deshacer', 2], ['shuffle', 'Mezclar', 2], ['picker', 'Gotero de color', 1]];
-var SV_RK = [['rank_envio_umbral', 'Primer envío al ranking a media partida', 1000, 1000000, 10000, 'puntos', 'Desde cuántos puntos se manda el puntaje sin esperar al final.'], ['rank_envio_cada_seg', 'Segundos entre envíos a media partida', 10, 3600, 300, 'segundos', 'Solo si el puntaje mejora lo ya enviado.']];
+var SV_RK = [['rank_envio_umbral', 'Primer envío al ranking a media partida', 1000, 1000000, 10000, 'puntos', 'Desde cuántos puntos la app manda el puntaje al ranking sin esperar a que termine la partida. Ejemplo: 10,000.'], ['rank_envio_cada_seg', 'Segundos entre envíos a media partida', 10, 3600, 300, 'segundos', 'Espera mínima entre un envío y otro durante la partida. Ejemplo: 300 = cada 5 minutos. Solo se manda si el puntaje mejoró.']];
 var SV_OFF = [
   ['ranking', 'Ranking', 'Oculta el botón y la app deja de hablar con el ranking (envíos, tablas y mensajes por jugador).'],
   ['eventos', 'Eventos', 'El menú no anuncia ni cuenta eventos (incluidos los de fábrica). Lo ya ganado se queda.'],
@@ -48,7 +48,7 @@ function svOffNow() { var r = svRows(); return (r && Array.isArray(r.apagado)) ?
 function svIsOff(k) { return SV.ap && k in SV.ap ? SV.ap[k] : svOffNow().indexOf(k) >= 0; }
 function svDraft(id, srv) { return id in SV.d ? SV.d[id] : (srv == null ? '' : String(srv)); }
 I.svIn = function (el) { SV.d[el.id] = el.value; };
-C.svTog = function (el) { SV.ap = SV.ap || {}; SV.ap[el.dataset.k] = !el.checked; var t = el.parentNode.querySelector('span:last-child'); if (t) t.textContent = el.checked ? 'Encendida' : 'Apagada'; };
+C.svTog = function (el) { SV.ap = SV.ap || {}; SV.ap[el.dataset.k] = !el.checked; };
 
 function svNumCard(title, icn, sub, spec, srvOf, pre, save, extra) {
   var h = '<div class="card sec"><div class="ch">' + ic(icn) + '<h3>' + esc(title) + '</h3><span class="sub grow">' + esc(sub) + '</span></div><div class="cb"><div class="grid g2">';
@@ -56,7 +56,7 @@ function svNumCard(title, icn, sub, spec, srvOf, pre, save, extra) {
     var id = pre + c[0], cur = srvOf(c[0]);
     h += field(id, c[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: c[2], ph: 'De fábrica: ' + nf(c[4]), di: 'svIn' }), 'Rango ' + nf(c[2]) + ' a ' + nf(c[3]) + ' ' + esc(c[5]) + '. ' + esc(c[6]) + (cur != null ? ' <b>Ahora:</b> ' + nf(cur) + '.' : ' <b>Ahora:</b> de fábrica.'));
   });
-  h += '</div>' + (extra || '') + '<div class="row"><button class="btn pri" data-a="' + save + '"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === save ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button><span class="xs mut">Vacío = vuelve al valor de fábrica. Se aplica en minutos (la app lo baja al abrirse o cada tanto).</span></div></div></div>';
+  h += '</div>' + (extra || '') + '<div class="row"><button class="btn pri" data-a="' + save + '"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === save ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button><span class="xs mut">Vacío = vuelve al valor de fábrica. Los teléfonos lo reciben en unos minutos (la app lo pide al abrirse y cada tanto).</span></div></div></div>';
   return h;
 }
 
@@ -68,18 +68,18 @@ function vServidor() {
   if (!svRows()) return h + skel(4);
   var r = svRows(), aj = svAj();
   // 1. Ajustes con rango
-  var pod = '<h4 class="mt16" style="margin:16px 0 8px">Poderes con los que arranca cada partida</h4><div class="grid g2">' + SV_POD.map(function (p) {
+  var pod = '<h4 class="mt16" style="margin:16px 0 4px">Poderes con los que arranca cada partida</h4><p class="fnote">Cuántos usos de cada poder tiene el jugador al empezar una partida. 0 = ninguno.</p><div class="grid g2">' + SV_POD.map(function (p) {
     var id = 'sv_pod_' + p[0], cur = (aj.poderes_inicio || {})[p[0]];
-    return field(id, p[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: 0, ph: 'De fábrica: ' + p[2], di: 'svIn' }), '0 a 5. ' + (cur != null ? '<b>Ahora:</b> ' + cur + '.' : '<b>Ahora:</b> de fábrica.'));
+    return field(id, p[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: 0, ph: 'De fábrica: ' + p[2], di: 'svIn' }), 'Número de usos, de 0 a 5. ' + (cur != null ? '<b>Ahora:</b> ' + cur + '.' : '<b>Ahora:</b> de fábrica.'));
   }).join('') + '</div>';
   h += svNumCard('Valores del juego', 'sliders', 'Misiones, XP, reto diario, avisos', SV_AJ, function (k) { return aj[k]; }, 'sv_aj_', 'svSaveAj', pod);
   // 2. Envíos al ranking (admin_rank_envio, 13-rank-envio.sql)
   h += svNumCard('Envíos al ranking', 'trophy', 'A media partida (13-rank-envio.sql)', SV_RK, function (k) { return r[k]; }, 'sv_rk_', 'svSaveRk', '');
   // 3. Interruptores
   var nOff = SV_OFF.filter(function (x) { return svIsOff(x[0]); }).length;
-  h += '<div class="card sec"><div class="ch">' + ic('pause') + '<h3>Interruptores</h3><span class="sub grow">' + (nOff ? plural(nOff, 'función apagada', 'funciones apagadas') : 'Todo encendido') + '</span></div><div class="cb"><div class="col gap12">' +
-    SV_OFF.map(function (x) { return '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(x[1]) + '</b><div class="xs mut">' + esc(x[2]) + '</div></div>' + tog('sv_off_' + x[0], !svIsOff(x[0]), svIsOff(x[0]) ? 'Apagada' : 'Encendida', { dc: 'svTog' }).replace('<input ', '<input data-k="' + x[0] + '" ') + '</div>'; }).join('') +
-    '</div><div class="row mt16"><button class="btn pri" data-a="svSaveAp"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveAp' ? '<span class="spin"></span>' : ic('check')) + 'Guardar interruptores</button><span class="xs mut">Quien tenga la app abierta lo recibe en unos minutos; sin red usa lo último que supo.</span></div></div></div>';
+  h += '<div class="card sec"><div class="ch">' + ic('pause') + '<h3>Interruptores</h3><span class="sub grow">' + (nOff ? plural(nOff, 'función apagada', 'funciones apagadas') + ' (los jugadores no la tienen)' : 'Todo encendido: todo funciona') + '</span></div><div class="cb"><div class="rule">' + ic('info') + '<div><b>Verde «Encendida» = la función funciona. Gris «Apagada» = desaparece o no se puede usar.</b> Usa estos interruptores solo en una emergencia; apagar no borra nada y al volver a encender todo sigue como estaba.</div></div><div class="col gap12">' +
+    SV_OFF.map(function (x) { return '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(x[1]) + '</b><div class="xs mut">' + esc(x[2]) + '</div></div>' + tog('sv_off_' + x[0], !svIsOff(x[0]), '', { dc: 'svTog', on: 'Encendida', off: 'Apagada' }).replace('<input ', '<input data-k="' + x[0] + '" ') + '</div>'; }).join('') +
+    '</div><div class="row mt16"><button class="btn pri" data-a="svSaveAp"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveAp' ? '<span class="spin"></span>' : ic('check')) + 'Guardar interruptores</button><span class="xs mut">Los teléfonos lo reciben en unos minutos (como máximo unos 15); sin internet usan lo último que supieron.</span></div></div></div>';
   // 4. Textos
   var tx = svTxS();
   var row = function (key, label, sub, dEs, dEn) {
@@ -92,7 +92,7 @@ function vServidor() {
     SV_TX.map(function (t) { return row(t[0], t[1], t[2], t[3], t[4]); }).join('') +
     '<h4 style="margin:16px 0 8px">Tips (al tocar a Blokki por 2.ª vez, en orden)</h4>' +
     Array.apply(null, Array(SV_TIPS)).map(function (_, i) { return row('tip_' + (i + 1), 'Tip ' + (i + 1), 'vacío = no sale', '—', '—'); }).join('') +
-    '<div class="row mt16"><button class="btn pri" data-a="svSaveTx"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveTx' ? '<span class="spin"></span>' : ic('check')) + 'Guardar frases</button><span class="xs mut">Máximo 200 caracteres. Frases cortas: caben en un globo chico.</span></div></div></div>';
+    '<div class="row mt16"><button class="btn pri" data-a="svSaveTx"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveTx' ? '<span class="spin"></span>' : ic('check')) + 'Guardar frases</button><span class="xs mut">Máximo 200 caracteres. Frases cortas: caben en un globo chico. Vacío = usa la frase de la app.</span></div></div></div>';
   // 5. Notificaciones de Blokki (clave notis; formato de BlokkiNotifs.remotePool)
   var nt = svNotis();
   h += '<div class="card sec"><div class="ch">' + ic('bell') + '<h3>Notificaciones de Blokki</h3><span class="sub grow">Español e inglés, por situación</span></div><div class="cb">' +
@@ -103,8 +103,8 @@ function vServidor() {
     }).join('') +
     '<div class="row mt16"><button class="btn pri" data-a="svSaveNt"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveNt' ? '<span class="spin"></span>' : ic('check')) + 'Guardar notificaciones</button><span class="xs mut">Aplican al reprogramar los avisos (al abrir la app).</span></div></div></div>';
   // 6. Liberar paquetes bloqueados hasta aviso
-  h += '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Liberar paquetes</h3><span class="sub grow">' + (svLibOn() ? 'Qué Plan liberado' : 'Qué Plan bloqueado') + '</span></div><div class="cb"><div class="row nw" style="align-items:flex-start"><div class="grow"><b>Liberar «Qué Plan»</b><div class="xs mut">El paquete sale bloqueado en la app hasta que lo liberes aquí. Apagarlo lo vuelve a bloquear.</div></div>' +
-    tog('sv_lib', svLibOn(), 'Liberado', { dc: 'svLib' }) + '</div><div class="row mt16"><button class="btn pri" data-a="svSaveLib"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveLib' ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button></div></div></div>';
+  h += '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Liberar paquetes</h3><span class="sub grow">' + (svLibOn() ? 'Qué Plan liberado' : 'Qué Plan bloqueado') + '</span></div><div class="cb"><div class="row nw" style="align-items:flex-start"><div class="grow"><b>Liberar «Qué Plan»</b><div class="xs mut">El paquete «Qué Plan» sale bloqueado en la app hasta que lo liberes aquí. Verde «Liberado» = los jugadores lo pueden usar; gris «Bloqueado» = no. Sirve para estrenar el paquete cuando tú quieras, sin versión nueva.</div></div>' +
+    tog('sv_lib', svLibOn(), 'Qué Plan para todos los jugadores', { dc: 'svLib', on: 'Liberado', off: 'Bloqueado' }) + '</div><div class="row mt16"><button class="btn pri" data-a="svSaveLib"' + (SV.saving ? ' disabled' : '') + '>' + (SV.saving === 'svSaveLib' ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button></div></div></div>';
   return h;
 }
 VIEWS['juego/servidor'] = vServidor;
@@ -112,13 +112,18 @@ A.svReload = function () { SV.d = {}; SV.ap = null; SV.lib = null; rload('servid
 
 /* ---------- validación (la misma que _srv_* en 14-servidor.sql) ---------- */
 function svInt(raw, lo, hi) { var t = String(raw == null ? '' : raw).trim(); return /^\d+$/.test(t) && Number(t) >= lo && Number(t) <= hi ? Number(t) : null; }
+var SV_LLEGA = 'Los teléfonos con la app 1.0.8 o más nueva lo reciben en unos minutos (como máximo unos 15); sin internet usan lo último que supieron. Las versiones anteriores lo ignoran.';
+function svAsk(title, lines, ok) {
+  return confirmDlg({ title: title, text: 'Esto afecta a todos los jugadores.', html: cbox(lines.concat([['A quién', 'A todos los jugadores con la app 1.0.8 o más nueva.'], ['Cuánto tarda', SV_LLEGA]])), ok: ok || 'Sí, guardar', icon: 'sliders' });
+}
+function svFmt(v, u) { return v == null ? 'de fábrica' : nf(v) + (u ? ' ' + esc(u) : ''); }
 function svSave(name, fn) {
   if (SV.saving) return;
   SV.saving = name; paintPage();
   return Promise.resolve().then(fn).then(function () { rload('servidor', true); rload('config', true); }, function (e) { toast('No se pudo guardar: ' + e.message, 'bad'); }).then(function () { SV.saving = ''; paintPage(); });
 }
 
-A.svSaveAj = function () {
+A.svSaveAj = async function () {
   var errs = {}, out = {}, srv = svAj(), pod = {};
   SV_AJ.forEach(function (c) {
     var id = 'sv_aj_' + c[0], raw = svDraft(id, srv[c[0]]);
@@ -135,12 +140,16 @@ A.svSaveAj = function () {
   if (!showErrs(errs)) return;
   if (Object.keys(pod).length) out.poderes_inicio = pod;
   if (JSON.stringify(out) === JSON.stringify(srv)) { toast('No hay cambios', 'info'); return; }
+  var dl = [];
+  SV_AJ.forEach(function (c) { if (srv[c[0]] !== out[c[0]]) dl.push([c[1], svFmt(srv[c[0]], c[5]) + ' → <b>' + svFmt(out[c[0]], c[5]) + '</b>']); });
+  SV_POD.forEach(function (c) { var a = (srv.poderes_inicio || {})[c[0]], b = (out.poderes_inicio || {})[c[0]]; if (a !== b) dl.push(['Poder inicial: ' + c[1], svFmt(a) + ' → <b>' + svFmt(b) + '</b>']); });
+  if (!await svAsk('¿Guardar estos valores del juego?', dl)) return;
   svSave('svSaveAj', function () {
     return rpc('admin_servidor', { p_ajustes: out }).then(function (r) { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_(aj|pod)_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Valores guardados'); return r; });
   });
 };
 
-A.svSaveRk = function () {
+A.svSaveRk = async function () {
   var errs = {}, args = {}, r = svRows();
   SV_RK.forEach(function (c) {
     var id = 'sv_rk_' + c[0], raw = svDraft(id, r[c[0]]);
@@ -151,6 +160,8 @@ A.svSaveRk = function () {
   });
   if (!showErrs(errs)) return;
   if (!Object.keys(args).length) { toast('No hay cambios', 'info'); return; }
+  var dl2 = SV_RK.filter(function (c) { return args[c[0] === 'rank_envio_umbral' ? 'p_umbral' : 'p_cada_seg'] != null; }).map(function (c) { return [c[1], svFmt(r[c[0]], c[5]) + ' → <b>' + svFmt(args[c[0] === 'rank_envio_umbral' ? 'p_umbral' : 'p_cada_seg'], c[5]) + '</b>']; });
+  if (!await svAsk('¿Guardar los envíos al ranking?', dl2)) return;
   svSave('svSaveRk', function () {
     return rpc('admin_rank_envio', args).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_rk_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Envíos al ranking guardados'); });
   });
@@ -161,11 +172,11 @@ A.svSaveAp = async function () {
   var extra = before.filter(function (k) { return SV_OFF.every(function (x) { return x[0] !== k; }); }); // claves que este panel no conoce: se respetan
   var list = now.concat(extra), added = now.filter(function (k) { return before.indexOf(k) < 0; });
   if (list.slice().sort().join() === before.slice().sort().join()) { toast('No hay cambios', 'info'); return; }
-  if (added.length && !await confirmDlg({ title: '¿Apagar ' + added.map(function (k) { return SV_OFF.filter(function (x) { return x[0] === k; })[0][1]; }).join(', ') + '?', text: 'Los jugadores con la app 1.0.8 o más nueva lo notan en unos minutos. Se puede volver a encender en cualquier momento.', ok: 'Apagar', danger: true, icon: 'pause' })) return;
+  if (added.length && !await confirmDlg({ title: '¿Apagar ' + added.map(function (k) { return SV_OFF.filter(function (x) { return x[0] === k; })[0][1]; }).join(', ') + '?', text: 'La función deja de estar disponible para todos los jugadores con la app 1.0.8 o más nueva, en unos minutos (como máximo unos 15). Apagar no borra nada: se puede volver a encender en cualquier momento.', ok: 'Apagar', danger: true, icon: 'pause' })) return;
   svSave('svSaveAp', function () { return rpc('admin_servidor', { p_apagado: list }).then(function () { SV.ap = null; toast(list.length ? 'Interruptores guardados' : 'Todo encendido'); }); });
 };
 
-A.svSaveTx = function () {
+A.svSaveTx = async function () {
   var errs = {}, srv = svTxS(), out = JSON.parse(JSON.stringify(srv));
   var keys = SV_TX.map(function (t) { return t[0]; }).concat(Array.apply(null, Array(SV_TIPS)).map(function (_, i) { return 'tip_' + (i + 1); }));
   keys.forEach(function (k) {
@@ -179,12 +190,14 @@ A.svSaveTx = function () {
   });
   if (!showErrs(errs)) return;
   if (JSON.stringify(out) === JSON.stringify(srv)) { toast('No hay cambios', 'info'); return; }
+  var ch = keys.filter(function (k) { return JSON.stringify(out[k] || null) !== JSON.stringify(srv[k] || null); }).map(function (k) { var t = SV_TX.filter(function (x) { return x[0] === k; })[0]; return t ? t[1] : 'Tip ' + k.replace('tip_', ''); });
+  if (!await svAsk('¿Guardar las frases de Blokki?', [['Frases que cambian', esc(ch.join(', '))], ['Qué pasa', 'Blokki dirá las frases nuevas en español e inglés. Una frase vacía vuelve a la del juego.']])) return;
   svSave('svSaveTx', function () {
     return rpc('admin_servidor', { p_textos: out }).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_tx_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Frases guardadas'); });
   });
 };
 
-A.svSaveNt = function () {
+A.svSaveNt = async function () {
   var errs = {}, srv = svNotis(), out = JSON.parse(JSON.stringify(srv));
   ['es', 'en'].forEach(function (l) {
     var langs = out[l] && !Array.isArray(out[l]) && typeof out[l] === 'object' ? out[l] : {};
@@ -199,14 +212,17 @@ A.svSaveNt = function () {
   });
   if (!showErrs(errs)) return;
   if (JSON.stringify(out) === JSON.stringify(srv)) { toast('No hay cambios', 'info'); return; }
+  var cn = SV_NC.filter(function (c) { return ['es', 'en'].some(function (l) { return JSON.stringify(svNList(out, l, c[0])) !== JSON.stringify(svNList(srv, l, c[0])); }); }).map(function (c) { return c[1]; });
+  if (!await svAsk('¿Guardar las notificaciones de Blokki?', [['Situaciones que cambian', esc(cn.join(', '))], ['Qué pasa', 'Las notificaciones que recibe el jugador usarán estos mensajes. Se programan al abrir la app, así que cada jugador los ve la siguiente vez que abra Blokku.']])) return;
   svSave('svSaveNt', function () {
     return rpc('admin_servidor', { p_notis: out }).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_nt_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Notificaciones guardadas'); });
   });
 };
 
-A.svSaveLib = function () {
+A.svSaveLib = async function () {
   var before = svLibNow(), rest = before.filter(function (k) { return k !== 'queplan'; }), list = svLibOn() ? rest.concat('queplan') : rest;
   if (list.slice().sort().join() === before.slice().sort().join()) { toast('No hay cambios', 'info'); return; }
+  if (!await svAsk(svLibOn() ? '¿Liberar «Qué Plan» para todos?' : '¿Volver a bloquear «Qué Plan»?', [['Qué pasa', svLibOn() ? 'El paquete «Qué Plan» queda <b>disponible</b> para todos los jugadores.' : 'El paquete «Qué Plan» vuelve a salir <b>bloqueado</b> para quien aún no lo tenga.']], svLibOn() ? 'Sí, liberar' : 'Sí, bloquear')) return;
   svSave('svSaveLib', function () { return rpc('admin_servidor', { p_liberar: list }).then(function () { SV.lib = null; toast(svLibOn() ? 'Qué Plan liberado' : 'Qué Plan bloqueado'); }); });
 };
 

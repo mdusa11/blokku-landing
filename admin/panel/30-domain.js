@@ -6,8 +6,8 @@ var GANA = { inicio: 'Gratis desde el inicio', logro: 'Logro', nivel: 'Ruta de n
 var TIPOS = [['Tema', 'Temas'], ['Estilo', 'Estilos de pieza'], ['Marco', 'Marcos'], ['Efecto', 'Efectos de línea'], ['Otro', 'Insignias y títulos']];
 var PLAN_L = { '': 'Normal', codigo: 'Solo con código', dormido: 'Dormido' };
 var META_L = { partidas: ['partida', 'partidas', 'Juega {n} partidas'], lineas: ['línea', 'líneas', 'Limpia {n} líneas'], puntos: ['punto', 'puntos', 'Haz {n} puntos en una partida'], retos: ['reto diario', 'retos diarios', 'Completa {n} retos diarios'] };
-var EST_L = { activo: 'Activo', proximo: 'Próximo', terminado: 'Terminado', inactivo: 'Apagado', agotado: 'Agotado', caducado: 'Caducado', desactivado: 'Desactivado' };
-var EST_C = { activo: 'ok', proximo: 'ac', terminado: 'line', inactivo: 'warn', agotado: 'warn', caducado: 'line', desactivado: 'bad' };
+var EST_L = { activo: 'Activo ahora', proximo: 'Programado', terminado: 'Vencido', inactivo: 'Apagado', agotado: 'Agotado', caducado: 'Vencido', desactivado: 'Apagado' };
+var EST_C = { activo: 'ok', proximo: 'ac', terminado: 'line', inactivo: 'line', agotado: 'warn', caducado: 'line', desactivado: 'line' };
 var REPLACES = { muertos26: 't-mue26', pionero: 't-pion' };
 var PROMOS = {
   fakturo: { n: 'Fakturo', url: 'https://fakturo.cloud', tes: 'Prueba Fakturo', ten: 'Try Fakturo', xes: 'Factura en segundos desde tu celular. De los creadores de Blokku.', xen: 'Invoice in seconds from your phone. From the makers of Blokku.', premio: 'theme_fakturo' },

@@ -13,7 +13,7 @@ function vPendientes() {
   var G = { ahora: [], espera: [], hecho: [] }; L.forEach(function (k) { G[kCol(k)].push(k); });
   G.ahora.sort(function (a, b) { return (b.col === 'curso') - (a.col === 'curso'); });
   var h = pageHead('Pendientes', 'Lo que falta hacer, de ti y de Claude. Marca la casilla cuando algo quede listo.', '<button class="btn pri" data-a="pendNew">' + ic('plus') + 'Pendiente</button>',
-    ['<b>Para ahora</b>: se puede hacer hoy. <b>En espera</b>: depende de algo externo (escribe de qué en «En espera de…»). <b>Hecho</b>: ya quedó.', 'Toca un pendiente para editarlo, cambiar quién lo hace o borrarlo.', 'Se guarda solo en Supabase y lo ves igual en tu teléfono.']);
+    undefined);
   h += '<div class="card pad mb16"><div class="qadd" style="margin:0"><input class="in" id="qa_t" placeholder="Escribe un pendiente nuevo y presiona Enter…" maxlength="160" autocomplete="off">' + seg('qaWho', f.who, [['Manuel', 'Manuel'], ['Claude', 'Claude']]) + '<button class="btn pri" data-a="qaAdd">' + ic('plus') + '<span class="hide-sm">Agregar</span></button></div></div>';
   h += '<div class="row mb16">' + seg('pdV', f.v, [['tablero', 'Tablero', 'board'], ['lista', 'Lista', 'list']]) + fchips('pdQ', f.q, [['Todos', 'Todos'], ['Manuel', 'Manuel'], ['Claude', 'Claude']]) + searchBox('pd_s', f.s, 'Buscar…', 'pdS') + '</div>';
   if (f.v === 'lista') {
@@ -69,7 +69,7 @@ function verChip(s) { return chipN(s, s === 'publicada' ? 'ok' : s === 'en revis
 function vVersiones() {
   var V = items('versiones').slice().sort(function (a, b) { var ia = a.android === 'idea' && a.ios === 'idea' ? 1 : 0, ib = b.android === 'idea' && b.ios === 'idea' ? 1 : 0; return ia - ib || cmpVer(b.version, a.version); });
   var h = pageHead('Versiones', 'Qué trae cada versión, cómo va en cada tienda, qué falta para publicarla y cómo se ve.', '<button class="btn pri" data-a="verNew">' + ic('plus') + 'Versión</button>',
-    ['Cambia el estado de Android o iOS directo en la tarjeta.', 'La checklist muestra el avance; toca un punto para marcarlo.', 'Las capturas vienen de las fichas de las tiendas; también puedes subir las tuyas.']);
+    undefined);
   h += '<div class="col gap16">' + V.map(function (v) {
     var ck = v.checklist || [], d = ck.filter(function (c) { return c.d; }).length, caps = CAPS[v.id] || [], gs = {}, go2 = [];
     caps.forEach(function (c) { if (!gs[c.g]) { gs[c.g] = []; go2.push(c.g); } gs[c.g].push(c); });
