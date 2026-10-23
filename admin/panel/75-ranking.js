@@ -240,7 +240,7 @@ A.rkNombre = function (el) {
 };
 
 /* ---------- cajón de un jugador ---------- */
-var RKD = null, RKJ = {};
+var RKD = null, RKJ = {}, RKA = null;
 var RK_MODOS5 = [['clasico', 'Clásico'], ['reloj', 'Contra reloj'], ['diario', 'Reto diario'], ['zen', 'Zen'], ['evento', 'Evento']];
 function rkFicha(id) {
   var o = RKJ[id];
@@ -274,6 +274,7 @@ function rkDetalle(r) {
 }
 function rkOpenDr(id, modo, per, pers) {
   delete RKJ[id];
+  RKA = { id: id, modo: modo, per: 'amb', v: '' };
   RKD = { id: id, modo: modo, per: per, pers: pers || [per] };
   drawer({
     live: true,
@@ -292,6 +293,7 @@ function rkOpenDr(id, modo, per, pers) {
       h += '<div class="dsec"><h4>Puntaje</h4><div class="col">' +
         (r.sospechoso ? '<button class="btn blk" data-a="rkAprobar" ' + a + '>' + ic('check') + 'Aprobar puntaje</button><p class="xs mut">Lo aceptas como legítimo y los jugadores ya lo ven.</p>' : '') +
         '<button class="btn blk dng" data-a="rkBorrar" ' + a + '>' + ic('trash') + 'Borrar este puntaje</button><p class="xs mut">Quita solo este puntaje; el jugador y sus demás puntajes siguen.</p></div></div>';
+      h += rkAjustar(r, D);
       h += '<div class="dsec"><h4>Jugador</h4><div class="col">' +
         '<button class="btn blk" data-a="rkOculto" data-id="' + esc(r.id) + '" data-v="' + (r.oculto ? 0 : 1) + '">' + ic(r.oculto ? 'eye' : 'eyeoff') + (r.oculto ? 'Mostrar jugador' : 'Ocultar jugador') + '</button>' +
         '<p class="xs mut">' + (r.oculto ? 'Vuelve a aparecer en todas las tablas.' : 'Desaparece de todas las tablas y modos, sin borrar nada.') + '</p></div></div>';
@@ -303,6 +305,45 @@ function rkOpenDr(id, modo, per, pers) {
   });
 }
 A.rkOpen = function (el) { rkOpenDr(el.dataset.id, el.dataset.m, el.dataset.p, el.dataset.ps ? el.dataset.ps.split(',') : null); };
+
+/* ---------- ajustar puntaje (admin_poner_puntaje) ---------- */
+function rkAjPers(modo, per) {
+  var f = rkF(), dia = modo === 'diario';
+  var s = per.indexOf(dia ? 'dia:' : 'semana:') === 0 ? per : dia ? 'dia:' + f.fecha : 'semana:' + rkSemana(f.fecha).id;
+  return { sem: [s], his: ['historico'], amb: [s, 'historico'] };
+}
+function rkAjustar(r, D) {
+  var A_ = RKA && RKA.id === r.id ? RKA : (RKA = { id: r.id, modo: D.modo, per: 'amb', v: '' }), dia = A_.modo === 'diario';
+  return '<div class="dsec"><h4>Ajustar puntaje</h4><div class="col">' +
+    '<div class="f"><label>Modo</label>' + seg('rkAjM', A_.modo, RK_MODOS) + '</div>' +
+    '<div class="f"><label>Periodo</label>' + seg('rkAjP', A_.per, [['sem', dia ? 'Este día' : 'Esta semana'], ['his', 'Histórico'], ['amb', 'Ambos']]) + '</div>' +
+    '<div class="f"><label for="rk_aj">Puntos nuevos</label>' + inp('rk_aj', A_.v ? Number(A_.v).toLocaleString('es-MX') : '', { mode: 'numeric', max: 12, ph: nf(r.puntos), di: 'rkAjIn' }) + '</div>' +
+    '<button class="btn blk" data-a="rkAjSave" data-id="' + esc(r.id) + '">' + ic('edit') + 'Guardar puntaje</button>' +
+    '<p class="xs mut">Fija el puntaje del jugador en ese modo y periodo (lo crea si no existe) y lo marca como normal. Máximo 100,000,000.</p></div></div>';
+}
+I.rkAjIn = function (el) {
+  var d = el.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '').slice(0, 9);
+  if (RKA) RKA.v = d; el.value = d ? Number(d).toLocaleString('es-MX') : '';
+};
+function rkAjRepaint() { var i = document.getElementById('rk_aj'); if (i && RKA) RKA.v = i.value.replace(/\D/g, ''); repaint(); }
+A.rkAjM = function (el) { if (RKA) { RKA.modo = el.dataset.v; rkAjRepaint(); } };
+A.rkAjP = function (el) { if (RKA) { RKA.per = el.dataset.v; rkAjRepaint(); } };
+A.rkAjSave = async function (el) {
+  var D = RKD, a = RKA; if (!D || !a || a.id !== el.dataset.id) return;
+  var inpEl = document.getElementById('rk_aj'); if (inpEl) a.v = inpEl.value.replace(/\D/g, '');
+  if (a.v === '' || +a.v > 1e8) { toast('Escribe un puntaje entre 0 y 100,000,000', 'bad'); if (inpEl) inpEl.focus(); return; }
+  var n = +a.v, ps = rkAjPers(a.modo, D.per)[a.per];
+  var lines = ps.map(function (p) { var o = rkRow(a.id, a.modo, p); return rkPerLabel(p) + ': antes ' + (o ? nf(o.puntos) : 'sin puntaje') + ' → ahora ' + nf(n); });
+  var ok = await confirmDlg({ title: '¿Guardar este puntaje?', text: lines.join('. ') + '. Modo ' + rkModo(a.modo) + '. El puntaje queda como normal (no sospechoso).', ok: 'Guardar puntaje' });
+  if (!ok) return;
+  try {
+    await Promise.all(ps.map(function (p) { return rpc('admin_poner_puntaje', { p_id: a.id, p_modo: a.modo, p_periodo: p, p_puntos: n }); }));
+    toast('Puntaje guardado: ' + nf(n) + ' en ' + rkModo(a.modo));
+    a.v = '';
+    Object.keys(RK.t).forEach(function (k) { var q = k.split('|'); rkT(q[0], q[1], q[2], true); });
+    rload('rkres', true); delete RKJ[a.id]; repaint();
+  } catch (e) { toast(e.code === 'sin_sql' ? 'Falta correr ' + SQLF.servidor + ' en Supabase (función admin_poner_puntaje)' : 'No se pudo guardar: ' + e.message, 'bad'); }
+};
 
 /* ---------- reglas anti-trampa ---------- */
 I.rkCfgIn = function (el) {
