@@ -268,7 +268,7 @@ function csv(rows) { return '﻿' + rows.map(function (r) { return r.map(csvCell
 
 /* ---------- piezas de UI reutilizables ---------- */
 function chip(txt, cls, icn) { return '<span class="chip ' + (cls || '') + '">' + (icn ? ic(icn) : '<i></i>') + esc(txt) + '</span>'; }
-var N20 = { 'juego/retos': 1, 'juego/paises': 1, 'vivo/motor': 1 };
+var N20 = { 'juego/retos': 1, 'juego/paises': 1, 'vivo/motor': 1, 'juego/cuentas': 1, 'juego/tienda': 1 };
 function b20(r) { return N20[r] ? '<span class="v20">2.0</span>' : ''; }
 function chipN(txt, cls) { return '<span class="chip ' + (cls || '') + '">' + esc(txt) + '</span>'; }
 function emptyBox(icn, title, text, btn) { return '<div class="empty"><div class="ei">' + ic(icn) + '</div><b>' + esc(title) + '</b>' + (text ? '<p>' + esc(text) + '</p>' : '') + (btn || '') + '</div>'; }
