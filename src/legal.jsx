@@ -4,7 +4,7 @@ import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 
 export const SUPPORT_EMAIL = 'mdusa1104@gmail.com'
-const UPDATED = '9 de octubre de 2026'
+const UPDATED = '23 de octubre de 2026'
 
 function LegalLayout({ title, children }) {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -61,7 +61,9 @@ export function Terminos() {
 
       <h3>4. Progreso y datos de juego</h3>
       <p>
-        El progreso se guarda localmente en tu dispositivo. Desinstalar la App o borrar sus datos puede eliminar tu
+        El progreso se guarda en tu dispositivo y, si tienes cuenta del ranking, la App guarda además un respaldo
+        en nuestro servidor (ver el Aviso de Privacidad) que puedes recuperar al reinstalar o, con un código de
+        recuperación, en otro teléfono. Sin ese respaldo, desinstalar la App o borrar sus datos puede eliminar tu
         progreso de forma permanente. La compra "Sin Anuncios" se puede recuperar con
         <em>"Restaurar compras"</em> en la pantalla Sin Ads de la App.
       </p>
@@ -122,7 +124,8 @@ export function Privacidad() {
         <li><strong>Datos de compras</strong> — Google Play y RevenueCat procesan tus compras; recibimos confirmaciones de transacción (no vemos ni almacenamos datos de tarjetas).</li>
         <li><strong>Datos técnicos y de uso</strong> — modelo de dispositivo, versión del sistema, métricas de rendimiento y eventos de juego agregados.</li>
         <li><strong>Registros de fallos y diagnóstico</strong> — si la App se cierra por un error, se envía un informe técnico (qué falló, modelo y sistema del dispositivo) para poder corregirlo. No incluye datos personales.</li>
-        <li><strong>Progreso de juego</strong> — se guarda localmente en tu dispositivo.</li>
+        <li><strong>Progreso de juego</strong> — se guarda en tu dispositivo.</li>
+        <li><strong>Respaldo en la nube del progreso (App 2.2 o posterior)</strong> — si tienes cuenta del ranking, la App guarda en nuestro servidor una copia de tu progreso ligada a esa cuenta: nivel y XP, cosméticos ganados y equipados, logros, racha, récords, estadísticas de juego y ajustes visuales. Sirve para recuperarlo al reinstalar o al cambiar de teléfono con un código de recuperación (un solo uso, caduca en 24 horas; solo guardamos su huella cifrada, nunca el código). No incluye identificadores del dispositivo, compras, saldo de monedas ni datos personales.</li>
         <li><strong>Ranking (opcional)</strong> — si decides entrar al ranking, guardamos en nuestro servidor el apodo público que eliges, tus puntuaciones, la insignia y el título que muestras, un identificador aleatorio generado por la App y el país aproximado (deducido de la conexión, nunca por GPS). El ranking guarda tu plataforma, el modelo de tu teléfono, la versión de la App y cuántas partidas juegas. No pedimos correo, contraseña ni cuenta.</li>
         <li><strong>Estadísticas anónimas de uso</strong> — una vez al día la App envía un resumen: qué día la abriste, cuántas partidas jugaste por modo, plataforma, versión de la App y país aproximado (deducido de la conexión). Va con un número aleatorio de esa instalación que se transforma (hash) antes de salir del teléfono; no incluye apodo, cuentas ni identificadores del dispositivo, y no guardamos la IP. Puedes apagarlo en Ajustes › Datos y privacidad («Enviar estadísticas anónimas»); «Eliminar mis datos» cambia ese número.</li>
         <li><strong>Códigos canjeados</strong> — contamos cuántas veces se usa cada código (sin saber quién lo usó).</li>
@@ -163,7 +166,7 @@ export function Privacidad() {
       <h3>6. Conservación y seguridad</h3>
       <p>
         Conservamos los datos de transacciones el tiempo requerido por obligaciones legales y de facturación. Los
-        datos técnicos se conservan en forma agregada; las estadísticas anónimas de uso se borran a los 400 días. Los datos del ranking se guardan mientras participes y se
+        datos técnicos se conservan en forma agregada; las estadísticas anónimas de uso se borran a los 400 días. Los datos del ranking y el respaldo en la nube del progreso se guardan mientras participes y se
         borran al usar «Eliminar mis datos» en la App o al pedirlo por correo. Aplicamos medidas de seguridad administrativas y técnicas
         razonables para protegerlos.
       </p>
@@ -194,7 +197,7 @@ export function EliminarDatos() {
       <p>
         Blokku <strong>no tiene cuentas de usuario</strong>: no hay registro, correo ni contraseña. Tu progreso
         (puntuación, récord, nivel, logros y cosméticos) se guarda <strong>en tu dispositivo</strong>. Si entraste al
-        ranking, tu apodo y tus puntuaciones también están en nuestro servidor.
+        ranking, tu apodo, tus puntuaciones y el respaldo de tu progreso también están en nuestro servidor.
       </p>
 
       <h3><Gamepad2 size={18} /> Borrar desde la app</h3>
@@ -206,7 +209,7 @@ export function EliminarDatos() {
       </ol>
       <p>
         Eso borra de forma permanente todo tu progreso local, el estado de la compra en ese dispositivo y tus datos
-        del ranking en nuestro servidor.
+        del ranking y el respaldo de tu progreso en nuestro servidor.
         <strong> No se puede deshacer.</strong>
       </p>
 
@@ -277,7 +280,7 @@ export function Soporte() {
 
       <h3><Gamepad2 size={18} /> Preguntas frecuentes</h3>
       <ul>
-        <li><strong>¿Perdí mi progreso al cambiar de teléfono?</strong> El progreso se guarda en tu dispositivo. Las compras duraderas (Sin Anuncios, Pase) sí se pueden restaurar en el nuevo equipo con tu cuenta de Google.</li>
+        <li><strong>¿Perdí mi progreso al cambiar de teléfono?</strong> Desde la versión 2.2, no: en el teléfono anterior ve a Perfil › «Respaldo de tu progreso» › «Generar código» y escribe ese código en el teléfono nuevo (sirve de Android a iPhone y al revés). Si reinstalas en el mismo teléfono, la App te ofrece restaurar tu progreso sola. Las compras duraderas (Sin Anuncios, Pase) sí se pueden restaurar en el nuevo equipo con tu cuenta de Google.</li>
         <li><strong>¿El juego necesita internet?</strong> No — solo para anuncios, compras, el ranking y los eventos de temporada.</li>
         <li><strong>¿Cómo activo el modo para daltonismo?</strong> Ajustes (engrane en el menú) → <em>Símbolos en las gemas</em>.</li>
       </ul>
