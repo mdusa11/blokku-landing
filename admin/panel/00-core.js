@@ -268,6 +268,8 @@ function csv(rows) { return '﻿' + rows.map(function (r) { return r.map(csvCell
 
 /* ---------- piezas de UI reutilizables ---------- */
 function chip(txt, cls, icn) { return '<span class="chip ' + (cls || '') + '">' + (icn ? ic(icn) : '<i></i>') + esc(txt) + '</span>'; }
+var N20 = { 'juego/retos': 1, 'juego/paises': 1, 'vivo/motor': 1 };
+function b20(r) { return N20[r] ? '<span class="v20">2.0</span>' : ''; }
 function chipN(txt, cls) { return '<span class="chip ' + (cls || '') + '">' + esc(txt) + '</span>'; }
 function emptyBox(icn, title, text, btn) { return '<div class="empty"><div class="ei">' + ic(icn) + '</div><b>' + esc(title) + '</b>' + (text ? '<p>' + esc(text) + '</p>' : '') + (btn || '') + '</div>'; }
 function skel(n) { var h = ''; for (var i = 0; i < (n || 3); i++) h += '<div class="li"><div class="sk" style="width:44px;height:44px;border-radius:12px"></div><div class="t"><div class="sk skl" style="width:' + (40 + (i * 17) % 40) + '%"></div><div class="sk skl" style="width:' + (25 + (i * 23) % 30) + '%;height:11px"></div></div></div>'; return '<div class="list">' + h + '</div>'; }
@@ -291,7 +293,7 @@ function howHtml(r, extra) {
   return L.length ? help(L) : '';
 }
 function pageHead(title, lead, acts, helpItems) {
-  return '<div class="ph"><div class="tx"><h1>' + esc(title) + '</h1><p class="lead">' + lead + '</p>' + whyHtml() + howHtml(null, helpItems) + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+  return '<div class="ph"><div class="tx"><h1>' + esc(title) + b20(S.route) + '</h1><p class="lead">' + lead + '</p>' + whyHtml() + howHtml(null, helpItems) + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
 }
 function ring(p, size) {
   size = size || 44; var r = size / 2 - 4, c = 2 * Math.PI * r, o = c * (1 - Math.max(0, Math.min(1, p)));

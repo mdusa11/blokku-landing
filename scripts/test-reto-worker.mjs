@@ -37,6 +37,8 @@ ok(r.status === 200, 'ok 200');
 ok(rpcBody.p_codigo === 'ABC234' && rpcBody.p_id === null, 'p_codigo en mayúsculas, p_id null');
 ok(h.includes(PLAY) && h.includes('referrer=utm_source%3Dreto%26utm_medium%3Dlink%26utm_campaign%3DABC234'), 'android: Play con referrer');
 ok(!h.includes(IOS), 'android: sin App Store');
+ok(h.includes('intent://blokku.online/r/ABC234#Intent;scheme=https;package=com.dusasolutions.blokku;S.browser_fallback_url=https%3A%2F%2Fplay.google.com') && h.includes(';end'), 'android: intent URL con fallback a Play');
+ok(h.includes('Abrir en Blokku') && h.includes('¿No tienes Blokku? Descárgalo') && h.includes('Perfil › Mis retos y pega el código ABC234'), 'android: botón abrir + texto de respaldo');
 ok(h.includes('Ana te retó: ¿le ganas a 12,345?'), 'título es con miles');
 ok(h.includes('3 amigos ya jugaron'), 'amigos');
 ok(h.includes('og:title') && h.includes('/og.jpg') && h.includes('noindex'), 'og + noindex');
@@ -47,8 +49,9 @@ ok(rpcCalls === n, 'segunda visita sale de la caché');
 // iPhone y escritorio
 h = await (await get('/r/ABC234', IPHONE)).text();
 ok(h.includes(IOS) && !h.includes(PLAY), 'iPhone: solo App Store');
+ok(h.includes('href="https://blokku.online/r/ABC234"') && !h.includes('intent://'), 'iPhone: Universal Link');
 h = await (await get('/r/ABC234', DESKTOP)).text();
-ok(h.includes(IOS) && h.includes(PLAY), 'escritorio: ambos');
+ok(h.includes(IOS) && h.includes(PLAY) && !h.includes('Abrir en Blokku'), 'escritorio: ambos, sin botón abrir');
 // inglés
 h = await (await get('/r/ABC234', DESKTOP, 'en-US,en;q=0.9')).text();
 ok(h.includes('Ana challenged you: can you beat 12,345?') && h.includes('lang="en"'), 'inglés');

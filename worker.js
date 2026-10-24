@@ -61,6 +61,9 @@ const T = {
     code: 'Código del reto',
     play: 'Google Play',
     ios: 'App Store',
+    open: 'Abrir en Blokku',
+    nohas: '¿No tienes Blokku? Descárgalo',
+    nopen: (c) => `¿No se abre? En Blokku ve a Perfil › Mis retos y pega el código ${c}`,
     hint: 'Instala Blokku y abre este enlace otra vez para jugar el reto.',
     gone: 'Este reto ya no está disponible',
     goneText: 'Puede que haya caducado o que el enlace esté mal escrito. Aun así, Blokku te espera.',
@@ -77,6 +80,9 @@ const T = {
     code: 'Challenge code',
     play: 'Google Play',
     ios: 'App Store',
+    open: 'Open in Blokku',
+    nohas: "Don't have Blokku? Download it",
+    nopen: (c) => `Won't open? In Blokku go to Profile › My challenges and paste the code ${c}`,
     hint: 'Install Blokku and open this link again to play the challenge.',
     gone: 'This challenge is no longer available',
     goneText: 'It may have expired or the link may be mistyped. Blokku is still waiting for you, though.',
@@ -99,6 +105,15 @@ function pagina({ t, codigo, ua, titulo, desc, h1, lead, extra, status, conCodig
   const btnPlay = `<a class="b g" href="${esc(playUrl(codigo))}" rel="noopener">${esc(t.play)}</a>`;
   const btnIos = `<a class="b a" href="${STORE_IOS}" rel="noopener">${esc(t.ios)}</a>`;
   const botones = android ? btnPlay : ios ? btnIos : btnPlay + btnIos;
+  // «Abrir en Blokku» solo con código válido y en móvil. Android: intent URL (abre la app si está
+  // instalada, si no cae a Play con referrer). iPhone: el Universal Link normal.
+  let abrir = '';
+  if (conCodigo && (android || ios)) {
+    const href = android
+      ? `intent://blokku.online/r/${codigo}#Intent;scheme=https;package=com.dusasolutions.blokku;S.browser_fallback_url=${encodeURIComponent(playUrl(codigo))};end`
+      : `https://blokku.online/r/${codigo}`;
+    abrir = `<a class="b p" href="${esc(href)}">${esc(t.open)}</a><p class="h2">${esc(t.nohas)}</p>`;
+  }
   const html = `<!doctype html>
 <html lang="${t.lang}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -128,15 +143,16 @@ h1{font-size:26px;line-height:1.2;overflow-wrap:anywhere;margin-bottom:8px}
 .cl{font-size:12px;color:#aab6e8}
 .bs{display:flex;flex-direction:column;gap:10px;margin-top:20px}
 .b{display:block;padding:14px;border-radius:14px;font-weight:700;font-size:18px;text-decoration:none;color:#0e1a46}
-.g{background:#43d9a3}.a{background:#4ea1ff}
+.g{background:#43d9a3}.a{background:#4ea1ff}.p{background:#ffc93c;font-size:20px}
+.h2{font-size:14px;color:#aab6e8;margin:18px 0 -4px}
 .h{font-size:13px;color:#aab6e8;margin-top:16px}
 </style></head><body><main>
 <img src="/favicon-64.png" alt="Blokku" width="72" height="72">
 <h1>${h1}</h1>
 ${lead}${extra}
 ${conCodigo ? `<div class="code">${esc(codigo)}</div><div class="cl">${esc(t.code)}</div>` : ''}
-<div class="bs">${botones}</div>
-${conCodigo ? `<p class="h">${esc(t.hint)}</p>` : ''}
+<div class="bs">${abrir}${botones}</div>
+${conCodigo ? `<p class="h">${esc(abrir ? t.nopen(codigo) : t.hint)}</p>` : ''}
 </main></body></html>`;
   return new Response(html, {
     status,

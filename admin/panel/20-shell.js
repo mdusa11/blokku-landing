@@ -49,7 +49,7 @@ function paintShell() {
     '<button class="sbtn" data-a="palette" aria-label="Buscar">' + ic('search') + '<span>Buscar…</span><kbd>' + (/Mac|iP/.test(navigator.platform) ? '⌘' : 'Ctrl') + ' K</kbd></button><nav class="snav">';
   NAV.forEach(function (g) {
     side += '<div class="sg">' + (g.g ? '<div class="sgh">' + esc(g.g) + '</div>' : '');
-    g.items.forEach(function (it) { side += '<a class="si" href="#/' + it[0] + '" title="' + esc(it[1]) + '"' + (cur === it[0] ? ' aria-current="page"' : '') + '>' + ic(it[2]) + '<span>' + esc(it[1]) + '</span>' + navCount(it[0]) + '</a>'; });
+    g.items.forEach(function (it) { side += '<a class="si" href="#/' + it[0] + '" title="' + esc(it[1]) + '"' + (cur === it[0] ? ' aria-current="page"' : '') + '>' + ic(it[2]) + '<span>' + esc(it[1]) + '</span>' + b20(it[0]) + navCount(it[0]) + '</a>'; });
     side += '</div>';
   });
   side += '</nav><div class="sfoot"><a class="si" href="#/ajustes" title="Ajustes y respaldo"' + (cur === 'ajustes' ? ' aria-current="page"' : '') + '>' + ic('sliders') + '<span>Ajustes</span></a>' +
@@ -57,7 +57,7 @@ function paintShell() {
     '<button class="si sq" data-a="logout" title="Cerrar sesión en este dispositivo" aria-label="Cerrar sesión en este dispositivo">' + ic('logout') + '</button></div>';
   $('#side').innerHTML = side;
   var R = ROUTES[cur];
-  $('#top').innerHTML = '<div class="tt"><div class="tlogo">' + logoImg() + '<span>' + esc(R.t) + '</span></div><div class="crumb">' + (R.g ? esc(R.g) + ' <span class="faint">/</span> ' : '') + '<b>' + esc(R.t) + '</b></div></div>' +
+  $('#top').innerHTML = '<div class="tt"><div class="tlogo">' + logoImg() + '<span>' + esc(R.t) + '</span></div><div class="crumb">' + (R.g ? esc(R.g) + ' <span class="faint">/</span> ' : '') + '<b>' + esc(R.t) + '</b>' + b20(cur) + '</div></div>' +
     '<div class="tact"><button class="btn ghost ic sm tsrch" data-a="palette" aria-label="Buscar">' + ic('search') + '</button><span id="syncw"></span></div>';
   var g = R.k || (cur === 'inicio' ? 'inicio' : cur === 'ajustes' || cur === 'metricas' ? 'mas' : '');
   if (g === 'juego') g = 'mas';
@@ -128,7 +128,7 @@ A.more = function () {
   drawer({
     title: 'Más', auto: true, onClose: function () { LAY.more = null; },
     body: function () {
-      return '<div class="more-grid">' + list.map(function (x) { return '<a class="mg" href="#/' + x[0] + '"><span class="mgi">' + ic(x[2]) + '</span>' + esc(x[1]) + '</a>'; }).join('') + '</div>' +
+      return '<div class="more-grid">' + list.map(function (x) { return '<a class="mg" href="#/' + x[0] + '"><span class="mgi">' + ic(x[2]) + '</span>' + esc(x[1]) + b20(x[0]) + '</a>'; }).join('') + '</div>' +
         '<div class="col mt16"><button class="btn blk" data-a="palette">' + ic('search') + 'Buscar en todo el panel</button><button class="btn blk" data-a="theme">' + ic(isDark() ? 'sun' : 'moon') + (isDark() ? 'Tema claro' : 'Tema oscuro') + '</button><button class="btn blk ghost" data-a="logout">' + ic('logout') + 'Salir</button></div>';
     }
   });

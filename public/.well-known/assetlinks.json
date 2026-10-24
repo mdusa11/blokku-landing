@@ -1,11 +1,13 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "com.dusasolutions.blokku",
       "sha256_cert_fingerprints": [
-        "PEGAR_AQUI_SHA256_DE_PLAY_APP_SIGNING"
+        "A5:AF:70:1C:18:42:13:10:A3:77:72:06:66:6E:4A:70:12:20:68:D5:1E:EC:3C:E1:69:6C:70:6D:0A:E3:FD:A0"
       ]
     }
   }
