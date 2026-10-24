@@ -74,6 +74,10 @@ function rkSosp() {
 function rkRow(id, modo, per) {
   var pre = modo + '|' + per + '|', hit = null;
   Object.keys(RK.t).some(function (k) { if (k.indexOf(pre) !== 0) return false; var o = RK.t[k]; hit = (o.rows || []).filter(function (r) { return r.id === id; })[0]; return !!hit; });
+  if (!hit && RKN.rows) {
+    var n = RKN.rows.filter(function (r) { return r.id === id; })[0];
+    if (n) hit = { id: n.id, nombre: n.nombre, pais: n.pais, plataforma: n.plataforma, modelo: n.modelo, version_app: n.version_app, puntos: n.mejor_clasico || 0, sospechoso: n.sospechoso, oculto: n.oculto, actualizado: n.visto, creado: n.creado };
+  }
   return hit;
 }
 function rkTables(modo, per) { var pre = modo + '|' + per + '|'; return Object.keys(RK.t).filter(function (k) { return k.indexOf(pre) === 0; }).map(function (k) { return RK.t[k]; }); }
@@ -107,12 +111,49 @@ function vRanking() {
   h += '<div class="row sec mb12"><div class="seg" role="group">' +
     '<button type="button" data-a="rkTab" data-v="tabla" aria-pressed="' + (f.tab === 'tabla') + '">' + ic('trophy') + 'Tablas</button>' +
     '<button type="button" data-a="rkTab" data-v="sosp" aria-pressed="' + (f.tab === 'sosp') + '">' + ic('warn') + 'Sospechosos <span class="n">' + nS + '</span></button>' +
-    '<button type="button" data-a="rkTab" data-v="hoy" aria-pressed="' + (f.tab === 'hoy') + '">' + ic('user') + 'Entraron hoy <span class="n">' + (RKV.rows ? RKV.total : '…') + '</span></button></div></div>';
+    '<button type="button" data-a="rkTab" data-v="hoy" aria-pressed="' + (f.tab === 'hoy') + '">' + ic('user') + 'Entraron hoy <span class="n">' + (RKV.rows ? RKV.total : '…') + '</span></button>' +
+    '<button type="button" data-a="rkTab" data-v="nuevos" aria-pressed="' + (f.tab === 'nuevos') + '">' + ic('plus') + 'Nuevos <span class="n">' + (RKN.rows && RKN.rango === 'hoy' ? RKN.total : '…') + '</span></button></div></div>';
   if (f.tab === 'hoy') rkVLoad();
-  h += f.tab === 'sosp' ? rkSospView(S1) : f.tab === 'hoy' ? rkVistosView() : rkTablaView(f);
+  if (f.tab === 'nuevos' || !RKN.rows) rkNLoad();
+  h += f.tab === 'sosp' ? rkSospView(S1) : f.tab === 'hoy' ? rkVistosView() : f.tab === 'nuevos' ? rkNuevosView() : rkTablaView(f);
   h += rkRules();
   return h;
 }
+/* ---------- «Nuevos»: quiénes se registraron (admin_nuevos, 21-v109.sql) ---------- */
+var RKN = { rango: 'hoy', rows: null, total: 0, desde: '', hasta: '', loading: false, err: null };
+var RKN_R = [['hoy', 'Hoy', 0, 0], ['ayer', 'Ayer', 1, 1], ['7d', '7 días', 6, 0], ['30d', '30 días', 29, 0]];
+function rkNLoad(force) {
+  if (RKN.loading || (!force && (RKN.rows || RKN.err))) return;
+  var R = RKN_R.filter(function (x) { return x[0] === RKN.rango; })[0], t = dn(todayS()), rango = RKN.rango;
+  RKN.loading = true; RKN.err = null;
+  rpc('admin_nuevos', { p_desde: iso(t - R[2]), p_hasta: iso(t - R[3]) }).then(function (r) {
+    if (rango !== RKN.rango) return;
+    RKN.rows = (r && r.jugadores) || []; RKN.total = (r && r.total) || 0; RKN.desde = (r && r.desde) || ''; RKN.hasta = (r && r.hasta) || '';
+  }, function (e) { RKN.err = e; }).then(function () { RKN.loading = false; if (rango !== RKN.rango) rkNLoad(true); repaint(); });
+}
+function rkNuevosView() {
+  var R = RKN_R.filter(function (x) { return x[0] === RKN.rango; })[0];
+  var h = '<div class="card"><div class="ch">' + ic('plus') + '<h3>' + (RKN.rows ? plural(RKN.total, 'jugador nuevo', 'jugadores nuevos') + ' ' + (RKN.rango === 'hoy' ? 'hoy' : RKN.rango === 'ayer' ? 'ayer' : 'en ' + R[1]) : 'Jugadores nuevos') + '</h3><span class="sub grow">hora de Ciudad de México</span>' +
+    '<div class="seg" role="group">' + RKN_R.map(function (x) { return '<button type="button" data-a="rkNRango" data-v="' + x[0] + '" aria-pressed="' + (RKN.rango === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+    '<button class="btn sm" data-a="rkNReload">' + ic('refresh') + 'Actualizar</button></div>' +
+    '<div class="cb xs mut">Son los jugadores que se registraron en el ranking (terminaron su primera partida con puntos). Las métricas anónimas cuentan también a quien solo abrió la app, sin nombre.</div>';
+  if (RKN.err && RKN.err.code === 'sin_sql') return h + emptyBox('db', 'Falta correr ' + SQLF.v109, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Ábrelo, copia todo el texto, pégalo en Supabase › SQL Editor y presiona Run.') + '</div>';
+  if (RKN.err) return h + '<div class="cb">' + rkRetry(rerr({ err: RKN.err }, 'los jugadores nuevos')) + '</div></div>';
+  if (!RKN.rows) return h + skel(4) + '</div>';
+  if (!RKN.rows.length) return h + emptyBox('user', 'Sin jugadores nuevos', 'Nadie se ha registrado en este periodo. Prueba con más días.') + '</div>';
+  h += '<div class="tw"><table class="tbl"><thead><tr><th>Jugador</th><th>País</th><th>Plataforma</th><th class="rk-up">Modelo</th><th class="rk-up">Versión</th><th>Registro</th><th class="num">Partidas</th><th class="num">Mejor puntaje</th></tr></thead><tbody>';
+  RKN.rows.forEach(function (r) {
+    var P = rkPlat(r.plataforma), dash = '<span class="mut">—</span>';
+    h += '<tr class="clk' + (r.sospechoso ? ' sus' : '') + (r.oculto ? ' dim' : '') + '" data-a="rkNOpen" data-id="' + esc(r.id) + '"><td>' + rkName({ nombre: r.nombre, pais: r.pais, oculto: r.oculto, sospechoso: r.sospechoso }) + '</td><td>' + rkFlag(r.pais) + ' ' + esc(rkPais(r.pais)) + '</td><td>' + (P ? ic(P.i) + ' ' + esc(P.n) : dash) + '</td><td class="rk-up">' + (r.modelo ? esc(r.modelo) : dash) + '</td><td class="rk-up mono">' + (r.version_app ? esc(r.version_app) : dash) + '</td><td class="nowrap">' + esc(fdt(r.creado)) + '</td><td class="num">' + (r.partidas ? nf(r.partidas) : dash) + '</td><td class="num">' + (r.mejor_clasico != null ? '<b>' + nf(r.mejor_clasico) + '</b>' : dash) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>' + (RKN.total > RKN.rows.length ? '<div class="cb xs mut">Se muestran los primeros ' + RKN.rows.length + ' de ' + nf(RKN.total) + '.</div>' : '') + '</div>';
+}
+A.rkNRango = function (el) { RKN.rango = el.dataset.v; RKN.rows = null; RKN.err = null; rkNLoad(true); repaint(); };
+A.rkNReload = function () { RKN.rows = null; rkNLoad(true); repaint(); };
+A.rkNOpen = function (el) {
+  var r = (RKN.rows || []).filter(function (x) { return x.id === el.dataset.id; })[0]; if (!r) return;
+  rkOpenDr(r.id, 'clasico', 'historico', ['historico']);
+};
 /* ---------- «Entraron hoy» (21-v109.sql, app 1.0.9) ---------- */
 var RKV = { rows: null, total: 0, dia: '', loading: false, err: null };
 function rkVLoad(force) {
@@ -206,7 +247,7 @@ function rkRules() {
 VIEWS['juego/ranking'] = vRanking;
 
 /* ---------- filtros ---------- */
-A.rkReload = function () { if (rkF().tab === 'hoy') { A.rkVReload(); return; } RKJ = {}; Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
+A.rkReload = function () { if (rkF().tab === 'hoy') { A.rkVReload(); return; } if (rkF().tab === 'nuevos') { A.rkNReload(); return; } RKJ = {}; Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
 A.rkTab = function (el) { rkF().tab = el.dataset.v; paintPage(); };
 A.rkModo = function (el) { rkF().modo = el.dataset.v; paintPage(); };
 A.rkPer = function (el) { rkF().per = el.dataset.v; paintPage(); };
@@ -398,3 +439,5 @@ A.rkCfgSave = async function () {
   } catch (e) { toast('No se pudieron guardar las reglas: ' + e.message, 'bad'); }
   S.view.rkSaving = false; paintPage();
 };
+
+A.rkNuevosGo = function () { RKN.rango = 'hoy'; rkF().tab = 'nuevos'; go('juego/ranking'); };

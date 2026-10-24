@@ -75,14 +75,16 @@ function vInicio() {
   var AV = rows('avisos'), aact = AV.filter(function (a) { return avEst(a) === 'activo'; }), vs = 0, cl = 0; aact.forEach(function (a) { vs += a.vistos || 0; cl += a.clics || 0; });
   var ld = function (o) { return o && o.rows == null && !o.err ? '<span class="sk" style="display:inline-block;width:48px;height:26px"></span>' : null; };
   var delta = w0 ? Math.round((w1 - w0) * 100 / w0) : null;
-  out += '<div class="kpis k6' + (erNuevos() ? ' k7' : '') + '">' +
+  if (!RKN.rows && !RKN.err) rkNLoad();
+  var nuevosK = RKN.rows && RKN.rango === 'hoy' ? kpi('user', 'Nuevos hoy', nf(RKN.total), RKN.total ? 'Ver quiénes son →' : 'Nadie se ha registrado aún', '', 'juego/ranking').replace('data-a="go"', 'data-a="rkNuevosGo"') : '';
+  out += '<div class="kpis k6' + (erNuevos() || nuevosK ? ' k7' : '') + '">' +
     kpi('trophy', 'Canjes hoy', ld(cj) || nf(hoy), cj.err ? 'Sin datos' : 'Ayer: ' + nf(ayer) + ' · códigos fijos', '', 'codigos/canjes') +
     kpi('chart', 'Últimos 7 días', ld(cj) || nf(w1), cj.err ? 'Sin datos' : delta == null ? 'vs. semana anterior: —' : '<span class="delta ' + (delta >= 0 ? 'up' : 'dn') + '">' + (delta >= 0 ? '+' : '') + delta + ' %</span> vs. semana anterior', cj.rows ? spark(d14.map(function (x) { return x.v; })) : '', 'codigos/canjes') +
     kpi('zap', 'Códigos activos', ld(RM.codigos) || nf(cact), nf(cuse) + ' canjes de rotativos', '', 'codigos/rotativos') +
     kpi('cal', 'Eventos', ld(RM.eventos) || nf(eact) + '<small>activos</small>', eprox ? nf(eprox) + ' próximo' + (eprox > 1 ? 's' : '') : 'Ninguno próximo', '', 'vivo/eventos') +
     kpi('trophy', 'Jugadores en ranking', ld(rkr) || (rkr.err ? '—' : nf(rkr.rows.jugadores)), rkr.err ? (rkr.err.code === 'sin_sql' ? 'Falta correr ' + SQLF.ranking : 'Sin datos') : nf(rkr.rows.activos_7d) + ' activos en 7 días', '', 'juego/ranking') +
     kpi('bell', 'Avisos activos', ld(RM.avisos) || nf(aact.length), aact.length ? nf(vs) + ' vistos · ' + pct(cl, vs) + ' tocaron el botón' : 'Ninguno en la app ahora', '', 'vivo/avisos') +
-    (erNuevos() ? kpi('warn', 'Errores nuevos', nf(erNuevos()), erFatales() ? nf(erFatales()) + ' fatal' + (erFatales() > 1 ? 'es' : '') + ' · sin revisar' : 'Sin revisar', '', 'proyecto/errores') : '') +
+    nuevosK + (erNuevos() ? kpi('warn', 'Errores nuevos', nf(erNuevos()), erFatales() ? nf(erFatales()) + ' fatal' + (erFatales() > 1 ? 'es' : '') + ' · sin revisar' : 'Sin revisar', '', 'proyecto/errores') : '') +
     '</div>';
   /* columnas */
   var al = alertsList();
