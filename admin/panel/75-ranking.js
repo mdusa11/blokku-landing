@@ -106,11 +106,35 @@ function vRanking() {
   var S1 = rkSosp(), nS = S1.loading ? '…' : S1.list.length;
   h += '<div class="row sec mb12"><div class="seg" role="group">' +
     '<button type="button" data-a="rkTab" data-v="tabla" aria-pressed="' + (f.tab === 'tabla') + '">' + ic('trophy') + 'Tablas</button>' +
-    '<button type="button" data-a="rkTab" data-v="sosp" aria-pressed="' + (f.tab === 'sosp') + '">' + ic('warn') + 'Sospechosos <span class="n">' + nS + '</span></button></div></div>';
-  h += f.tab === 'sosp' ? rkSospView(S1) : rkTablaView(f);
+    '<button type="button" data-a="rkTab" data-v="sosp" aria-pressed="' + (f.tab === 'sosp') + '">' + ic('warn') + 'Sospechosos <span class="n">' + nS + '</span></button>' +
+    '<button type="button" data-a="rkTab" data-v="hoy" aria-pressed="' + (f.tab === 'hoy') + '">' + ic('user') + 'Entraron hoy <span class="n">' + (RKV.rows ? RKV.total : '…') + '</span></button></div></div>';
+  if (f.tab === 'hoy') rkVLoad();
+  h += f.tab === 'sosp' ? rkSospView(S1) : f.tab === 'hoy' ? rkVistosView() : rkTablaView(f);
   h += rkRules();
   return h;
 }
+/* ---------- «Entraron hoy» (21-v109.sql, app 1.0.9) ---------- */
+var RKV = { rows: null, total: 0, dia: '', loading: false, err: null };
+function rkVLoad(force) {
+  if (RKV.loading || (!force && (RKV.rows || RKV.err))) return;
+  RKV.loading = true; RKV.err = null;
+  rpc('admin_vistos_hoy', {}).then(function (r) { RKV.rows = (r && r.jugadores) || []; RKV.total = (r && r.total) || 0; RKV.dia = (r && r.dia) || ''; }, function (e) { RKV.err = e; })
+    .then(function () { RKV.loading = false; repaint(); });
+}
+function rkVistosView() {
+  var h = '<div class="card"><div class="ch">' + ic('user') + '<h3>Jugadores que entraron hoy</h3><span class="sub grow">' + (RKV.dia ? esc(fd(RKV.dia)) + ' · hora de Ciudad de México' : 'Hoy') + '</span><button class="btn sm" data-a="rkVReload">' + ic('refresh') + 'Actualizar</button></div>';
+  if (RKV.err && RKV.err.code === 'sin_sql') return h + emptyBox('db', 'Falta correr ' + SQLF.v109, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Ábrelo, copia todo el texto, pégalo en Supabase › SQL Editor y presiona Run.') + '</div>';
+  if (RKV.err) return h + '<div class="cb">' + rkRetry(rerr({ err: RKV.err }, 'los jugadores de hoy')) + '</div></div>';
+  if (!RKV.rows) return h + skel(4) + '</div>';
+  if (!RKV.rows.length) return h + emptyBox('user', 'Nadie ha entrado hoy todavía', 'Aquí salen solo los jugadores que ya están en el ranking y abrieron la app (versión 1.0.9 o más nueva) o mandaron un puntaje hoy. Quien no usa el ranking no aparece: Métricas sigue siendo anónima.') + '</div>';
+  h += '<div class="tw"><table class="tbl"><thead><tr><th>Jugador</th><th>País</th><th>Plataforma</th><th>Versión</th><th class="rk-up">Última vez</th></tr></thead><tbody>';
+  RKV.rows.forEach(function (r) {
+    var P = rkPlat(r.plataforma);
+    h += '<tr' + (r.oculto ? ' class="dim"' : '') + '><td>' + rkName({ nombre: r.nombre, pais: r.pais, oculto: r.oculto }) + '</td><td>' + rkFlag(r.pais) + ' ' + esc(rkPais(r.pais)) + '</td><td>' + (P ? ic(P.i) + ' ' + esc(P.n) : '<span class="mut">—</span>') + '</td><td class="mono">' + (r.version_app ? esc(r.version_app) : '<span class="mut">—</span>') + '</td><td class="rk-up mut nowrap">' + esc(fdt(r.visto)) + '</td></tr>';
+  });
+  return h + '</tbody></table></div><div class="cb xs mut">' + plural(RKV.total, 'jugador', 'jugadores') + (RKV.total > RKV.rows.length ? ' · se muestran los primeros ' + RKV.rows.length : '') + '. «Última vez» es la última vez que la app avisó (una vez al día al abrirse) o mandó un puntaje.</div></div>';
+}
+A.rkVReload = function () { RKV.rows = null; rkVLoad(true); repaint(); };
 function rkTablaView(f) {
   var per = rkPeriodo(f), pa = f.pais, t = rkT(f.modo, per, pa), res = rkRes().rows, paises = res && res.paises ? Object.keys(res.paises) : [];
   if (pa && paises.indexOf(pa) < 0) paises.push(pa);
@@ -182,7 +206,7 @@ function rkRules() {
 VIEWS['juego/ranking'] = vRanking;
 
 /* ---------- filtros ---------- */
-A.rkReload = function () { RKJ = {}; Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
+A.rkReload = function () { if (rkF().tab === 'hoy') { A.rkVReload(); return; } RKJ = {}; Object.keys(RK.t).forEach(function (k) { var p = k.split('|'); rkT(p[0], p[1], p[2], true); }); rload('rkres'); };
 A.rkTab = function (el) { rkF().tab = el.dataset.v; paintPage(); };
 A.rkModo = function (el) { rkF().modo = el.dataset.v; paintPage(); };
 A.rkPer = function (el) { rkF().per = el.dataset.v; paintPage(); };
@@ -190,7 +214,7 @@ A.rkHoy = function () { rkF().fecha = todayS(); paintPage(); };
 C.rkFecha = function (el) { var f = rkF(); if (/^\d{4}-\d{2}-\d{2}$/.test(el.value)) f.fecha = el.value > todayS() ? todayS() : el.value; paintPage(); };
 C.rkPais = function (el) { rkF().pais = el.value; paintPage(); };
 C.rkVis = function (el) { rkF().vis = el.checked; paintPage(); };
-OPENERS.rk = function (a) { var f = rkF(); f.tab = a === 'sosp' ? 'sosp' : 'tabla'; paintPage(); };
+OPENERS.rk = function (a) { var f = rkF(); f.tab = a === 'sosp' ? 'sosp' : a === 'hoy' ? 'hoy' : 'tabla'; paintPage(); };
 
 /* ---------- moderación: cambio optimista, con deshacer si falla ---------- */
 function rkPatch(id, patch, modo, per) {

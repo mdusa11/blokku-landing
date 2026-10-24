@@ -10,6 +10,13 @@ var SV_AJ = [
   ['aviso_sesion_min', 'Tiempo fuera para contar como sesión nueva', 5, 720, 30, 'minutos', 'Cuánto tiempo fuera de la app cuenta como «sesión nueva». Ejemplo: 30 = si regresa después de 30 minutos, los avisos de frecuencia «Siempre» vuelven a salir.'],
   ['refresco_min', 'Cada cuánto la app pide esta configuración', 5, 120, 15, 'minutos', 'Con la app abierta o al volver de segundo plano. Ejemplo: 15 = cada 15 minutos. Más bajo = tus cambios llegan más rápido, pero la app hace más peticiones.']
 ];
+// Anuncios entre partidas (app 1.0.9; 21-v109.sql). Mismos rangos que _srv_ajustes y AjustesRemotos.
+var SV_AD = [
+  ['ad_cada_partidas', 'Cada cuántas partidas sale un anuncio', 2, 10, 3, 'partidas', 'Ejemplo: 3 = un anuncio cada 3 partidas terminadas. El contador se guarda en el teléfono: ya no se reinicia al cerrar la app. Más bajo = más anuncios.'],
+  ['ad_min_seg', 'Duración mínima de la partida', 20, 180, 45, 'segundos', 'Si la partida que acaba de terminar duró menos que esto, no sale anuncio (morir rápido y ver un anuncio hace que la gente se vaya). Ejemplo: 45. La partida corta no reinicia la cuenta: el anuncio sale en la siguiente larga.'],
+  ['ad_min_intervalo_seg', 'Mínimo entre un anuncio y otro', 60, 1800, 180, 'segundos', 'Aunque ya toque, no sale otro anuncio hasta que pasen estos segundos desde el último. Ejemplo: 180 = 3 minutos. También se respeta aunque cierren y abran la app.']
+];
+var SV_ADK = SV_AD.map(function (c) { return c[0]; }).concat(['ad_en_diario']);
 var SV_POD = [['bomb', 'Bomba', 1], ['lightning', 'Rayo', 1], ['undo', 'Deshacer', 2], ['shuffle', 'Mezclar', 2], ['picker', 'Gotero de color', 1]];
 var SV_RK = [['rank_envio_umbral', 'Primer envío al ranking a media partida', 1000, 1000000, 10000, 'puntos', 'Desde cuántos puntos la app manda el puntaje al ranking sin esperar a que termine la partida. Ejemplo: 10,000.'], ['rank_envio_cada_seg', 'Segundos entre envíos a media partida', 10, 3600, 300, 'segundos', 'Espera mínima entre un envío y otro durante la partida. Ejemplo: 300 = cada 5 minutos. Solo se manda si el puntaje mejoró.']];
 var SV_OFF = [
@@ -34,7 +41,10 @@ var SV_TX = [
 var SV_TIPS = 8;
 var SV_NC = [['racha', 'Racha en riesgo', 'Tiene racha de 3+ y no jugó ayer'], ['dias2', '2 días sin jugar', ''], ['dias4', '3 a 5 días sin jugar', ''], ['dias7', '6 o más días sin jugar', ''], ['noche', 'Noche (22:00 en adelante)', ''], ['record', 'Récord a la vista', 'Solo si ya tiene un récord'], ['generico', 'Genérico', 'También es el respaldo si falta otra categoría']];
 var SV_NMAX = 10, SV_NLEN = 120;
-var SV = { d: {}, ap: null, saving: '' };
+var SV = { d: {}, ap: null, saving: '', adDia: null };
+function svSame(a, b) { function n(o) { return JSON.stringify(Object.keys(o).sort().map(function (k) { return [k, o[k] && typeof o[k] === 'object' ? Object.keys(o[k]).sort().map(function (j) { return [j, o[k][j]]; }) : o[k]]; })); } return n(a) === n(b); }
+function svAdDia() { return SV.adDia != null ? SV.adDia : svAj().ad_en_diario === true; }
+C.svAdDia = function (el) { SV.adDia = el.checked; };
 
 function svRows() { var o = rm('servidor'); return o && o.rows && typeof o.rows === 'object' && !Array.isArray(o.rows) ? o.rows : null; }
 function svAj() { var r = svRows(); return (r && r.ajustes) || {}; }
@@ -73,6 +83,9 @@ function vServidor() {
     return field(id, p[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: 0, ph: 'De fábrica: ' + p[2], di: 'svIn' }), 'Número de usos, de 0 a 5. ' + (cur != null ? '<b>Ahora:</b> ' + cur + '.' : '<b>Ahora:</b> de fábrica.'));
   }).join('') + '</div>';
   h += svNumCard('Valores del juego', 'sliders', 'Misiones, XP, reto diario, avisos', SV_AJ, function (k) { return aj[k]; }, 'sv_aj_', 'svSaveAj', pod);
+  h += svNumCard('Anuncios entre partidas', 'zap', 'App 1.0.9 o más nueva', SV_AD, function (k) { return aj[k]; }, 'sv_ad_', 'svSaveAd',
+    '<div class="row nw" style="align-items:flex-start;margin:4px 0 12px"><div class="grow"><b>También tras el reto diario</b><div class="xs mut">Apagado (de fábrica) = el reto diario nunca muestra anuncio ni suma a la cuenta. Encendido = cuenta como una partida más. <b>Ahora:</b> ' + (aj.ad_en_diario === true ? 'encendido' : 'apagado (de fábrica)') + '.</div></div>' + tog('sv_ad_diario', svAdDia(), 'Anuncio tras el reto diario', { dc: 'svAdDia', on: 'Sí', off: 'No' }) + '</div>' +
+    '<div class="rule">' + ic('info') + '<div><b>Reglas que no se pueden cambiar desde aquí:</b> nunca sale un anuncio justo cuando toca pedir reseña, nunca con la app en segundo plano y nunca a quien compró «Sin anuncios». Las versiones anteriores a la 1.0.9 ignoran estos valores. Para guardar necesitas haber corrido <b>21-v109.sql</b> en Supabase.</div></div>');
   // 2. Envíos al ranking (admin_rank_envio, 13-rank-envio.sql)
   h += svNumCard('Envíos al ranking', 'trophy', 'A media partida (13-rank-envio.sql)', SV_RK, function (k) { return r[k]; }, 'sv_rk_', 'svSaveRk', '');
   // 3. Interruptores
@@ -108,7 +121,7 @@ function vServidor() {
   return h;
 }
 VIEWS['juego/servidor'] = vServidor;
-A.svReload = function () { SV.d = {}; SV.ap = null; SV.lib = null; rload('servidor'); rload('config'); toast('Recargando…', 'info'); };
+A.svReload = function () { SV.d = {}; SV.ap = null; SV.lib = null; SV.adDia = null; rload('servidor'); rload('config'); toast('Recargando…', 'info'); };
 
 /* ---------- validación (la misma que _srv_* en 14-servidor.sql) ---------- */
 function svInt(raw, lo, hi) { var t = String(raw == null ? '' : raw).trim(); return /^\d+$/.test(t) && Number(t) >= lo && Number(t) <= hi ? Number(t) : null; }
@@ -139,13 +152,35 @@ A.svSaveAj = async function () {
   });
   if (!showErrs(errs)) return;
   if (Object.keys(pod).length) out.poderes_inicio = pod;
-  if (JSON.stringify(out) === JSON.stringify(srv)) { toast('No hay cambios', 'info'); return; }
+  SV_ADK.forEach(function (k) { if (srv[k] != null) out[k] = srv[k]; }); // los anuncios se guardan en su propia tarjeta
+  if (svSame(out, srv)) { toast('No hay cambios', 'info'); return; }
   var dl = [];
   SV_AJ.forEach(function (c) { if (srv[c[0]] !== out[c[0]]) dl.push([c[1], svFmt(srv[c[0]], c[5]) + ' → <b>' + svFmt(out[c[0]], c[5]) + '</b>']); });
   SV_POD.forEach(function (c) { var a = (srv.poderes_inicio || {})[c[0]], b = (out.poderes_inicio || {})[c[0]]; if (a !== b) dl.push(['Poder inicial: ' + c[1], svFmt(a) + ' → <b>' + svFmt(b) + '</b>']); });
   if (!await svAsk('¿Guardar estos valores del juego?', dl)) return;
   svSave('svSaveAj', function () {
     return rpc('admin_servidor', { p_ajustes: out }).then(function (r) { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_(aj|pod)_/.test(k)) m[k] = SV.d[k]; return m; }, {}); toast('Valores guardados'); return r; });
+  });
+};
+
+A.svSaveAd = async function () {
+  var errs = {}, srv = svAj(), out = JSON.parse(JSON.stringify(srv));
+  SV_AD.forEach(function (c) {
+    var id = 'sv_ad_' + c[0], raw = svDraft(id, srv[c[0]]);
+    if (String(raw).trim() === '') { delete out[c[0]]; return; }
+    var n = svInt(raw, c[2], c[3]);
+    if (n == null) errs[id] = 'Un entero de ' + nf(c[2]) + ' a ' + nf(c[3]) + ', o vacío para el valor de fábrica.'; else out[c[0]] = n;
+  });
+  if (!showErrs(errs)) return;
+  var dia = svAdDia();
+  if (dia) out.ad_en_diario = true; else delete out.ad_en_diario;
+  if (svSame(out, srv)) { toast('No hay cambios', 'info'); return; }
+  var dl = [];
+  SV_AD.forEach(function (c) { if (srv[c[0]] !== out[c[0]]) dl.push([c[1], svFmt(srv[c[0]], c[5]) + ' → <b>' + svFmt(out[c[0]], c[5]) + '</b>']); });
+  if ((srv.ad_en_diario === true) !== dia) dl.push(['Anuncio tras el reto diario', (srv.ad_en_diario === true ? 'Sí' : 'No') + ' → <b>' + (dia ? 'Sí' : 'No') + '</b>']);
+  if (!await confirmDlg({ title: '¿Guardar los anuncios entre partidas?', text: 'Esto cambia cuántos anuncios ven todos los jugadores.', html: cbox(dl.concat([['A quién', 'A todos los jugadores con la app 1.0.9 o más nueva.'], ['Cuánto tarda', 'Los teléfonos lo reciben en unos minutos (como máximo unos 15); sin internet usan lo último que supieron. Las versiones anteriores lo ignoran.']])), ok: 'Sí, guardar', icon: 'zap' })) return;
+  svSave('svSaveAd', function () {
+    return rpc('admin_servidor', { p_ajustes: out }).then(function () { SV.d = Object.keys(SV.d).reduce(function (m, k) { if (!/^sv_ad_/.test(k)) m[k] = SV.d[k]; return m; }, {}); SV.adDia = null; toast('Anuncios guardados'); });
   });
 };
 
