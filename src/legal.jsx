@@ -4,7 +4,7 @@ import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 
 export const SUPPORT_EMAIL = 'mdusa1104@gmail.com'
-const UPDATED = '23 de octubre de 2026'
+const UPDATED = '24 de octubre de 2026'
 
 function LegalLayout({ title, children }) {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -127,6 +127,7 @@ export function Privacidad() {
         <li><strong>Progreso de juego</strong> — se guarda en tu dispositivo.</li>
         <li><strong>Respaldo en la nube del progreso (App 2.2 o posterior)</strong> — si tienes cuenta del ranking, la App guarda en nuestro servidor una copia de tu progreso ligada a esa cuenta: nivel y XP, cosméticos ganados y equipados, logros, racha, récords, estadísticas de juego y ajustes visuales. Sirve para recuperarlo al reinstalar o al cambiar de teléfono con un código de recuperación (un solo uso, caduca en 24 horas; solo guardamos su huella cifrada, nunca el código). No incluye identificadores del dispositivo, compras, saldo de monedas ni datos personales.</li>
         <li><strong>Ranking (opcional)</strong> — si decides entrar al ranking, guardamos en nuestro servidor el apodo público que eliges, tus puntuaciones, la insignia y el título que muestras, un identificador aleatorio generado por la App y el país aproximado (deducido de la conexión, nunca por GPS). El ranking guarda tu plataforma, el modelo de tu teléfono, la versión de la App y cuántas partidas juegas. No pedimos correo, contraseña ni cuenta.</li>
+        <li><strong>Cumpleaños (opcional, App 2.0 o posterior)</strong> — si decides ponerlo, guardamos el día y el mes de tu cumpleaños (nunca el año), ligados a tu cuenta del ranking, solo para darte tu regalo de cumpleaños. No lo mostramos a otros jugadores: ese día solo aparece un 🎂 junto a tu apodo en el ranking. Puedes quitarlo cuando quieras en Perfil › Mi cumpleaños; «Eliminar mis datos» también lo borra.</li>
         <li><strong>Estadísticas anónimas de uso</strong> — una vez al día la App envía un resumen: qué día la abriste, cuántas partidas jugaste por modo, plataforma, versión de la App y país aproximado (deducido de la conexión). Va con un número aleatorio de esa instalación que se transforma (hash) antes de salir del teléfono; no incluye apodo, cuentas ni identificadores del dispositivo, y no guardamos la IP. Puedes apagarlo en Ajustes › Datos y privacidad («Enviar estadísticas anónimas»); «Eliminar mis datos» cambia ese número.</li>
         <li><strong>Códigos canjeados</strong> — contamos cuántas veces se usa cada código (sin saber quién lo usó).</li>
       </ul>
