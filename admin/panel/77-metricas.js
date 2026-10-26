@@ -102,7 +102,7 @@ function vMetricas() {
   h += '<div class="col gap16"><div class="card"><div class="ch">' + ic('phone') + '<h3>Android vs iOS</h3></div><div class="cb row gap16" style="flex-wrap:nowrap">' + donut(parts) + '<div class="col">' + parts.map(function (x) { return '<div class="legend"><span><i style="--gc:' + x.c + '"></i>' + x.l + ' <b style="color:var(--text)">' + nf(x.v) + '</b> (' + pct(x.v, T.activos) + ')</span></div>'; }).join('') + '</div></div></div>' +
     '<div class="card"><div class="ch">' + ic('game') + '<h3>Partidas por modo</h3><span class="sub">' + plural(T.partidas, 'partida') + '</span></div><div class="cb">' + (M.length ? hbars(M.map(function (x) { return { l: esc(MT_MODOS[x.clave] || x.clave) + ' <span class="mut">' + pct(x.partidas, mtot) + '</span>', v: x.partidas }; })) : '<p class="mut">Nadie ha terminado una partida en este rango.</p>') + '</div></div></div></div>';
   h += '<div class="grid g2 sec" style="align-items:start"><div class="card"><div class="ch">' + ic('layers') + '<h3>Versiones</h3><span class="sub">Última que usó cada jugador</span></div><div class="cb">' + mtReparto(r.versiones, function (v) { return v ? 'v' + esc(v) : '<span class="mut">sin versión</span>'; }, T.activos) + '</div></div>' +
-    '<div class="card"><div class="ch">' + ic('flag') + '<h3>Países</h3><span class="sub">Top 20</span></div><div class="cb">' + mtReparto(r.paises, function (c) { return (c ? rkFlag(c) + ' ' : '🌐 ') + esc(rkPais(c)); }, T.activos) + '</div></div></div>';
+    '<div class="card"><div class="ch">' + ic('flag') + '<h3>Países</h3><span class="sub">Top 20</span></div><div class="cb">' + mtReparto(r.paises, function (c) { return (rkFlag(c) + ' ') + esc(rkPais(c)); }, T.activos) + '</div></div></div>';
   return h;
 }
 

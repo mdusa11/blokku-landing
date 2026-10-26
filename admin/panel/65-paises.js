@@ -42,8 +42,7 @@ function paDraft(id, srv) { return id in PA.d ? PA.d[id] : (srv == null ? '' : S
 I.paIn = function (el) { PA.d[el.id] = el.value; };
 function paFlag(c) {
   c = String(c || '').toUpperCase();
-  if (!/^[A-Z]{2}$/.test(c)) return '🏳';
-  return String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65, 0x1F1E6 + c.charCodeAt(1) - 65);
+  return bkFlag(c, 14);
 }
 function paName(c) {
   try { return new Intl.DisplayNames(['es'], { type: 'region' }).of(String(c).toUpperCase()) || c; } catch (e) { return c; }
