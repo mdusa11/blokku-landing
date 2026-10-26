@@ -1,6 +1,6 @@
 /* ================= PAÍSES (16-paises.sql, app 2.0) ================= */
 // Copa de Países en vivo, historial de campeones, regalo del paquete de cada
-// país (interruptor por país), URLs de Instagram/TikTok de Blokku y reglas de
+// país (interruptor por país), URLs de Instagram/TikTok/YouTube de Blokku y reglas de
 // la Copa. Todo por admin_paises(p_clave, p_cambios): sin cambios solo lee; con
 // {regalo|redes|config|recalcular|semana} guarda y devuelve el estado nuevo.
 // Esta sección se registra aquí mismo (SQLF, FNF, RFN, NAV, ROUTES, AYUDA) para
@@ -15,7 +15,7 @@ RFN.paises = 'admin_paises';
 })();
 AYUDA['juego/paises'] = {
   que: 'La Copa de Países (cada semana los países compiten con los puntos de Clásico de sus jugadores), el regalo del paquete de cada país y los enlaces a las redes de Blokku dentro del juego.',
-  ve: 'En el ranking aparece una tarjeta «Copa de Países» con su bandera y «Tu país va #N». Los jugadores de un país con regalo encendido reciben su paquete (México: tema, piezas, marco, insignia y título «Orgullo Mexicano») la próxima vez que abren la app con cuenta del ranking. Quien juega en la semana que su país gana recibe la insignia y el título «Campeón de la Copa». En Ajustes salen los botones de Instagram y TikTok.',
+  ve: 'En el ranking aparece una tarjeta «Copa de Países» con su bandera y «Tu país va #N». Los jugadores de un país con regalo encendido reciben su paquete (México: tema, piezas, marco, insignia y título «Orgullo Mexicano») la próxima vez que abren la app con cuenta del ranking. Quien juega en la semana que su país gana recibe la insignia y el título «Campeón de la Copa». En Ajustes salen los botones de Instagram, TikTok y YouTube.',
   cuando: 'Revisa la Copa para ver cómo va la semana, enciende o apaga el regalo de un país, cambia los enlaces de redes cuando abras una cuenta nueva y ajusta las reglas si un país con pocos jugadores gana de forma injusta.',
   como: [
     '<b>Qué versión lo soporta:</b> la app 2.0 o más nueva. Las anteriores no tienen Copa, regalos ni botones de redes.',
@@ -24,7 +24,7 @@ AYUDA['juego/paises'] = {
     '<b>Cierre de semana:</b> la semana (lunes a domingo) se cierra el <b>martes a las 06:00 hora de México</b> (36 horas después de que termina en UTC, para que quepan todos los husos y los envíos en cola). Entonces se guarda el podio en el historial y el país campeón gana el premio. Solo se cierran las dos últimas semanas vencidas.',
     '<b>Regalo por país:</b> el interruptor verde «Encendido» = ese país recibe su paquete. Apagarlo no quita lo que ya se entregó; solo detiene las entregas nuevas. La «clave del paquete» tiene que existir en la app (hoy solo <b>mx</b>); con una clave que la app no conoce no pasa nada hasta que salga la versión con su arte.',
     '<b>País del jugador:</b> el que detecta Cloudflare cuando se registra en el ranking, no el idioma del teléfono.',
-    '<b>Redes:</b> solo https://instagram.com/… y https://tiktok.com/@…. Vacío = el botón no sale en la app. Los enlaces llevan ?src=app para medir cuánta gente llega desde el juego. Quien toca un botón por primera vez recibe la insignia «Fan de Blokku», sin tener que seguir a nadie.',
+    '<b>Redes:</b> solo https://instagram.com/…, https://tiktok.com/@… y https://youtube.com/@…. Vacío = el botón no sale en la app. Los enlaces llevan ?src=app para medir cuánta gente llega desde el juego. Quien toca un botón por primera vez recibe la insignia «Fan de Blokku», sin tener que seguir a nadie.',
     '<b>Cuánto tarda:</b> la app guarda esta configuración unas horas, así que un cambio puede tardar en llegar a todos.',
     H_HORA
   ]
@@ -103,9 +103,10 @@ function paRegalos(r) {
 
 function paRedes(r) {
   var x = r.redes || {};
-  return '<div class="card sec"><div class="ch">' + ic('link') + '<h3>Redes de Blokku en el juego</h3><span class="sub grow">' + ((x.instagram || x.tiktok) ? 'Visibles en Ajustes' : 'Ocultas (sin enlaces)') + '</span></div><div class="cb"><div class="grid g2">' +
+  return '<div class="card sec"><div class="ch">' + ic('link') + '<h3>Redes de Blokku en el juego</h3><span class="sub grow">' + ((x.instagram || x.tiktok || x.youtube) ? 'Visibles en Ajustes' : 'Ocultas (sin enlaces)') + '</span></div><div class="cb"><div class="grid g2">' +
     field('pa_ig', 'Instagram', inp('pa_ig', paDraft('pa_ig', x.instagram), { max: 200, ph: 'https://www.instagram.com/…', di: 'paIn' }), 'Debe empezar con https://instagram.com/ o https://www.instagram.com/. Vacío = el botón no sale.') +
     field('pa_tt', 'TikTok', inp('pa_tt', paDraft('pa_tt', x.tiktok), { max: 200, ph: 'https://www.tiktok.com/@…', di: 'paIn' }), 'Debe empezar con https://tiktok.com/@ o https://www.tiktok.com/@. Vacío = el botón no sale.') +
+    field('pa_yt', 'YouTube', inp('pa_yt', paDraft('pa_yt', x.youtube), { max: 200, ph: 'https://www.youtube.com/@…', di: 'paIn' }), 'Debe empezar con https://youtube.com/@ o https://www.youtube.com/@. Vacío = el botón no sale.') +
     '</div><div class="row"><button class="btn pri" data-a="paSaveRedes"' + (PA.saving ? ' disabled' : '') + '>' + (PA.saving === 'redes' ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button><span class="xs mut">La app agrega <span class="mono">?src=app</span> al abrirlos. La primera vez que un jugador toca un botón, gana la insignia «Fan de Blokku».</span></div></div></div>';
 }
 
@@ -192,17 +193,18 @@ A.paDel = async function (el) {
   paCall('del', { regalo: { pais: k, borrar: true } }, 'País quitado');
 };
 
-var PA_IG = /^https:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._\/-]{1,100}$/, PA_TT = /^https:\/\/(www\.)?tiktok\.com\/@[A-Za-z0-9._]{1,60}\/?$/;
+var PA_IG = /^https:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._\/-]{1,100}$/, PA_TT = /^https:\/\/(www\.)?tiktok\.com\/@[A-Za-z0-9._]{1,60}\/?$/, PA_YT = /^https:\/\/(www\.)?youtube\.com\/@[A-Za-z0-9._-]{1,60}\/?$/;
 A.paSaveRedes = async function () {
   var r = paRows(); if (!r) return;
-  var ig = String(paDraft('pa_ig', (r.redes || {}).instagram)).trim(), tt = String(paDraft('pa_tt', (r.redes || {}).tiktok)).trim(), errs = {};
+  var ig = String(paDraft('pa_ig', (r.redes || {}).instagram)).trim(), tt = String(paDraft('pa_tt', (r.redes || {}).tiktok)).trim(), yt = String(paDraft('pa_yt', (r.redes || {}).youtube)).trim(), errs = {};
   if (ig && !PA_IG.test(ig)) errs.pa_ig = 'Debe ser https://instagram.com/… (o www.instagram.com).';
   if (tt && !PA_TT.test(tt)) errs.pa_tt = 'Debe ser https://tiktok.com/@… (o www.tiktok.com).';
+  if (yt && !PA_YT.test(yt)) errs.pa_yt = 'Debe ser https://youtube.com/@… (o www.youtube.com).';
   if (!showErrs(errs)) return;
-  if (ig === (r.redes || {}).instagram && tt === (r.redes || {}).tiktok) { toast('No hay cambios', 'info'); return; }
-  var ok = await confirmDlg({ title: '¿Guardar los enlaces de redes?', text: 'Esto afecta a todos los jugadores.', html: cbox([['Instagram', ig ? esc(ig) : 'oculto'], ['TikTok', tt ? esc(tt) : 'oculto'], ['Cuánto tarda', 'La app guarda los enlaces unas horas (6 como máximo); sin internet usa los últimos que supo.']]), ok: 'Sí, guardar', icon: 'link' });
+  if (ig === (r.redes || {}).instagram && tt === (r.redes || {}).tiktok && yt === (r.redes || {}).youtube) { toast('No hay cambios', 'info'); return; }
+  var ok = await confirmDlg({ title: '¿Guardar los enlaces de redes?', text: 'Esto afecta a todos los jugadores.', html: cbox([['Instagram', ig ? esc(ig) : 'oculto'], ['TikTok', tt ? esc(tt) : 'oculto'], ['YouTube', yt ? esc(yt) : 'oculto'], ['Cuánto tarda', 'La app guarda los enlaces unas horas (6 como máximo); sin internet usa los últimos que supo.']]), ok: 'Sí, guardar', icon: 'link' });
   if (!ok) return;
-  paCall('redes', { redes: { instagram: ig, tiktok: tt } }, 'Enlaces guardados');
+  paCall('redes', { redes: { instagram: ig, tiktok: tt, youtube: yt } }, 'Enlaces guardados');
 };
 
 A.paSaveCfg = async function () {
