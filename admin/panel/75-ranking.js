@@ -8,7 +8,8 @@ var RK_CFG = [
   ['max_envios_hora', 'Envíos por hora por jugador', 'Cuántos puntajes puede mandar un mismo jugador en una hora. Pasando el límite, la app le pide esperar un rato.']
 ];
 function rkModo(m) { var x = RK_MODOS.filter(function (o) { return o[0] === m; })[0]; return x ? x[1] : m; }
-function rkFlag(cc) { cc = String(cc || '').toUpperCase(); if (!/^[A-Z]{2}$/.test(cc)) return '🌐'; return String.fromCodePoint(127397 + cc.charCodeAt(0), 127397 + cc.charCodeAt(1)); }
+function rkFlag(cc) { return bkFlag(cc, 16); }
+function rkFlagTxt(cc) { cc = String(cc || '').toUpperCase(); if (!/^[A-Z]{2}$/.test(cc)) return '🌐'; return String.fromCodePoint(127397 + cc.charCodeAt(0), 127397 + cc.charCodeAt(1)); }
 var rkDN = null;
 function rkPais(cc) {
   cc = String(cc || '').toUpperCase(); if (!cc) return 'Sin país';
@@ -188,7 +189,7 @@ function rkTablaView(f) {
     '<div class="col gap4"><span class="fl">Periodo</span>' + seg('rkPer', f.per, perOpts) + '</div>' +
     (f.per !== 'historico' ? '<div class="col gap4"><label class="fl" for="rk_fecha">' + (f.per === 'dia' ? 'Día' : 'Semana del') + '</label><div class="row" style="gap:6px"><input class="in sm" type="date" id="rk_fecha" data-c="rkFecha" value="' + esc(f.fecha) + '" max="' + todayS() + '" style="width:auto">' + (hoy ? '' : '<button class="btn sm" data-a="rkHoy">Hoy</button>') + '</div></div>' : '') +
     '<div class="col gap4"><label class="fl" for="rk_pais">Ámbito</label><select class="sel sm" id="rk_pais" data-c="rkPais" style="width:auto;min-width:170px">' +
-    opts([['', '🌍 Mundial']].concat(paises.map(function (c) { return [c, rkFlag(c) + ' ' + rkPais(c)]; })), pa) + '</select></div>' +
+    opts([['', '🌍 Mundial']].concat(paises.map(function (c) { return [c, rkFlagTxt(c) + ' ' + rkPais(c)]; })), pa) + '</select></div>' +
     '<div class="col gap4" style="padding-bottom:6px">' + tog('rk_vis', f.vis, 'Ver como los jugadores', { dc: 'rkVis', on: 'Como lo ven ellos', off: 'Ver todo' }) + '<span class="xs mut">Encendido = esconde sospechosos y ocultos, igual que los jugadores. Apagado = ves todo.</span>' + '</div></div></div>';
   if (t.err && t.err.code === 'sin_sql') return h + emptyBox('db', 'Falta correr ' + SQLF.ranking, 'Está en Escritorio › Blokku › 02-Documentos › Supabase.') + '</div>';
   if (t.err) return h + '<div class="cb">' + rkRetry(rerr(t, 'la tabla')) + '</div></div>';
