@@ -5,7 +5,8 @@ var RK_CFG = [
   ['multiplo', 'Múltiplo de puntos', 'Todos los puntajes de Blokku son múltiplos de este número. Si llega uno que no lo es, se rechaza como trampa.'],
   ['max_por_segundo', 'Máximo de puntos por segundo', 'Puntos más altos que se creen posibles por cada segundo jugado. Si un puntaje lo rebasa, se acepta pero queda como «sospechoso» y los jugadores no lo ven hasta que lo apruebes.'],
   ['max_reloj', 'Tope de Contra reloj', 'Puntaje máximo posible en una partida de Contra reloj (90 segundos). Un puntaje mayor se rechaza directo, sin llegar al ranking.'],
-  ['max_envios_hora', 'Envíos por hora por jugador', 'Cuántos puntajes puede mandar un mismo jugador en una hora. Pasando el límite, la app le pide esperar un rato.']
+  ['max_envios_hora', 'Envíos por hora por jugador', 'Cuántos puntajes puede mandar un mismo jugador en una hora. Pasando el límite, la app le pide esperar un rato.'],
+  ['lugares_app', 'Lugares que ve el jugador', 'Cuántos lugares enseña el ranking dentro de la app (de 1 a 500). Funciona también en las versiones ya publicadas. Requiere el SQL 26.']
 ];
 function rkModo(m) { var x = RK_MODOS.filter(function (o) { return o[0] === m; })[0]; return x ? x[1] : m; }
 function rkFlag(cc) { return bkFlag(cc, 16); }
