@@ -9,13 +9,13 @@
 SQLF.psem = '27-premios-semana.sql';
 FNF.admin_premios_semana = 'psem';
 RFN.psem = 'admin_premios_semana';
-N20['juego/premios'] = 1;
+N20['juego/premios-semana'] = 1;
 (function () {
   var g = NAV.filter(function (x) { return x.k === 'juego'; })[0];
-  if (g && !g.items.some(function (i) { return i[0] === 'juego/premios'; })) g.items.push(['juego/premios', 'Premios semanales', 'trophy']);
-  ROUTES['juego/premios'] = { t: 'Premios semanales', ic: 'trophy', g: g ? g.g : 'Juego', k: 'juego' };
+  if (g && !g.items.some(function (i) { return i[0] === 'juego/premios-semana'; })) g.items.push(['juego/premios-semana', 'Premios semanales', 'trophy']);
+  ROUTES['juego/premios-semana'] = { t: 'Premios semanales', ic: 'trophy', g: g ? g.g : 'Juego', k: 'juego' };
 })();
-AYUDA['juego/premios'] = {
+AYUDA['juego/premios-semana'] = {
   que: 'Premios por lugar del ranking semanal: al cerrar cada semana los mejores de Clásico (y de Contrarreloj si lo enciendes) ganan Bloques, protectores de racha, una insignia del año («Campeón semanal», «Podio», «Top 10») y el 1.º un título «Campeón de la semana» que dura una semana.',
   ve: 'Sobre el ranking semanal, una franja «Premios de esta semana» con lo que gana cada lugar y cuánto falta para el cierre; al tocarla, los premios por lugar y los campeones de semanas pasadas. Al abrir la app después del cierre, un cofre «¡Quedaste 3.º la semana pasada!».',
   cuando: 'Enciéndelo cuando quieras empezar a premiar (lo que ya cerró antes no se premia). Revisa cada lunes «Semanas cerradas» por si hay que anular a alguien o dar un premio a mano.',
@@ -244,7 +244,7 @@ A.psOtorgar = async function () {
   if (await psAccion('otorgar', { modo: d.modo, semana: d.semana, id: id, puesto: +pu, nota: String(PS.otorgar.nota || '').trim() }, 'Premio otorgado')) PS.otorgar = {};
 };
 
-function vPremios() {
+function vPremiosSemana() {
   var o = rm('psem');
   var h = pageHead('Premios semanales', 'Premios por lugar del <b>ranking semanal</b>: Bloques, protectores, insignia del año y título de una semana para el 1.º. Necesita la app 2.0 o más nueva.', '<button class="btn" data-a="psReload">' + ic('refresh') + 'Recargar</button>');
   if (o.err) return h + (o.err.code === 'sin_sql' ? '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.psem, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Va después de 19-tienda.sql; solo crea cosas nuevas y nace apagado.') + '</div>' : rerr(o, 'los premios semanales'));
@@ -252,4 +252,4 @@ function vPremios() {
   if (!r) return h + skel(4);
   return h + psKpis(r) + psConfig(r) + psTramos(r) + psDetalle() + psSemanas(r);
 }
-VIEWS['juego/premios'] = vPremios;
+VIEWS['juego/premios-semana'] = vPremiosSemana;
