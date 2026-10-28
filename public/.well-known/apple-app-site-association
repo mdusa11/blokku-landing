@@ -3,8 +3,8 @@
     "details": [
       {
         "appIDs": ["9JCD8GGN73.com.dusasolutions.blokku"],
-        "components": [{ "/": "/r/*" }],
-        "paths": ["/r/*"]
+        "components": [{ "/": "/r/*" }, { "/": "/d/*" }],
+        "paths": ["/r/*", "/d/*"]
       }
     ]
   }
