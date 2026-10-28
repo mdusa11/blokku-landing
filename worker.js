@@ -13,6 +13,7 @@ export default {
   async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
     if (pathname.startsWith('/r/')) return reto(request, env, ctx, pathname);
+    if (pathname.startsWith('/d/')) return duelo(request, pathname);
     if (pathname === '/play' || pathname === '/play/' || pathname === '/p' || pathname === '/p/') {
       const ua = request.headers.get('user-agent') || '';
       const target = /android/i.test(ua) ? PLAY : WEB;
@@ -99,7 +100,7 @@ function playUrl(codigo) {
 }
 
 // h1/lead/extra ya vienen escapados por quien llama; título y descripción se escapan aquí.
-function pagina({ t, codigo, ua, titulo, desc, h1, lead, extra, status, conCodigo }) {
+function pagina({ t, codigo, ua, titulo, desc, h1, lead, extra, status, conCodigo, ruta = 'r' }) {
   const android = /android/i.test(ua);
   const ios = /iphone|ipad|ipod/i.test(ua);
   const btnPlay = `<a class="b g" href="${esc(playUrl(codigo))}" rel="noopener">${esc(t.play)}</a>`;
@@ -110,8 +111,8 @@ function pagina({ t, codigo, ua, titulo, desc, h1, lead, extra, status, conCodig
   let abrir = '';
   if (conCodigo && (android || ios)) {
     const href = android
-      ? `intent://blokku.online/r/${codigo}#Intent;scheme=https;package=com.dusasolutions.blokku;S.browser_fallback_url=${encodeURIComponent(playUrl(codigo))};end`
-      : `https://blokku.online/r/${codigo}`;
+      ? `intent://blokku.online/${ruta}/${codigo}#Intent;scheme=https;package=com.dusasolutions.blokku;S.browser_fallback_url=${encodeURIComponent(playUrl(codigo))};end`
+      : `https://blokku.online/${ruta}/${codigo}`;
     abrir = `<a class="b p" href="${esc(href)}">${esc(t.open)}</a><p class="h2">${esc(t.nohas)}</p>`;
   }
   const html = `<!doctype html>
@@ -245,5 +246,49 @@ async function reto(request, env, ctx, pathname) {
     extra: '',
     status: noExiste ? 404 : 200,
     conCodigo: false,
+  });
+}
+
+// ── /d/{CODIGO}: sala de 1 vs 1 (Blokku 2.0) ─────────────────────────────────────
+// La sala dura minutos y no tiene lectura pública: la página no consulta nada.
+// Con la app instalada, App Links / Universal Links la abren directo.
+const TD = {
+  es: {
+    ...T.es,
+    title: 'Te retaron a un 1 vs 1 en Blokku',
+    desc: 'Las mismas piezas, al mismo tiempo. Gana quien haga más puntos.',
+    lead: 'Las mismas piezas, al mismo tiempo. ¡Entra antes de que venza la sala!',
+    code: 'Código de la sala',
+    nopen: (c) => `¿No se abre? En Blokku toca Jugar › 1 vs 1 y escribe el código ${c}`,
+    hint: 'Instala Blokku y abre este enlace otra vez para entrar al duelo.',
+  },
+  en: {
+    ...T.en,
+    title: 'You were challenged to a 1 vs 1 in Blokku',
+    desc: 'Same pieces, same time. Highest score wins.',
+    lead: 'Same pieces, same time. Join before the room expires!',
+    code: 'Room code',
+    nopen: (c) => `Won't open? In Blokku tap Play › 1 vs 1 and type the code ${c}`,
+    hint: 'Install Blokku and open this link again to join the duel.',
+  },
+};
+
+function duelo(request, pathname) {
+  const m = pathname.match(/^\/d\/([^/]+)\/?$/);
+  const codigo = m ? decodeSafe(m[1]).toUpperCase() : '';
+  if (!CODIGO_RE.test(codigo)) {
+    return new Response(null, { status: 302, headers: { Location: '/', 'Cache-Control': 'no-store' } });
+  }
+  const ua = request.headers.get('user-agent') || '';
+  const t = /^\s*en/i.test(request.headers.get('accept-language') || '') ? TD.en : TD.es;
+  return pagina({
+    t, codigo, ua, ruta: 'd',
+    titulo: t.title,
+    desc: t.desc,
+    h1: esc(t.title),
+    lead: `<p class="lead">${esc(t.lead)}</p>`,
+    extra: '',
+    status: 200,
+    conCodigo: true,
   });
 }
