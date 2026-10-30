@@ -225,9 +225,9 @@ function dcCatalogo(r) {
     field('dc_n_m', 'Tipo', sel('dc_n_m', 'lineas', DC_MET)) +
     field('dc_n_d', 'Dificultad', sel('dc_n_d', 'media', DC_DIF)) +
     field('dc_n_t', 'Meta', inp('dc_n_t', '', { type: 'number', mode: 'numeric', min: 1, ph: 'ej. 450' })) +
-    field('dc_n_b', 'Bloques de premio', inp('dc_n_b', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 120' }), 'De 0 a 5,000.') +
+    field('dc_n_b', 'Bloques de premio', inp('dc_n_b', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 1200' }), 'De 0 a 5,000.') +
     field('dc_n_x', 'XP de premio', inp('dc_n_x', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 250' }), 'De 0 a 5,000.') + '</div>' +
-    '<div class="row mt16"><button class="btn" data-a="dcCatAdd">' + ic('check') + 'Agregar</button><span class="xs mut">Referencia de fábrica: fácil 50 Bloques + 100 XP · medio 120 + 250 · difícil 300 + 500.</span></div></div></div>';
+    '<div class="row mt16"><button class="btn" data-a="dcCatAdd">' + ic('check') + 'Agregar</button><span class="xs mut">Referencia (Bloques ×10, 37-bloques-x10): fácil 500 Bloques + 100 XP · medio 1,200 + 250 · difícil 3,000 + 500.</span></div></div></div>';
   return h;
 }
 function dcLeeCat(pref, id) {
