@@ -20,7 +20,7 @@ N20['juego/solo-gemas'] = 1;
 })();
 AYUDA['juego/solo-gemas'] = {
   que: 'El modelo «SOLO GEMAS»: con dinero real la app solo vende PAQUETES DE GEMAS y «Sin anuncios». Todo lo demás se paga con gemas (el pase de temporada y lo exclusivo) o con Bloques (lo normal de la tienda). Aquí decides cuántas gemas da cada paquete, las ofertas con fecha, cuánto cuesta el pase y cuántas gemas regala por nivel, en qué moneda se vende cada artículo y los precios generales, y ves todo lo que se ha cambiado.',
-  ve: 'En la app 2.0: la tienda de gemas (los paquetes con su «+X %» de regalo), el pase de temporada que se compra con gemas, los artículos exclusivos con precio en gemas (color magenta) y los de siempre con precio en Bloques (color dorado). Los productos viejos blokku_pack_* y blokku_oferta_* YA NO SE VENDEN, pero lo que alguien ya compró se conserva.',
+  ve: 'En la app 2.0: la tienda de gemas (los paquetes con su «+X %» de regalo), el pase de temporada que se compra con gemas, los artículos exclusivos con precio en gemas (sello «Gemas» azul marino con borde de 4 colores) y los de siempre con precio en Bloques (color dorado). Los productos viejos blokku_pack_* y blokku_oferta_* YA NO SE VENDEN, pero lo que alguien ya compró se conserva.',
   cuando: 'Cuando quieras cambiar un paquete, lanzar una oferta de fin de semana, mover el precio del pase, pasar un artículo de Bloques a gemas (o al revés) o revisar quién cambió qué. Antes de subir un precio, revisa que el paquete grande siga dando más gemas por peso que el chico.',
   como: [
     '<b>Paquetes de gemas (dinero real):</b> el precio en pesos NO se decide aquí: lo fija Google Play / App Store (ahí se pone $19, $49, $99…). El panel solo decide cuántas gemas y cuánto bonus da cada producto. La tabla de pesos que ves es una referencia fija para calcular «gemas por peso».',
@@ -36,7 +36,7 @@ AYUDA['juego/solo-gemas'] = {
 
 var SG = { saving: '', tab: 'paq', d: {}, on: {}, q: '', lim: 40, tsel: '', hn: 30 };
 var sgPesos = { blokku_gemas_80: 19, blokku_gemas_210: 49, blokku_gemas_450: 99, blokku_gemas_950: 199, blokku_gemas_2000: 399 };
-var SG_GEM = '#E0388F', SG_BLQ = '#D4A017';
+var SG_GEM = '#4497F5', SG_BLQ = '#D4A017';
 var SG_TABS = [['paq', 'Paquetes y ofertas', 'store'], ['pase', 'Pase', 'trophy'], ['tienda', 'Tienda', 'gift'], ['precios', 'Precios generales', 'edit'], ['hist', 'Historial', 'history']];
 var SG_ACC = { config: 'Ajustes de gemas', tienda_config: 'Precios de la tienda en Bloques', paquete: 'Paquete de gemas', oferta: 'Oferta nueva', oferta_quitar: 'Oferta quitada', articulo: 'Artículo con gemas', moneda: 'Cambio de moneda', temporada: 'Temporada del pase', niveles: 'Gemas por nivel del pase' };
 var SG_KEY = { producto: 'Producto', gemas: 'Gemas', bonus: 'Bonus', a_la_venta: 'A la venta', orden: 'Orden', extra: 'Extra', desde: 'Desde', hasta: 'Hasta', id: 'Id', activo: 'Activo', item: 'Artículo', moneda: 'Moneda', precio: 'Precio', rareza: 'Rareza', inicio: 'Inicio', fin: 'Fin', niveles: 'Niveles', plus_niveles: 'Niveles del plus', activa: 'Activa', temporada: 'Temporada', bloques: 'En Bloques', actualizado: 'Actualizado', vendible: 'Se vende' };
