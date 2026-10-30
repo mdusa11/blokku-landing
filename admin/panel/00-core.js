@@ -283,17 +283,17 @@ function opts(list, cur) { return list.map(function (o) { var v = Array.isArray(
 function searchBox(id, val, ph, act) { return '<label class="srch"><span class="sr">' + esc(ph) + '</span>' + ic('search') + '<input class="in" id="' + id + '" data-i="' + act + '" value="' + esc(val || '') + '" placeholder="' + esc(ph) + '" autocomplete="off"></label>'; }
 function help(items) { return '<details class="help"><summary>' + ic('chr', 'chev') + '¿Cómo funciona?</summary><div class="hb">' + (Array.isArray(items) ? '<ul>' + items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : items) + '</div></details>'; }
 /* bloque «¿Para qué sirve?» (textos en 15-ayuda.js, por ruta) */
-function whyHtml(r) {
-  var a = AYUDA[r || S.route]; if (!a) return '';
-  return '<div class="why"><div class="whh">' + ic('help') + '¿Para qué sirve?</div><dl>' +
-    '<dt>Qué es</dt><dd>' + a.que + '</dd><dt>Qué ve el jugador</dt><dd>' + a.ve + '</dd><dt>Cuándo usarlo</dt><dd>' + a.cuando + '</dd></dl></div>';
-}
-function howHtml(r, extra) {
+function whyHtml(r, extra) {
   var a = AYUDA[r || S.route], L = ((a && a.como) || []).concat(extra || []);
-  return L.length ? help(L) : '';
+  if (!a && !L.length) return '';
+  return '<details class="help ayd"><summary>' + ic('chr', 'chev') + '¿Para qué sirve?</summary><div class="hb">' +
+    (a ? '<dl><dt>Qué es</dt><dd>' + a.que + '</dd><dt>Qué ve el jugador</dt><dd>' + a.ve + '</dd><dt>Cuándo usarlo</dt><dd>' + a.cuando + '</dd></dl>' : '') +
+    (L.length ? '<div class="ayc"><b>Cómo funciona</b><ul>' + L.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' : '') +
+    '</div></details>';
 }
+function howHtml() { return ''; }
 function pageHead(title, lead, acts, helpItems) {
-  return '<div class="ph"><div class="tx"><h1>' + esc(title) + b20(S.route) + '</h1><p class="lead">' + lead + '</p>' + whyHtml() + howHtml(null, helpItems) + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+  return '<div class="ph"><div class="tx"><h1>' + esc(title) + b20(S.route) + '</h1><p class="lead">' + lead + '</p>' + whyHtml(null, helpItems) + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
 }
 function ring(p, size) {
   size = size || 44; var r = size / 2 - 4, c = 2 * Math.PI * r, o = c * (1 - Math.max(0, Math.min(1, p)));

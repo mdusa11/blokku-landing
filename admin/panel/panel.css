@@ -912,3 +912,10 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 h1 .v20{font-size:12px;margin-left:10px}
 .mg .v20{margin:-4px 0 0}
 .si .v20{margin-left:auto}
+
+.ayd dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0;line-height:1.5}
+.ayd dt{font-weight:700;color:var(--text)}.ayd dd{margin:0}
+.ayd .ayc{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.ayd .ayc>b{display:block;margin-bottom:4px}
+@media (max-width:640px){.ayd dl{grid-template-columns:1fr;gap:0}.ayd dt{margin-top:6px}}
+.help .hb{display:block;height:auto}
