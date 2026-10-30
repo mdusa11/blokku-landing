@@ -66,7 +66,7 @@ C.tiTog = function (el) { TI.on = el.checked; };
 function tiKpis(s) {
   var pt = s.por_tipo || {};
   return '<div class="kpis">' +
-    kpi('trend', 'Bloques emitidos', nf(s.emitidos), nf(s.emitidos_24h) + ' en 24 h · ' + nf(s.emitidos_7d) + ' en 7 días') +
+    kpi('trend', 'Bloques emitidos', nf(s.emitidos), nf(s.emitidos_24h) + ' en 24 h · ' + nf(s.emitidos_7d) + ' en 7 días · incluye el ajuste único del ×10') +
     kpi('gift', 'Bloques gastados', nf(s.gastados), nf(s.gastados_24h) + ' en 24 h · ' + nf(s.gastados_7d) + ' en 7 días') +
     kpi('db', 'En circulación', nf(s.saldo_total), 'Suma de los saldos de ' + nf(s.carteras) + ' jugadores') +
     kpi('store', 'Compras', nf(s.compras), nf(s.compras_7d) + ' en 7 días · ' + nf(s.compradores) + ' compradores') +
@@ -111,6 +111,8 @@ A.tiSave = async function () {
   if (on !== was) { ch.tienda_activa = on ? 1 : 0; dl.unshift(['Tienda', (was ? 'Encendida' : 'Apagada') + ' → <b>' + (on ? 'Encendida' : 'Apagada') + '</b>']); }
   var cmin = ch.ganar_cofre_min != null ? ch.ganar_cofre_min : (m.ganar_cofre_min || {}).valor, cmax = ch.ganar_cofre_max != null ? ch.ganar_cofre_max : (m.ganar_cofre_max || {}).valor;
   if (cmin > cmax) errs.ti_ganar_cofre_min = 'El mínimo del cofre no puede pasar del máximo (' + nf(cmax) + ').';
+  var lmx = ch.max_lineas != null ? ch.max_lineas : (m.max_lineas || {}).valor, lex = ch.max_lineas_extra != null ? ch.max_lineas_extra : (m.max_lineas_extra || {}).valor;
+  if (lmx != null && lex != null && lex <= lmx && (ch.max_lineas != null || ch.max_lineas_extra != null)) toast('Ojo: «líneas extra» (' + nf(lex) + ') no pasa de «líneas por partida» (' + nf(lmx) + '): las líneas extra no pagarán nada.', 'warn');
   if (!showErrs(errs)) return;
   if (!dl.length) { toast('No hay cambios', 'info'); return; }
   var ok = await confirmDlg({ title: ch.tienda_activa === 0 ? '¿Apagar la tienda?' : '¿Guardar los valores de la tienda?', text: 'Esto afecta a todos los jugadores.', html: cbox(dl.concat([['A quién', 'A todos los jugadores con la app 2.2 o más nueva.'], ['Cuánto tarda', 'La app guarda precios y ajustes unos 30 minutos; los cobros y compras ya usan lo nuevo al instante.']])), ok: ch.tienda_activa === 0 ? 'Apagar' : 'Sí, guardar', danger: ch.tienda_activa === 0, icon: 'sliders' });

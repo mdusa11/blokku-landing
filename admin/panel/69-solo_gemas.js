@@ -58,6 +58,7 @@ function sgAhora(r) { var t = r && r.ahora ? new Date(r.ahora).getTime() : NaN; 
 function sgStore(res) {
   var o = RM.solo_gemas = RM.solo_gemas || { rows: null };
   if (res && res.config) { o.rows = res; o.err = null; o.t = Date.now(); } else rload('solo_gemas', true);
+  if (RM.gemas) rload('gemas', true);
 }
 async function sgCall(accion, datos) { var res = await rpc('admin_solo_gemas', { p_accion: accion, p_datos: datos }); sgStore(res); return res; }
 // confirma en palabras, manda la acción y repinta. extra = avisos que piden una segunda confirmación.
@@ -197,30 +198,32 @@ A.sgOfQuitar = function (el) {
 };
 
 /* ---------- ajustes numéricos y interruptores (config / tienda) ---------- */
+function sgLo(c) { return c.clave === 'paquete_mitico' ? Math.max(c.lo, 50) : c.lo; }
+var SG_OLD = /^(casillas_activo|casilla_[a-z_]+|pase_nivel)$/;
 function sgCfgForm(list, pre) {
   var grid = '', sw = '';
-  list.forEach(function (c) {
+  list.filter(function (c) { return !SG_OLD.test(c.clave); }).forEach(function (c) {
     var id = pre + c.clave;
     if (c.lo === 0 && c.hi === 1) {
       sw += '<div class="row nw" style="align-items:flex-start;margin-bottom:12px"><div class="grow"><b>' + esc(c.nota) + '</b><div class="xs mut mono">' + esc(c.clave) + (c.def != null ? ' · de fábrica ' + (c.def ? 'encendido' : 'apagado') : '') + '</div></div>' + tog(id, sgOn(id, c.valor), '', { dc: 'sgTog', on: 'Encendido', off: 'Apagado' }) + '</div>';
     } else {
-      grid += field(id, c.nota, inp(id, sgDraft(id, c.valor), { type: 'number', mode: 'numeric', min: c.lo, ph: c.def != null ? 'De fábrica: ' + nf(c.def) : '', di: 'sgIn' }),
-        'Entero de ' + nf(c.lo) + ' a ' + nf(c.hi) + '. <b>Ahora:</b> ' + nf(c.valor) + (c.def != null ? (c.valor !== c.def ? ' (de fábrica ' + nf(c.def) + ')' : ' (es el de fábrica)') : '') + '.');
+      grid += field(id, c.nota, inp(id, sgDraft(id, c.valor), { type: 'number', mode: 'numeric', min: sgLo(c), ph: c.def != null ? 'De fábrica: ' + nf(c.def) : '', di: 'sgIn' }),
+        'Entero de ' + nf(sgLo(c)) + ' a ' + nf(c.hi) + '. <b>Ahora:</b> ' + nf(c.valor) + (c.def != null ? (c.valor !== c.def ? ' (de fábrica ' + nf(c.def) + ')' : ' (es el de fábrica)') : '') + '.');
     }
   });
   return sw + (grid ? '<div class="grid g2">' + grid + '</div>' : '');
 }
 function sgCfgCollect(list, pre, errs) {
   var ch = {}, dl = [], val = {};
-  list.forEach(function (c) {
+  list.filter(function (c) { return !SG_OLD.test(c.clave); }).forEach(function (c) {
     var id = pre + c.clave;
     if (c.lo === 0 && c.hi === 1) {
       var on = sgOn(id, c.valor);
       if (on !== !!c.valor) { ch[c.clave] = on ? 1 : 0; dl.push([c.nota, (c.valor ? 'Encendido' : 'Apagado') + ' → <b>' + (on ? 'Encendido' : 'Apagado') + '</b>']); }
       return;
     }
-    var v = sgInt(sgDraft(id, c.valor), c.lo, c.hi);
-    if (v == null) { errs[id] = 'Un entero de ' + nf(c.lo) + ' a ' + nf(c.hi) + '.'; return; }
+    var v = sgInt(sgDraft(id, c.valor), sgLo(c), c.hi);
+    if (v == null) { errs[id] = 'Un entero de ' + nf(sgLo(c)) + ' a ' + nf(c.hi) + '.'; return; }
     val[c.clave] = v;
     if (v !== c.valor) { ch[c.clave] = v; dl.push([c.nota, nf(c.valor) + ' → <b>' + nf(v) + '</b>']); }
   });
@@ -433,7 +436,7 @@ function sgPrecios(r) {
   var h = '', tl = r.tienda || [];
   h += '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Tienda en Bloques</h3><span class="sub grow">Rareza, descuentos y protector de racha</span></div><div class="cb">' +
     (tl.length ? sgCfgForm(tl.map(function (c) { return { clave: c.clave, valor: c.valor, lo: c.lo, hi: c.hi, nota: c.nota }; }), 'sg_tc_') +
-      '<p class="xs mut" style="margin:6px 0 0">Aquí el servidor no guarda un valor de fábrica, solo el rango.</p><div class="row mt16">' + sgBtn('sgSaveTc', 'tc', 'check', 'Guardar precios de la tienda') + '</div>' : '<p class="mut">El servidor no devolvió precios.</p>') + '</div></div>';
+      '<p class="xs mut" style="margin:6px 0 0">Estos precios no muestran el valor de fábrica aquí (la pantalla Tienda sí); solo el rango que permite el servidor.</p><div class="row mt16">' + sgBtn('sgSaveTc', 'tc', 'check', 'Guardar precios de la tienda') + '</div>' : '<p class="mut">El servidor no devolvió precios.</p>') + '</div></div>';
   SG_GR.forEach(function (g) {
     var list = (r.config || []).filter(function (c) { return c.grupo === g[0]; });
     if (!list.length) return;
@@ -494,7 +497,7 @@ function sgAntes(c, r) {
   if (c.accion === 'moneda' && a && typeof a === 'object') {
     var p = [];
     if (a.gemas) p.push('<span class="xs"><span style="color:' + SG_GEM + '"><b>Gemas:</b></span> ' + nf(a.gemas.gemas) + (a.gemas.activo ? '' : ' (apagado)') + '</span>');
-    if (a.bloques) p.push('<span class="xs"><span style="color:' + SG_BLQ + '"><b>Bloques:</b></span> ' + nf(a.bloques.precio) + (a.bloques.vendible ? '' : ' (no se vendía)') + '</span>');
+    if (a.bloques) p.push('<span class="xs"><span style="color:' + SG_BLQ + '"><b>Bloques:</b></span> ' + (a.bloques.precio != null ? nf(a.bloques.precio) : 'el de su rareza') + (a.bloques.vendible ? '' : ' (no se vendía)') + '</span>');
     return p.length ? p.join('<br>') : '<span class="mut">no estaba en la tienda</span>';
   }
   return sgObj(a, r, c.accion === 'niveles' ? 'gemas' : '');

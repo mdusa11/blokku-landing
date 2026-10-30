@@ -20,7 +20,7 @@ N20['juego/gemas'] = 1;
 })();
 AYUDA['juego/gemas'] = {
   que: 'Las GEMAS son la moneda premium de Blokku: se compran con dinero real (Google Play y App Store, cobrado por RevenueCat) y NO se ganan jugando. Aquí enciendes o apagas las gemas, decides cuánto cuesta cada cosa, qué paquetes de gemas se venden, qué paquetes míticos se pueden comprar con gemas, ves las ventas y el historial, y arreglas la cartera de un jugador si algo salió mal.',
-  ve: 'En la app, con las gemas encendidas: el saldo de gemas, la compra de paquetes de gemas, y la opción de pagar con gemas los paquetes míticos, las ofertas premium del día, el cambio por Bloques, los protectores de racha y (cuando exista) los niveles del pase. Nada de esto da ventaja en la partida. Con el interruptor general apagado la app no enseña nada de gemas.',
+  ve: 'En la app, con las gemas encendidas: el saldo de gemas, la compra de paquetes de gemas, y la opción de pagar con gemas los paquetes míticos, el cambio por Bloques y los protectores de racha (el pase y lo exclusivo se manejan en «Solo gemas»). Nada de esto da ventaja en la partida. Con el interruptor general apagado la app no enseña nada de gemas.',
   cuando: 'Enciéndelas hasta que los productos blokku_gemas_… existan en Play Console, App Store Connect y RevenueCat (como CONSUMIBLES) y el webhook responda. Después revisa el historial de vez en cuando: si alguien dice que pagó y no le llegaron, mira aquí si el aviso quedó como «Sin jugador» y regálale las gemas.',
   como: [
     '<b>Quién entrega:</b> SOLO el servidor. RevenueCat verifica el pago con la tienda y avisa al servidor; el teléfono nunca puede decir «ya pagué». Cada aviso y cada transacción se acreditan una sola vez. Con el interruptor general apagado, las compras que lleguen se acreditan igual (ya se pagaron); lo que se apaga es enseñar y gastar.',
@@ -35,6 +35,11 @@ AYUDA['juego/gemas'] = {
 
 var GM = { saving: '', d: {}, on: {}, q: '', qr: null, seq: 0, who: null, jug: null, nuevo: '', nota: '', reg: '', rnota: '', ev: 25, gs: 25 };
 var GM_PESO = 4.5;
+var GM_OLD = /^(casillas_activo|casilla_[a-z_]+|pase_nivel)$/;
+function gmViejo(old, grid) {
+  if (!old) return '';
+  return '<details class="help" style="margin:0 0 14px"><summary>' + ic('chr', 'chev') + 'Avanzado: ofertas premium del día y niveles del pase (modelo viejo)</summary><div class="hbody"><p class="xs mut" style="margin:0 0 10px">Con el modelo «solo gemas» la app 2.0 ya no usa estas opciones. Se dejan aquí por si algún día vuelven; cambiarlas no se nota en la app.</p>' + (grid ? '<div class="grid g2">' + old + '</div>' : old) + '</div></details>';
+}
 var GM_CAS = { chica: 'Chica', mediana: 'Mediana', grande: 'Grande' };
 var GM_SW = [['general', 'General', 'power', 'Lo básico: encender las gemas y qué hacer con las compras de prueba y los reembolsos.'], ['gastos', 'En qué se pueden gastar', 'gift', 'Cada uso se enciende o apaga por separado. Apagar uno no borra nada de nadie.']];
 var GM_PR = [['precios', 'Precios en gemas', 'store', 'Cuántas gemas cuesta cada cosa.'], ['cambio', 'Cambio de gemas por Bloques', 'refresh', 'Cuántos Bloques da cada gema y cuántas gemas se pueden cambiar de una vez.'], ['topes', 'Límite anti-abuso', 'lock', 'Tope de gastos por jugador y por hora.']];
@@ -79,28 +84,29 @@ function gmKpis(t) {
 
 function gmBanner(r) {
   if (r.pagos_activa) return '';
-  return '<div class="ban">' + ic('warn') + '<div class="tx"><b>Ventas con dinero está apagada</b>Las gemas se pueden encender igual, pero los paquetes míticos y las ofertas del día que se pagan con gemas salen de la sección «Ventas con dinero»: mientras esa venta siga apagada, esas dos opciones no tendrán qué ofrecer. Cambiar bloques por gemas, protectores y el pase no dependen de ella.<div class="acts"><button class="btn sm" data-a="go" data-r="juego/pagos">Ir a Ventas con dinero</button></div></div></div>';
+  return '<div class="ban">' + ic('warn') + '<div class="tx"><b>Ventas con dinero está apagada</b>Las gemas se pueden encender igual, pero los paquetes míticos que se pagan con gemas salen de la sección «Ventas con dinero»: mientras esa venta siga apagada, no habrá qué ofrecer. Cambiar bloques por gemas y los protectores no dependen de ella.<div class="acts"><button class="btn sm" data-a="go" data-r="juego/pagos">Ir a Ventas con dinero</button></div></div></div>';
 }
 
 function gmSwitches(r) {
-  var h = '';
+  var h = '', old = '';
   GM_SW.forEach(function (g) {
     var list = (r.config || []).filter(function (c) { return c.grupo === g[0]; });
     if (!list.length) return;
     var act = gmCfg(r, 'gemas_activo');
     h += '<div class="card sec"><div class="ch">' + ic(g[2]) + '<h3>' + esc(g[1]) + '</h3><span class="sub grow">' + (g[0] === 'general' ? (act && act.valor ? 'Gemas ENCENDIDAS' : 'Gemas apagadas: la app no enseña nada') : esc(g[3])) + '</span></div><div class="cb">';
     list.forEach(function (c) {
-      h += '<div class="row nw" style="align-items:flex-start;margin-bottom:12px"><div class="grow"><b>' + esc(c.nota) + '</b><div class="xs mut mono">' + esc(c.clave) + ' · de fábrica ' + (c.def ? 'encendido' : 'apagado') + '</div></div>' + tog('gm_' + c.clave, gmOn('gm_' + c.clave, c.valor), '', { dc: 'gmTog', on: 'Encendido', off: 'Apagado' }) + '</div>';
+      var row = '<div class="row nw" style="align-items:flex-start;margin-bottom:12px"><div class="grow"><b>' + esc(c.nota) + '</b><div class="xs mut mono">' + esc(c.clave) + ' · de fábrica ' + (c.def ? 'encendido' : 'apagado') + '</div></div>' + tog('gm_' + c.clave, gmOn('gm_' + c.clave, c.valor), '', { dc: 'gmTog', on: 'Encendido', off: 'Apagado' }) + '</div>';
+      if (GM_OLD.test(c.clave)) old += row; else h += row;
     });
     h += '</div></div>';
   });
-  return h + '<div class="row" style="margin:4px 0 20px"><button class="btn pri" data-a="gmSaveSw"' + (GM.saving ? ' disabled' : '') + '>' + (GM.saving === 'sw' ? '<span class="spin"></span>' : ic('check')) + 'Guardar interruptores</button><span class="xs mut">Te enseño «antes → después» antes de guardar. La app lo ve en unos 30 minutos.</span></div>';
+  return h + gmViejo(old) + '<div class="row" style="margin:4px 0 20px"><button class="btn pri" data-a="gmSaveSw"' + (GM.saving ? ' disabled' : '') + '>' + (GM.saving === 'sw' ? '<span class="spin"></span>' : ic('check')) + 'Guardar interruptores</button><span class="xs mut">Te enseño «antes → después» antes de guardar. La app lo ve en unos 30 minutos.</span></div>';
 }
 async function gmSaveKeys(r, ch, dl, tipo, ttl, txt) {
   if (!dl.length) { toast('No hay cambios', 'info'); return; }
   if (!await confirmDlg({ title: ttl, text: txt, html: cbox(dl), ok: 'Sí, guardar', icon: 'power' })) return;
   GM.saving = tipo; paintPage();
-  try { await rpc('admin_gemas', { p_accion: 'config', p_datos: ch }); Object.keys(ch).forEach(function (k) { delete GM.d['gm_' + k]; delete GM.on['gm_' + k]; }); toast('Guardado'); await rload('gemas', true); }
+  try { await rpc('admin_gemas', { p_accion: 'config', p_datos: ch }); Object.keys(ch).forEach(function (k) { delete GM.d['gm_' + k]; delete GM.on['gm_' + k]; }); toast('Guardado'); await rload('gemas', true); if (RM.solo_gemas) rload('solo_gemas', true); }
   catch (e) { toast('No se pudo guardar: ' + e.message, 'bad'); }
   GM.saving = ''; paintPage();
 }
@@ -118,28 +124,29 @@ A.gmSaveSw = function () {
 };
 
 function gmValores(r) {
-  var h = '';
+  var h = '', old = '';
   GM_PR.forEach(function (g) {
     var list = (r.config || []).filter(function (c) { return c.grupo === g[0]; });
     if (!list.length) return;
     h += '<div class="card sec"><div class="ch">' + ic(g[2]) + '<h3>' + esc(g[1]) + '</h3><span class="sub grow">' + esc(g[3]) + '</span></div><div class="cb"><div class="grid g2">';
     list.forEach(function (c) {
       var id = 'gm_' + c.clave, cur = gmDraft(id, c.valor);
-      h += field(id, c.nota, inp(id, cur, { type: 'number', mode: 'numeric', min: c.lo, ph: 'De fábrica: ' + nf(c.def), di: 'gmIn' }),
+      var row = field(id, c.nota, inp(id, cur, { type: 'number', mode: 'numeric', min: c.lo, ph: 'De fábrica: ' + nf(c.def), di: 'gmIn' }),
         'Entero de ' + nf(c.lo) + ' a ' + nf(c.hi) + '. <b>Ahora:</b> ' + nf(c.valor) + (c.valor !== c.def ? ' (de fábrica ' + nf(c.def) + ')' : '') + '.' +
         (GM_PRECIO[c.clave] ? ' <b id="' + id + '_mx" class="mono">' + gmMxn(cur) + '</b>' : ''));
+      if (GM_OLD.test(c.clave)) old += row; else h += row;
     });
     h += '</div>' + (g[0] === 'precios' ? '<p class="xs mut" style="margin:6px 0 0">El «≈ $ MXN» es solo una guía con ' + GM_PESO + ' gemas por peso (aproximado, no es un precio real).</p>' : '') + '</div></div>';
   });
-  return h + '<div class="row" style="margin:4px 0 20px"><button class="btn pri" data-a="gmSaveVal"' + (GM.saving ? ' disabled' : '') + '>' + (GM.saving === 'val' ? '<span class="spin"></span>' : ic('check')) + 'Guardar precios y valores</button><span class="xs mut">Los cobros ya usan lo nuevo al instante; la app enseña los precios unos 30 minutos después.</span></div>';
+  return h + gmViejo(old, true) + '<div class="row" style="margin:4px 0 20px"><button class="btn pri" data-a="gmSaveVal"' + (GM.saving ? ' disabled' : '') + '>' + (GM.saving === 'val' ? '<span class="spin"></span>' : ic('check')) + 'Guardar precios y valores</button><span class="xs mut">Los cobros ya usan lo nuevo al instante; la app enseña los precios unos 30 minutos después.</span></div>';
 }
 A.gmSaveVal = function () {
   var r = gmRows(); if (!r || GM.saving) return Promise.resolve();
   var ch = {}, dl = [], errs = {}, val = {};
   (r.config || []).forEach(function (c) {
     if (c.grupo === 'general' || c.grupo === 'gastos') return;
-    var id = 'gm_' + c.clave, v = gmInt(gmDraft(id, c.valor), c.lo, c.hi);
-    if (v == null) { errs[id] = 'Un entero de ' + nf(c.lo) + ' a ' + nf(c.hi) + '.'; return; }
+    var id = 'gm_' + c.clave, lo = c.clave === 'paquete_mitico' ? Math.max(c.lo, 50) : c.lo, v = gmInt(gmDraft(id, c.valor), lo, c.hi);
+    if (v == null) { errs[id] = 'Un entero de ' + nf(lo) + ' a ' + nf(c.hi) + '.'; return; }
     val[c.clave] = v;
     if (v !== c.valor) { ch[c.clave] = v; dl.push([c.nota, nf(c.valor) + ' → <b>' + nf(v) + '</b>' + (GM_PRECIO[c.clave] ? ' <span class="mut">' + gmMxn(v) + '</span>' : '')]); }
   });
@@ -178,7 +185,7 @@ async function gmPackDo(datos, tipo, ttl, lines, okMsg) {
   if (!await confirmDlg({ title: ttl, text: 'Afecta a lo que ven los jugadores en la tienda de gemas.', html: cbox(lines), ok: 'Sí, guardar', icon: 'store' })) return false;
   GM.saving = tipo; paintPage();
   var ok = false;
-  try { await rpc('admin_gemas', { p_accion: 'paquete', p_datos: datos }); toast(okMsg); await rload('gemas', true); ok = true; }
+  try { await rpc('admin_gemas', { p_accion: 'paquete', p_datos: datos }); toast(okMsg); await rload('gemas', true); if (RM.solo_gemas) rload('solo_gemas', true); ok = true; }
   catch (e) { toast('No se pudo: ' + e.message, 'bad'); }
   GM.saving = ''; paintPage(); return ok;
 }
@@ -189,6 +196,7 @@ A.gmPackSave = function (el) {
   if (g == null) errs[k + '_g'] = 'De 1 a 100,000.';
   if (b == null) errs[k + '_b'] = 'De 0 a 100,000.';
   if (o == null) errs[k + '_o'] = 'Un entero de 0 a 999,999.';
+  if (g != null && b != null && b > g) errs[k + '_b'] = 'El bonus no puede pasar de las gemas (' + nf(g) + ').';
   if (!showErrs(errs)) return Promise.resolve();
   var v = gmOn(k + '_v', p.a_la_venta);
   if (g === p.gemas && b === p.bonus && o === p.orden && v === !!p.a_la_venta) { toast('No hay cambios', 'info'); return Promise.resolve(); }
@@ -204,6 +212,7 @@ A.gmPackNew = function () {
   if (g == null) errs.gm_n_gemas = 'De 1 a 100,000.';
   if (b == null) errs.gm_n_bonus = 'De 0 a 100,000.';
   if (o == null) errs.gm_n_orden = 'Un entero de 0 a 999,999.';
+  if (g != null && b != null && b > g) errs.gm_n_bonus = 'El bonus no puede pasar de las gemas (' + nf(g) + ').';
   if (!showErrs(errs)) return Promise.resolve();
   var v = gmOn('gm_n_venta', false);
   return gmPackDo({ producto: pr, gemas: g, bonus: b, a_la_venta: v, orden: o }, 'pnew', '¿Crear este paquete?',
@@ -232,7 +241,7 @@ function gmMiticos(r) {
 async function gmMitDo(datos, ttl, lines, okMsg, danger) {
   if (!await confirmDlg({ title: ttl, text: 'Afecta solo a la compra con gemas; la venta con dinero no cambia.', html: cbox(lines), ok: 'Sí, guardar', danger: !!danger, icon: 'gift' })) return;
   GM.saving = 'mit'; paintPage();
-  try { await rpc('admin_gemas', { p_accion: 'mitico', p_datos: datos }); delete GM.d['gm_m_' + datos.id]; toast(okMsg); await rload('gemas', true); }
+  try { await rpc('admin_gemas', { p_accion: 'mitico', p_datos: datos }); delete GM.d['gm_m_' + datos.id]; toast(okMsg); await rload('gemas', true); if (RM.solo_gemas) rload('solo_gemas', true); }
   catch (e) { toast('No se pudo: ' + e.message, 'bad'); }
   GM.saving = ''; paintPage();
 }

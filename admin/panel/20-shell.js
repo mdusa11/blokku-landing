@@ -264,5 +264,5 @@ document.addEventListener('keydown', function (e) {
 window.addEventListener('hashchange', route);
 window.addEventListener('scroll', function () { var t = $('#top'); if (t) t.classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
 window.addEventListener('beforeunload', function (e) { if (pending()) { e.preventDefault(); e.returnValue = ''; } });
-document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { refreshPanel(); rloadAll(); } });
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && !editando()) { refreshPanel(); rloadAll(); } });
 window.addEventListener('online', function () { flushAll(); if (DB.src !== 'supabase') retryLoad(); });

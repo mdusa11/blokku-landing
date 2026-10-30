@@ -68,7 +68,7 @@ function duAjustes(r) {
       var id = 'du_' + a.clave;
       if (a.lo === 0 && a.hi === 1) {
         var on = duDraft(id, a.valor) === '1';
-        h += '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(a.nota) + '</b><div class="xs mut">Ahora: ' + (a.valor ? 'encendido' : 'apagado') + '</div></div>' + tog(id, on, a.nota, { dc: 'duTog', on: 'Sí', off: 'No' }) + '</div>';
+        h += '<div class="row nw" style="align-items:flex-start"><div class="grow"><b>' + esc(a.nota) + '</b><div class="xs mut">Ahora: ' + (a.valor ? 'encendido' : 'apagado') + '</div></div>' + tog(id, on, 'Interruptor', { dc: 'duTog', on: 'Sí', off: 'No' }) + '</div>';
       } else {
         h += field(id, a.nota, inp(id, duDraft(id, a.valor), { type: 'number', mode: 'numeric', min: a.lo, di: 'duIn' }), 'Entero de ' + nf(a.lo) + ' a ' + nf(a.hi) + '. <b>Ahora:</b> ' + nf(a.valor) + '.');
       }

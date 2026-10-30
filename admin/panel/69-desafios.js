@@ -283,7 +283,7 @@ function dcCosmeticos(r) {
   var h = '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Cosméticos posibles</h3><span class="sub grow">' + (cs.length ? nf(cs.length) + ' en la lista' : 'Lista vacía') + '</span></div><div class="cb">' +
     '<p class="xs mut" style="margin:0 0 12px">Los que puede dar el desafío difícil. Quedan <b>ocultos hasta ganarlos</b> y <b>nunca se venden</b>: el servidor no deja agregar uno que esté en el catálogo de la tienda. De fábrica: el título «Desafiante» y la insignia «Medalla semanal». Para usar otro, tiene que existir ya en la app.</p>';
   if (cs.length) h += '<div class="chips" style="margin-bottom:12px">' + cs.map(function (i) { return '<button type="button" class="fchip" data-a="dcCosDel" data-id="' + esc(i) + '" aria-pressed="true" title="Quitar de la lista">' + esc(i) + ' ' + ic('x') + '</button>'; }).join('') + '</div>';
-  h += '<div class="row nw"><div class="grow">' + inp('dc_cos_n', '', { ph: 'ej. badge_desafiante (theme_, style_, effect_, frame_, badge_ o title_)', max: 48 }) + '</div><button class="btn" data-a="dcCosAdd">' + ic('check') + 'Agregar</button></div></div></div>';
+  h += '<div class="row nw"><div class="grow">' + inp('dc_cos_n', '', { ph: 'ej. badge_desafiante', max: 48 }) + '</div><button class="btn" data-a="dcCosAdd">' + ic('check') + 'Agregar</button></div><div class="xs mut" style="margin-top:6px">Empieza con theme_, style_, effect_, frame_, badge_ o title_.</div></div></div>';
   return h;
 }
 A.dcCosAdd = async function () {

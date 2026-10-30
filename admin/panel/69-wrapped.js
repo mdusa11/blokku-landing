@@ -63,7 +63,7 @@ function vWrapped() {
   var on = wrOn(c, 'activo');
   var b = '<div class="card sec"><div class="ch">' + ic('power') + '<h3>Interruptores</h3><span class="sub grow">' + (on ? 'Encendido' : 'Apagado: la app esconde todo') + '</span></div><div class="cb">';
   Object.keys(WR_TOG).forEach(function (k) {
-    b += '<div class="row nw" style="align-items:flex-start;margin-bottom:10px"><div class="grow"><b>' + esc(WR_TOG[k][0]) + '</b><div class="xs mut">' + esc(WR_TOG[k][3]) + '</div></div>' + tog('wr_' + k, wrOn(c, k), WR_TOG[k][0], { dc: 'wrTog', on: WR_TOG[k][1], off: WR_TOG[k][2] }) + '</div>';
+    b += '<div class="row nw" style="align-items:flex-start;margin-bottom:10px"><div class="grow"><b>' + esc(WR_TOG[k][0]) + '</b><div class="xs mut">' + esc(WR_TOG[k][3]) + '</div></div>' + tog('wr_' + k, wrOn(c, k), 'Interruptor', { dc: 'wrTog', on: WR_TOG[k][1], off: WR_TOG[k][2] }) + '</div>';
   });
   b += field('wr_min', 'Mínimo de jugadores para mostrar el porcentaje', inp('wr_min', WR.min == null ? String(c.percentil_min == null ? 20 : c.percentil_min) : WR.min, { type: 'number', mode: 'numeric', min: 2, ph: 'De fábrica: 20', di: 'wrMin' }), 'Entero de 2 a 100000. Con menos jugadores con puntaje ese mes, la línea no sale.') +
     '<div class="row mt16"><button class="btn pri" data-a="wrSave"' + (WR.saving ? ' disabled' : '') + '>' + (WR.saving ? '<span class="spin"></span>' : ic('check')) + 'Guardar</button><span class="xs mut">Te enseño «antes → después» antes de guardar.</span></div></div></div>';
