@@ -226,16 +226,16 @@ function dcCatalogo(r) {
     field('dc_n_m', 'Tipo', sel('dc_n_m', 'lineas', DC_MET)) +
     field('dc_n_d', 'Dificultad', sel('dc_n_d', 'media', DC_DIF)) +
     field('dc_n_t', 'Meta', inp('dc_n_t', '', { type: 'number', mode: 'numeric', min: 1, ph: 'ej. 450' })) +
-    field('dc_n_b', 'Bloques de premio', inp('dc_n_b', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 1200' }), 'De 0 a 5,000.') +
+    field('dc_n_b', 'Bloques de premio', inp('dc_n_b', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 1200' }), 'De 0 a 50,000.') +
     field('dc_n_x', 'XP de premio', inp('dc_n_x', '', { type: 'number', mode: 'numeric', min: 0, ph: 'ej. 250' }), 'De 0 a 5,000.') + '</div>' +
     '<div class="row mt16"><button class="btn" data-a="dcCatAdd">' + ic('check') + 'Agregar</button><span class="xs mut">Referencia (Bloques ×10, 37-bloques-x10): fácil 500 Bloques + 100 XP · medio 1,200 + 250 · difícil 3,000 + 500.</span></div></div></div>';
   return h;
 }
 function dcLeeCat(pref, id) {
   function v(k) { var e = $('#dc_' + pref + '_' + k); return e ? String(e.value).trim() : ''; }
-  var meta = dcInt(v('t'), 1, 10000000), bl = dcInt(v('b'), 0, 5000), xp = dcInt(v('x'), 0, 5000), errs = {};
+  var meta = dcInt(v('t'), 1, 10000000), bl = dcInt(v('b'), 0, 50000), xp = dcInt(v('x'), 0, 5000), errs = {};
   if (meta == null) errs['dc_' + pref + '_t'] = 'Un entero de 1 a 10,000,000.';
-  if (bl == null) errs['dc_' + pref + '_b'] = 'Un entero de 0 a 5,000.';
+  if (bl == null) errs['dc_' + pref + '_b'] = 'Un entero de 0 a 50,000.';
   if (xp == null) errs['dc_' + pref + '_x'] = 'Un entero de 0 a 5,000.';
   if (!showErrs(errs)) return null;
   return { id: id, metrica: v('m'), dif: v('d'), meta: meta, bloques: bl, xp: xp };
@@ -248,9 +248,9 @@ A.dcCatSave = async function (el) {
   var id = el.dataset.id, r = dcRows() || {}, d;
   // En la fila los campos se llaman dc_cm_/dc_cd_/dc_ct_/dc_cb_/dc_cx_<id>.
   function v(k) { var e = $('#dc_c' + k + '_' + id); return e ? String(e.value).trim() : ''; }
-  var meta = dcInt(v('t'), 1, 10000000), bl = dcInt(v('b'), 0, 5000), xp = dcInt(v('x'), 0, 5000), errs = {};
+  var meta = dcInt(v('t'), 1, 10000000), bl = dcInt(v('b'), 0, 50000), xp = dcInt(v('x'), 0, 5000), errs = {};
   if (meta == null) errs['dc_ct_' + id] = 'Un entero de 1 a 10,000,000.';
-  if (bl == null) errs['dc_cb_' + id] = 'Un entero de 0 a 5,000.';
+  if (bl == null) errs['dc_cb_' + id] = 'Un entero de 0 a 50,000.';
   if (xp == null) errs['dc_cx_' + id] = 'Un entero de 0 a 5,000.';
   if (!showErrs(errs)) return;
   d = { id: id, metrica: v('m'), dif: v('d'), meta: meta, bloques: bl, xp: xp, activo: el.dataset.v === '1' };

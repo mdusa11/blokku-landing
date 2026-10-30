@@ -23,7 +23,7 @@ AYUDA['juego/premios-semana'] = {
     '<b>Qué versión lo soporta:</b> la app 2.0 o más nueva. Apagado o sin el SQL, la app no enseña nada.',
     '<b>Cierre:</b> la semana (la misma del ranking) se cierra el <b>lunes a las 00:00, hora de la Ciudad de México</b>, más las horas de gracia que pongas (0 de fábrica). La primera persona que abre la app o el ranking después de esa hora dispara el cierre; correrlo dos veces no reparte dos veces.',
     '<b>Quién gana:</b> solo puntajes que NO están marcados como sospechosos, de jugadores NO ocultos, guardados antes del cierre. La tabla se congela al cerrar: aprobar después un sospechoso no le da premio (usa «Dar premio a mano»). Si esa semana jugaron menos del mínimo de jugadores, no se reparte nada.',
-    '<b>Premios por lugar:</b> hasta 12 tramos, hasta el lugar 500, con máximo 20,000 Bloques y 3 protectores por tramo. Cambiarlos afecta a las semanas que cierren después; las cerradas guardan lo que daban.',
+    '<b>Premios por lugar:</b> hasta 12 tramos, hasta el lugar 500, con máximo 200,000 Bloques y 3 protectores por tramo. Cambiarlos afecta a las semanas que cierren después; las cerradas guardan lo que daban.',
     '<b>Bloques:</b> llegan a la cartera de la tienda. Al encender esto, el premio semanal viejo de la tienda (solo Bloques) se pone en 0 para no pagar dos veces; al apagarlo vuelve a sus valores. Los protectores respetan el máximo que se puede guardar.',
     '<b>Anular:</b> si aún no lo abría, ya no le sale el cofre. Si ya lo abrió, se le quitan los Bloques que todavía tenga (la insignia ya está en su teléfono). <b>Reentregar</b> devuelve un premio anulado a «pendiente».',
     '<b>Cuánto tarda:</b> la app revisa los premios al abrirse y cada pocos minutos; la franja guarda los tramos 15 minutos.',
@@ -110,7 +110,7 @@ function psTramosDraft(r) { if (!PS.tramos) PS.tramos = JSON.parse(JSON.stringif
 function psTramos(r) {
   var l = psTramosDraft(r);
   var h = '<div class="card sec"><div class="ch">' + ic('sliders') + '<h3>Premios por lugar</h3><span class="sub grow">' + plural(l.length, 'tramo', 'tramos') + '</span></div><div class="cb">';
-  h += '<p class="xs mut" style="margin:0 0 12px">Cada tramo es un rango de lugares (sin encimarse). Hasta 12 tramos y hasta el lugar 500; máximo 20,000 Bloques y 3 protectores por tramo. Lo que cambies aplica a las semanas que cierren después.</p>';
+  h += '<p class="xs mut" style="margin:0 0 12px">Cada tramo es un rango de lugares (sin encimarse). Hasta 12 tramos y hasta el lugar 500; máximo 200,000 Bloques y 3 protectores por tramo. Lo que cambies aplica a las semanas que cierren después.</p>';
   if (l.length) {
     h += '<div class="tw"><table class="tbl"><thead><tr><th>Desde</th><th>Hasta</th><th>Bloques</th><th>Protectores</th><th>Insignia</th><th>Título</th><th></th></tr></thead><tbody>';
     l.forEach(function (t, i) {
@@ -142,10 +142,10 @@ A.psTrSave = async function () {
   var l = psTramosDraft(r), out = [], errs = {}, prev = 0;
   function int(v, lo, hi) { var t = String(v == null ? '' : v).trim(); return /^\d+$/.test(t) && +t >= lo && +t <= hi ? +t : null; }
   l.forEach(function (t, i) {
-    var d = int(t.desde, 1, 500), h = int(t.hasta, 1, 500), b = int(t.bloques, 0, 20000), p = int(t.protectores, 0, 3);
+    var d = int(t.desde, 1, 500), h = int(t.hasta, 1, 500), b = int(t.bloques, 0, 200000), p = int(t.protectores, 0, 3);
     if (d == null) errs['ps_t_desde_' + i] = '1 a 500';
     if (h == null || (d != null && h < d)) errs['ps_t_hasta_' + i] = '≥ desde, hasta 500';
-    if (b == null) errs['ps_t_bloques_' + i] = '0 a 20,000';
+    if (b == null) errs['ps_t_bloques_' + i] = '0 a 200,000';
     if (p == null) errs['ps_t_protectores_' + i] = '0 a 3';
     out.push({ desde: d, hasta: h, bloques: b, protectores: p, insignia: t.insignia || '', titulo: !!t.titulo });
   });
