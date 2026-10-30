@@ -130,6 +130,7 @@ C.psTrTog = function (el) { var k = psTrIdx(el.id); if (k && PS.tramos[k[1]]) PS
 A.psTrAdd = function () {
   var r = psRows(); if (!r) return;
   var l = psTramosDraft(r), last = l.length ? Number(l[l.length - 1].hasta) || 0 : 0;
+  if (last >= 500) { toast('El último tramo ya llega al lugar 500', 'warn'); return; }
   l.push({ desde: last + 1, hasta: Math.min(500, last + 10), bloques: 0, protectores: 0, insignia: '', titulo: false });
   paintPage();
 };
@@ -148,7 +149,7 @@ A.psTrSave = async function () {
     if (p == null) errs['ps_t_protectores_' + i] = '0 a 3';
     out.push({ desde: d, hasta: h, bloques: b, protectores: p, insignia: t.insignia || '', titulo: !!t.titulo });
   });
-  if (Object.keys(errs).length) { toast('Revisa los tramos marcados', 'warn'); Object.keys(errs).forEach(function (k) { var e = document.getElementById(k); if (e) e.classList.add('bad'); }); return; }
+  if (Object.keys(errs).length) { toast('Revisa los tramos marcados', 'warn'); Object.keys(errs).forEach(function (k) { var e = document.getElementById(k); if (e) { e.classList.add('bad'); e.title = errs[k]; } }); return; }
   out.sort(function (a, b) { return a.desde - b.desde; });
   for (var i = 0; i < out.length; i++) { if (out[i].desde <= prev) { toast('Los tramos se enciman en el lugar ' + out[i].desde, 'warn'); return; } prev = out[i].hasta; }
   if (out.length > 12) { toast('Como mucho 12 tramos', 'warn'); return; }

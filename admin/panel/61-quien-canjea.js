@@ -32,7 +32,7 @@ function qcSection(id) {
   if (F.length) {
     h += '<div class="list mt8">' + F.map(function (r) {
       var nm = (typeof rkRow === 'function' && rkRow(r.jugador_id, 'clasico', 'historico')) ?
-        '<a href="#" data-a="qcJug" data-id="' + esc(r.jugador_id) + '">' + esc(r.nombre) + '</a>' : esc(r.nombre);
+        '<a data-a="qcJug" tabindex="0" role="link" style="cursor:pointer" data-id="' + esc(r.jugador_id) + '">' + esc(r.nombre) + '</a>' : esc(r.nombre);
       return '<div class="li"><div class="t"><b>' + nm + '</b><span>' + (typeof rkFlag === 'function' && r.pais ? rkFlag(r.pais) + ' ' : '') + esc(r.plataforma === 'ios' ? 'iOS' : r.plataforma === 'android' ? 'Android' : r.plataforma) +
         (r.version ? ' · v' + esc(r.version) : '') + ' · <span title="' + esc(fdt(r.creado)) + '">' + esc(relT(r.creado)) + '</span></span></div></div>';
     }).join('') + '</div>';

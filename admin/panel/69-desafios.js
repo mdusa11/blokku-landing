@@ -157,6 +157,7 @@ function dcSemanas(r) {
       return field('dc_e_' + key, DC_DIF_N[dif], sel('dc_e_' + key, cur || '', o));
     }
     var co = [['__auto', 'Automático (cada ' + ((dcCfg(r).cosmetico_cada || {}).valor || 0) + ' semanas, o ninguno si es 0)'], ['__none', 'Ninguno esta semana']].concat((r.cosmeticos || []).map(function (c) { return [c, c]; }));
+    if (ed.cosm && ed.cosm !== '__auto' && ed.cosm !== '__none' && !co.some(function (x) { return x[0] === ed.cosm; })) co.push([ed.cosm, ed.cosm]);
     h += '<h4 style="margin:18px 0 8px">Programar la semana ' + esc(ed.semana) + '</h4><div class="grid g2">' + pick('facil', 'facil') + pick('media', 'media') + pick('dificil', 'dificil') +
       field('dc_e_cosm', 'Cosmético oculto del difícil', sel('dc_e_cosm', ed.cosm || '__auto', co), 'Sale como regalo «?» hasta que el jugador lo gana. Nunca se vende.') + '</div>' +
       '<div class="row mt16"><button class="btn pri" data-a="dcSemSave"' + (DC.saving ? ' disabled' : '') + '>' + (DC.saving === 'sem' ? '<span class="spin"></span>' : ic('check')) + 'Programar esta semana</button><button class="btn ghost" data-a="dcEdOff">Cancelar</button></div>';

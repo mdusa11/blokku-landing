@@ -89,7 +89,7 @@ function duVs(d) { return esc(d.j1 || '—') + ' <span class="mut">vs</span> ' +
 function vDuelos() {
   var o = rm('duelos');
   var h = pageHead('Duelos 1 vs 1', 'Dos jugadores, las mismas piezas, al mismo tiempo. Con un amigo por código, buscando rival o contra un rival grabado. El servidor decide quién gana.', '<button class="btn" data-a="duReload">' + ic('refresh') + 'Recargar</button>');
-  if (o.err) return h + (o.err.code === 'sin_sql' ? '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.duelos, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Va después de 14-servidor.sql (y de 19-tienda.sql para pagar premios).') + '</div>' : rerr(o, 'los duelos'));
+  if (o.err) return h + (o.err.code === 'sin_sql' ? '<div class="card">' + emptyBox('db', 'Falta correr ' + SQLF.duelos, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Va después de 4-ranking.sql y 9-limites.sql (y de 19-tienda.sql para pagar premios con su cartera).') + '</div>' : rerr(o, 'los duelos'));
   var r = duRows();
   if (!r) return h + skel(4);
   var s = r.stats || {}, c = r.config || {};

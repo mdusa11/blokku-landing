@@ -920,3 +920,4 @@ h1 .v20{font-size:12px;margin-left:10px}
 @media (max-width:640px){.ayd dl{grid-template-columns:1fr;gap:0}.ayd dt{margin-top:6px}}
 /* celular: texto + interruptor en la misma fila no deben aplastar el texto */
 @media (max-width:480px){.row.nw:has(>.grow+.tog){flex-wrap:wrap}.row.nw:has(>.grow+.tog)>.grow{flex:1 1 200px}}
+.tbl .in.bad,.tbl .sel.bad,.in.bad,.sel.bad{border-color:var(--bad)}
