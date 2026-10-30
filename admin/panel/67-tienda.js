@@ -43,7 +43,7 @@ var TI_GRP = [
   ['semanal', 'Premio semanal del ranking', 'trophy', 'Bloques por el puesto que se logró en el ranking Clásico de la semana pasada.'],
   ['topes', 'Límites anti-trampas', 'lock', 'Topes de ganancia por partidas, creíble por segundo y líneas por partida: las completas (max_lineas) y hasta cuántas pagan algo (max_lineas_extra).']
 ];
-var TI_TIPO = { partida: 'Partidas (líneas, combos)', mision: 'Misiones', cofre: 'Cofre diario', racha: 'Bonus de racha', semanal: 'Premio semanal', ajuste: 'Ajustes tuyos', compra: 'Compras en la tienda', protector: 'Protectores comprados' };
+var TI_TIPO = { partida: 'Partidas (líneas, combos)', mision: 'Misiones', cofre: 'Cofre diario', racha: 'Bonus de racha', semanal: 'Premio semanal', ajuste: 'Ajustes tuyos', compra: 'Compras en la tienda', protector: 'Protectores comprados', cumple: 'Regalo de cumpleaños', cumple_x2: 'Cumpleaños doble', desafio: 'Desafíos semanales', duelo: 'Duelos', gemas: 'Cambio por gemas', protector_gemas: 'Protectores con gemas', premio_semana: 'Premios de la semana', premio_semana_anula: 'Premios de la semana anulados' };
 var TI_TIPOS_OK = { 'Tema': 1, 'Estilo de pieza': 1, 'Efecto de línea': 1, 'Marco': 1, 'Título': 1 };
 var TI_RAR_OK = { 'Común': 1, 'Raro': 1, 'Épico': 1 };
 
@@ -146,7 +146,7 @@ function tiCatalogo(r) {
         '<button class="btn sm ghost" data-a="tiCatDel" data-id="' + esc(c.id) + '">' + ic('trash') + 'Quitar</button></td></tr>';
     }).join('') + '</tbody></table></div>';
   } else h += '<p class="mut" style="margin:0 0 12px">El catálogo está vacío: la tienda no vende nada.</p>';
-  h += '<h4 style="margin:6px 0 8px">Agregar un objeto</h4><div class="row nw"><div class="grow">' + sel('ti_cadd', '', [['', 'Elige un objeto…']].concat(libres.map(function (p) { return [p.cid, p.nombre + ' · ' + p.tipo + ' · ' + p.rareza]; }))) + '</div>' +
+  h += '<h4 style="margin:6px 0 8px">Agregar un objeto</h4><div class="row"><div class="grow" style="flex:1 1 150px">' + sel('ti_cadd', '', [['', 'Elige un objeto…']].concat(libres.map(function (p) { return [p.cid, p.nombre + ' · ' + p.tipo + ' · ' + p.rareza]; }))) + '</div>' +
     '<div style="width:130px">' + inp('ti_cadd_p', '', { type: 'number', mode: 'numeric', min: 1, ph: 'Precio propio' }) + '</div>' +
     '<button class="btn" data-a="tiCatAdd">' + ic('check') + 'Agregar</button></div>' +
     '<div class="hint">La rareza se toma de la del objeto en la app; solo comunes, raros y épicos. Los míticos y legendarios no se venden nunca.</div>';

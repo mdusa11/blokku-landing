@@ -186,7 +186,7 @@ A.sgOfNew = function () {
   return sgDo('oferta', { producto: pr, extra: ex, desde: d0, hasta: d1 }, 'ofnew', '¿Crear esta oferta?',
     'Entre esas fechas, quien compre ' + pr + ' recibirá ' + nf(p.gemas + p.bonus + ex) + ' gemas en vez de ' + nf(p.gemas + p.bonus) + '.',
     [['Paquete', '<span class="mono">' + esc(pr) + '</span>'], ['Extra', '<b>+' + nf(ex) + '</b> gemas (el jugador verá +' + Math.round(100 * (p.bonus + ex) / p.gemas) + ' %)'], ['Desde', esc(fdt(d0))], ['Hasta', esc(fdt(d1))]], 'Oferta creada', { icon: 'clock' })
-    .then(function (ok) { if (ok) ['sg_o_extra', 'sg_o_desde', 'sg_o_hasta'].forEach(function (s) { delete SG.d[s]; }); });
+    .then(function (ok) { if (ok) { ['sg_o_extra', 'sg_o_desde', 'sg_o_hasta'].forEach(function (s) { delete SG.d[s]; }); paintPage(); } });
 };
 A.sgOfQuitar = function (el) {
   var r = sgRows(); if (!r || SG.saving) return Promise.resolve();
@@ -287,7 +287,7 @@ A.sgTSave = function () {
   var lines = t ? [['Temporada', '<span class="mono">' + esc(id) + '</span>'], ['Fechas', esc(fdt(t.inicio)) + ' – ' + esc(fdt(t.fin)) + ' → <b>' + esc(fdt(ini)) + ' – ' + esc(fdt(fin)) + '</b>'], ['Niveles', nf(t.niveles) + ' → <b>' + nf(niv) + '</b> (+' + nf(t.plus_niveles) + ' → <b>+' + nf(plus) + '</b> del plus)'], ['Activa', (t.activa ? 'Sí' : 'No') + ' → <b>' + (act ? 'Sí' : 'No') + '</b>']]
     : [['Temporada', '<span class="mono">' + esc(id) + '</span> (nueva)'], ['Fechas', esc(fdt(ini)) + ' – ' + esc(fdt(fin))], ['Niveles', nf(niv) + ' + ' + nf(plus) + ' del plus'], ['Activa', act ? 'Sí' : 'No']];
   return sgDo('temporada', { id: id, inicio: ini, fin: fin, niveles: niv, plus_niveles: plus, activa: act }, 'temp', t ? '¿Cambiar esta temporada?' : '¿Crear esta temporada?',
-    act ? 'Mientras esté activa y dentro de fechas, los jugadores podrán comprar su premium con gemas.' : 'Apagada: no se podrá comprar su premium.', lines, 'Temporada guardada', { icon: 'calendar', warn: warn })
+    act ? 'Mientras esté activa y dentro de fechas, los jugadores podrán comprar su premium con gemas.' : 'Apagada: no se podrá comprar su premium.', lines, 'Temporada guardada', { icon: 'cal', warn: warn })
     .then(function (ok) { if (ok) { ['sg_te_id', 'sg_te_niv', 'sg_te_plus', 'sg_te_ini', 'sg_te_fin'].forEach(function (s) { delete SG.d[s]; }); delete SG.on.sg_te_act; paintPage(); } });
 };
 
@@ -354,7 +354,7 @@ function sgItems(r) {
     var i = m[k], gem = i.a && i.a.activo, blq = i.c && i.c.vendible;
     i.mon = gem ? 'gemas' : blq ? 'bloques' : i.a ? 'gemas' : 'bloques';
     i.est = gem ? 'gemas' : blq ? 'bloques' : '';
-    i.precio = i.mon === 'gemas' ? (i.a ? i.a.gemas : 100) : (i.c ? (i.c.efectivo != null ? i.c.efectivo : i.c.precio) : 150);
+    i.precio = i.mon === 'gemas' ? (i.a ? i.a.gemas : 100) : (i.c ? (i.c.efectivo != null ? i.c.efectivo : i.c.precio) : 3000);
     return i;
   });
 }
@@ -376,7 +376,7 @@ function sgListaHtml(r) {
 }
 I.sgQ = debounce(function (el) { SG.q = el.value; SG.lim = 40; var r = sgRows(), b = $('#sg_lista'); if (r && b) b.innerHTML = sgListaHtml(r); }, 200);
 A.sgMas = function () { SG.lim += 60; paintPage(); };
-C.sgMon = function (el) { SG.d[el.id] = el.value; var r = sgRows(), id = el.id.slice(5, -2), i = r && sgItems(r).filter(function (x) { return x.id === id; })[0]; if (i) { if (!(('sg_i_' + id + '_p') in SG.d)) SG.d['sg_i_' + id + '_p'] = String(el.value === i.mon ? i.precio : (el.value === 'gemas' ? (i.a ? i.a.gemas : 100) : (i.c ? i.c.precio : 150))); } paintPage(); };
+C.sgMon = function (el) { SG.d[el.id] = el.value; var r = sgRows(), id = el.id.slice(5, -2), i = r && sgItems(r).filter(function (x) { return x.id === id; })[0]; if (i) { SG.d['sg_i_' + id + '_p'] = String(el.value === i.mon ? i.precio : (el.value === 'gemas' ? (i.a ? i.a.gemas : 100) : (i.c ? (i.c.efectivo != null ? i.c.efectivo : i.c.precio) : 3000))); } paintPage(); };
 function sgTienda(r) {
   var h = '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Tienda con dos monedas</h3><span class="sub grow">Cada artículo se vende en Bloques o en gemas</span></div><div class="cb">' +
     '<p class="xs mut" style="margin:0 0 10px">' + sgMoneda('bloques') + ' lo normal de la tienda · ' + sgMoneda('gemas') + ' lo exclusivo. Al cambiar la moneda el artículo deja de venderse en la otra. Lo ya comprado se conserva.</p>' +
@@ -417,14 +417,14 @@ A.sgItemSave = function (el) {
 A.sgArtNew = function () {
   var r = sgRows(); if (!r || SG.saving) return Promise.resolve();
   var id = String(sgDraft('sg_n_id', '')).trim(), g = sgInt(sgDraft('sg_n_gemas', ''), 10, 10000), o = sgInt(sgDraft('sg_n_orden', '100'), 0, 999999), errs = {};
-  if (!/^[a-z]+_[A-Za-z0-9_]{1,60}$/.test(id)) errs.sg_n_id = 'Formato tipo_nombre, por ejemplo frame_dorado (minúsculas para el tipo, sin espacios).';
-  else if ((r.articulos || []).some(function (a) { return a.id === id; })) errs.sg_n_id = 'Ya existe: edítalo en la lista de arriba.';
+  if (!/^(theme|style|effect|frame|badge|title|namecolor|costume|sfx|streakicon)_[A-Za-z0-9_]{1,40}$/.test(id)) errs.sg_n_id = 'Formato tipo_nombre (hasta 40 letras, números o _), con tipo theme, style, effect, frame, badge, title, namecolor, costume, sfx o streakicon; por ejemplo frame_dorado.';
+  else if ((r.articulos || []).some(function (a) { return a.id === id; }) || (r.catalogo || []).some(function (a) { return a.id === id; })) errs.sg_n_id = 'Ya existe: edítalo en la lista de arriba.';
   if (g == null) errs.sg_n_gemas = 'Un entero de 10 a 10,000.';
   if (o == null) errs.sg_n_orden = 'Un entero de 0 a 999,999.';
   if (!showErrs(errs)) return Promise.resolve();
   return sgDo('articulo', { id: id, gemas: g, activo: true, orden: o }, 'artnew', '¿Agregar este artículo con gemas?', 'Saldrá en la tienda de gemas ya activo.',
     [['Artículo', '<span class="mono">' + esc(id) + '</span>'], ['Precio', '<b style="color:' + SG_GEM + '">' + nf(g) + ' gemas</b>'], ['Orden', nf(o)]], 'Artículo agregado', { icon: 'gift' })
-    .then(function (ok) { if (ok) ['sg_n_id', 'sg_n_gemas', 'sg_n_orden'].forEach(function (s) { delete SG.d[s]; }); });
+    .then(function (ok) { if (ok) { ['sg_n_id', 'sg_n_gemas', 'sg_n_orden'].forEach(function (s) { delete SG.d[s]; }); paintPage(); } });
 };
 
 /* ---------- precios generales ---------- */

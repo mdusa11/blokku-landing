@@ -67,7 +67,7 @@ A.teColor = function (el) {
 
 /* ---------- paquetes y textos ---------- */
 function tePaqs() {
-  var m = {}, p = RM.pagos && RM.pagos.rows && RM.pagos.rows.paquetes;
+  var m = {}, p = (rm('pagos') || {}).rows && rm('pagos').rows.paquetes;
   items('premios').forEach(function (x) { var k = /^theme_([a-z0-9]{2,20})$/.exec(x.cid || ''); if (k && x.rareza === 'Mítico') m[k[1]] = x.nombre; });
   (p || []).forEach(function (q) { if (!m[q.id]) m[q.id] = pgPack(q.id); });
   return Object.keys(m).sort(function (a, b) { return String(m[a]).localeCompare(m[b]); }).map(function (k) { return [k, m[k]]; });

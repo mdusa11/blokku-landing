@@ -281,12 +281,12 @@ function fchips(name, cur, opts) {
 }
 function opts(list, cur) { return list.map(function (o) { var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join(''); }
 function searchBox(id, val, ph, act) { return '<label class="srch"><span class="sr">' + esc(ph) + '</span>' + ic('search') + '<input class="in" id="' + id + '" data-i="' + act + '" value="' + esc(val || '') + '" placeholder="' + esc(ph) + '" autocomplete="off"></label>'; }
-function help(items) { return '<details class="help"><summary>' + ic('chr', 'chev') + '¿Cómo funciona?</summary><div class="hb">' + (Array.isArray(items) ? '<ul>' + items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : items) + '</div></details>'; }
+function help(items) { return '<details class="help"><summary>' + ic('chr', 'chev') + '¿Cómo funciona?</summary><div class="hbody">' + (Array.isArray(items) ? '<ul>' + items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : items) + '</div></details>'; }
 /* bloque «¿Para qué sirve?» (textos en 15-ayuda.js, por ruta) */
 function whyHtml(r, extra) {
   var a = AYUDA[r || S.route], L = ((a && a.como) || []).concat(extra || []);
   if (!a && !L.length) return '';
-  return '<details class="help ayd"><summary>' + ic('chr', 'chev') + '¿Para qué sirve?</summary><div class="hb">' +
+  return '<details class="help ayd"><summary>' + ic('chr', 'chev') + '¿Para qué sirve?</summary><div class="hbody">' +
     (a ? '<dl><dt>Qué es</dt><dd>' + a.que + '</dd><dt>Qué ve el jugador</dt><dd>' + a.ve + '</dd><dt>Cuándo usarlo</dt><dd>' + a.cuando + '</dd></dl>' : '') +
     (L.length ? '<div class="ayc"><b>Cómo funciona</b><ul>' + L.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' : '') +
     '</div></details>';

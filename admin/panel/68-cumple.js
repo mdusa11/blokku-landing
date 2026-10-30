@@ -129,7 +129,7 @@ A.cmTxtSave = async function () {
   var t = String(CM.texto).trim();
   if (!t) { showErrs({ cm_texto: 'Escribe el texto.' }); return; }
   if (t.length > 300) { showErrs({ cm_texto: 'Máximo 300 caracteres.' }); return; }
-  if (!await confirmDlg({ title: '¿Guardar este texto?', text: 'Lo verán los jugadores del idioma elegido.', html: cbox([['Texto', esc((CM_TXT.filter(function (x) { return x[0] === CM.clave; })[0] || [0, CM.clave])[1])], ['Idioma', esc(CM.lang)], ['Contenido', esc(t)]]), ok: 'Sí, guardar', icon: 'chat' })) return;
+  if (!await confirmDlg({ title: '¿Guardar este texto?', text: 'Lo verán los jugadores del idioma elegido.', html: cbox([['Texto', esc((CM_TXT.filter(function (x) { return x[0] === CM.clave; })[0] || [0, CM.clave])[1])], ['Idioma', esc(CM.lang)], ['Contenido', esc(t)]]), ok: 'Sí, guardar', icon: 'bell' })) return;
   try { await rpc('admin_cumple', { p_accion: 'texto', p_datos: { clave: CM.clave, lang: CM.lang, texto: t } }); CM.texto = ''; toast('Texto guardado'); await rload('cumple', true); }
   catch (e) { toast('No se pudo guardar: ' + e.message, 'bad'); }
 };

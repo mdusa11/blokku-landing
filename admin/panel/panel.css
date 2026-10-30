@@ -115,8 +115,8 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .help summary:hover{background:var(--accent-soft)}
 .help summary svg{width:16px;height:16px;transition:transform .15s}
 .help[open] summary .chev{transform:rotate(90deg)}
-.help .hb{margin-top:8px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--text-2);line-height:1.6}
-.help .hb ul{margin:0;padding-left:18px}.help .hb li{margin:3px 0}.help .hb b{color:var(--text)}
+.help .hbody{margin-top:8px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--text-2);line-height:1.6}
+.help .hbody ul{margin:0;padding-left:18px}.help .hbody li{margin:3px 0}.help .hbody b{color:var(--text)}
 
 /* ===== Tabs & segmented ===== */
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:0 0 20px;overflow-x:auto;scrollbar-width:none}
@@ -918,4 +918,5 @@ h1 .v20{font-size:12px;margin-left:10px}
 .ayd .ayc{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
 .ayd .ayc>b{display:block;margin-bottom:4px}
 @media (max-width:640px){.ayd dl{grid-template-columns:1fr;gap:0}.ayd dt{margin-top:6px}}
-.help .hb{display:block;height:auto}
+/* celular: texto + interruptor en la misma fila no deben aplastar el texto */
+@media (max-width:480px){.row.nw:has(>.grow+.tog){flex-wrap:wrap}.row.nw:has(>.grow+.tog)>.grow{flex:1 1 200px}}
