@@ -52,13 +52,34 @@ const TIENDA = {
 };
 // Pase: Bloques y protectores del servidor = lo del JSON de la app, salvo una casilla corregida (t2 nivel 7 premium).
 const PB = (() => {
-  const d = JSON.parse(readFileSync(new URL('../admin/panel/datos-temporadas.js', import.meta.url), 'utf8').replace(/^[\s\S]*?var TPD = /, '').replace(/;\s*$/, ''));
+  const d = JSON.parse(readFileSync(new URL('../admin/panel/11-datos-temporadas.js', import.meta.url), 'utf8').replace(/^[\s\S]*?var TPD = /, '').replace(/;\s*$/, ''));
   const caja = (it) => ({ bloques: it.filter((i) => i.t === 'b' || i.t === 'f').reduce((a, i) => a + i.n, 0), protectores: it.filter((i) => i.t === 'p').reduce((a, i) => a + i.n, 0), repetidos: {} });
   return { ahora: isoIn(0), activo: true, tope: 40000, protector_max: 10, temporadas: d.temporadas.map((t) => {
     const cajas = {}; t.niveles.forEach((l) => { cajas[l.n] = { gratis: caja(l.g), premium: caja(l.p) }; });
     if (t.id === 't2') cajas[7].premium.bloques += 500;
     return { id: t.id, niveles: 30, cajas, total_bloques: 27500, total_protectores: 6, jugadores: 0, reclamos: 0, bloques_pagados: 0, protectores_dados: 0 };
   }) };
+})();
+
+// Pase: progreso reportado (44-pase-progreso.sql), datos falsos. t1 con datos y "va lento"; t2 sin el SQL (404).
+const PASE_JUG = (() => {
+  const nom = ['Luna_MX', 'Pixel', 'Ximena', 'Toño', 'Dani Blocks', 'Rafa', 'Cacahuate', 'Mari', 'Nico', 'Sofi', 'Memo', 'Lupita', 'Beto', 'Karla', 'Chuy', 'Ana', 'Iván', 'Vale'];
+  const pais = ['MX', 'MX', 'CO', 'AR', 'MX', 'ES', 'MX', 'PE', 'CL', 'MX', 'MX', 'US', 'MX', 'CO', 'MX', 'MX', 'EC', 'MX'];
+  return nom.map((n, i) => {
+    const nivel = [30, 27, 22, 19, 17, 15, 14, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, null][i];
+    return { id: `0000000${i.toString(16)}-aaaa-4bbb-8ccc-00000000000${i % 10}`, nombre: n, pais: pais[i], premium: i % 3 === 0, plus: i === 0, nivel, xp: nivel == null ? null : nivel * 100 + (i * 37) % 100,
+      reporte: nivel == null ? null : isoIn(-(i % 9) / 2 - 0.1), comprado: i % 3 === 0 ? isoIn(-10 + i / 3) : null, casillas: nivel == null ? 0 : Math.max(0, nivel - 1) + (i % 3 === 0 ? 3 : 0), completo: nivel === 30 };
+  });
+})();
+const PASE_ST = (() => {
+  const dist = []; const pesos = [0, 0, 6, 9, 12, 11, 10, 9, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 2];
+  for (let n = 0; n <= 30; n++) dist.push({ nivel: n, gratis: Math.round(pesos[n] * 1.6), premium: Math.round(pesos[n] * (n > 8 ? 0.7 : 0.25)) });
+  const rep = dist.reduce((a, d) => a + d.gratis + d.premium, 0);
+  const emb = [5, 10, 15, 20, 25, 30].map((k) => ({ nivel: k, jugadores: dist.filter((d) => d.nivel >= k).reduce((a, d) => a + d.gratis + d.premium, 0) }));
+  return { ok: true, temporada: { id: 't1', inicio: '2026-12-15T06:00:00Z', fin: '2027-02-01T06:00:00Z', niveles: 30, plus_niveles: 10, activa: true, dias_total: 47, dias_transcurridos: 22.4 },
+    compradores: { total: 41, plus: 9, gemas: 20500, lista: [] }, reportan: rep, activos: Math.round(rep * 0.62), completaron: { total: 2, pct: Math.round(1000 * 2 / rep) / 10 },
+    distribucion: dist, embudo: emb, medianas_dias: { n10: 11.5, n20: 19.0, n30: 21.5 },
+    ritmo: { esperado: 14.3, mediana: 8, mediana_gratis: 7, mediana_premium: 11, a_tiempo: Math.round(rep * 0.28), atrasados: Math.round(rep * 0.72) } };
 })();
 const RT = [{ id: 'f_lineas', metrica: 'lineas', dif: 'facil', meta: 100, bloques: 500, xp: 100 }, { id: 'm_combos', metrica: 'combos', dif: 'media', meta: 40, bloques: 1200, xp: 250 }, { id: 'd_zen', metrica: 'partidas_zen', dif: 'dificil', meta: 30, bloques: 3000, xp: 500 }];
 const DESAF = {
@@ -74,12 +95,18 @@ const DESAF = {
   stats: [{ semana: '2026-10-19', retos: 3, activos: 300, jugadores: 280, bonus: 90, bloques: 120000, retos: RT, por_reto: { f_lineas: 200, m_combos: 120 } }],
 };
 export const FIX = {
-  routes: ['juego/pases', 'juego/solo-gemas', 'juego/gemas', 'juego/escaparate', 'juego/desafios', 'juego/duelos', 'juego/wrapped', 'juego/premios-semana', 'juego/anuncio-poderes', 'codigos/canjes', 'juego/cumple', 'juego/tienda', 'juego/pagos'],
+  routes: ['juego/pases', 'juego/pases@tpsT:t2', 'juego/solo-gemas', 'juego/gemas', 'juego/escaparate', 'juego/desafios', 'juego/duelos', 'juego/wrapped', 'juego/premios-semana', 'juego/anuncio-poderes', 'codigos/canjes', 'juego/cumple', 'juego/tienda', 'juego/pagos'],
   rpc(fn, body) {
     if (fn === 'admin_panel') return { secciones: { meta: { rev: 1, datos: { origen: 'x', decidido: true } } } };
     if (fn === 'admin_anuncio_poderes') return { config: { activo: true, por_poder: 1 }, hoy: { vistos: 12, dados: 10, vacios: 2 }, d7: { vistos: 80, dados: 70, vacios: 10 }, total: { vistos: 900, dados: 800, vacios: 100 }, por_poder: [{ poder: 'bomb', vistos: 5, dados: 4, vacios: 1 }, { poder: 'lightning', vistos: 7, dados: 6, vacios: 1 }] };
     if (fn === 'admin_solo_gemas') return SOLO;
     if (fn === 'admin_pase_bloques') return PB;
+    if (fn === 'admin_pase_stats') return body.p_temporada === 't1' ? PASE_ST : { __status: 404, body: { code: 'PGRST202', message: 'function not found' } };
+    if (fn === 'admin_pase_jugadores') {
+      const q = (body.p_buscar || '').toLowerCase(); let r = PASE_JUG.filter((j) => !q || j.nombre.toLowerCase().includes(q));
+      const k = { nivel: 'nivel', xp: 'xp' }[body.p_orden]; if (k) r = [...r].sort((a, b) => (b[k] ?? -1) - (a[k] ?? -1));
+      return { ok: true, jugadores: r };
+    }
     if (fn === 'admin_tienda') return TIENDA;
     if (fn === 'admin_desafios') return DESAF;
     return [];

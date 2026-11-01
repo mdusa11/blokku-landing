@@ -1009,3 +1009,21 @@ h1 .v20{font-size:12px;margin-left:10px}
   .tp-bar span{display:none}
   .tp-tb td,.tp-tb th{padding:10px 8px}.tp-tb td:first-child{min-width:0}
 }
+
+/* ===== Pases: cómo va la gente (tps-) ===== */
+.ban.ok{border-color:var(--ok-line);background:var(--ok-soft)}.ban.ok>svg{color:var(--ok)}
+.tps-emb{display:flex;flex-direction:column;gap:9px}
+.tps-er{display:grid;grid-template-columns:64px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:13.5px}
+.tps-el{color:var(--text-2)}.tps-en{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tps-leg{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:13px;margin-bottom:10px}
+.tps-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.tps-sw.g,.tps-bars i.g{background:var(--info)}.tps-sw.p,.tps-bars i.p{background:var(--gold)}
+.tps-chart{display:flex;gap:2px;align-items:flex-end;min-width:0}
+.tps-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center}
+.tps-bars{height:150px;width:100%;display:flex;gap:1px;align-items:flex-end;border-bottom:1px solid var(--border)}
+.tps-bars i{flex:1 1 0;min-width:1px;border-radius:3px 3px 0 0}
+.tps-nv{font-size:11px;color:var(--faint);height:16px;line-height:16px;white-space:nowrap}
+.tps-mds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tps-md{border:1px solid var(--border);border-radius:var(--rad-sm);padding:10px 12px;background:var(--surface-2)}
+.tps-mv{font-size:22px;margin-top:2px}
+@media (max-width:760px){.tps-mds{grid-template-columns:minmax(0,1fr)}.tps-er{grid-template-columns:56px minmax(0,1fr) 76px}.tps-bars{height:120px}}

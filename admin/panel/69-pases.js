@@ -22,6 +22,10 @@ AYUDA['juego/pases'] = {
     '<b>Valor aproximado en Bloques:</b> Bloques que da + cosméticos comunes (3,000), raros (9,000) y épicos (24,000) al precio de la tienda. Los legendarios y míticos no se venden con Bloques, así que no suman. Es una guía para comparar, no un precio real.',
     '<b>Cuánto regresa el premium:</b> las gemas del carril premium contra el precio del pase en gemas; si se cambiara todo el valor en Bloques por gemas al tipo de cambio de la tienda, se suma también.',
     '<b>Para editar</b> gemas, Bloques o fechas usa el botón «Editar en Solo gemas › Pase» de cada temporada.',
+    '<b>Cómo va la gente:</b> por temporada, quién compró el premium, qué tan avanzado va cada jugador (gratis y premium), cuántos ya lo completaron y qué tan difícil se le está haciendo a la gente. <b>El nivel lo reporta el teléfono del jugador</b> (cuando sube de nivel, abre el pase o cierra la temporada, máximo una vez por minuto): es <b>estadística, no dinero</b>. No paga ni abre nada, y un teléfono modificado podría mandar un nivel falso; lo que se cobra (gemas y Bloques) lo valida siempre el servidor aparte.',
+    '<b>Compradores</b> y <b>gemas del pase</b> sí salen de las compras reales del servidor (premium comprado con gemas). <b>Activos</b> = reportaron su nivel en los últimos 7 días. <b>Completado</b> = llegó al último nivel. <b>Medianas de días</b> = días desde que empezó la temporada hasta que el jugador reportó por primera vez el nivel 10, 20 y 30.',
+    '<b>Indicador de dificultad:</b> compara el nivel de la mediana de los jugadores con el nivel esperado hoy (niveles de la temporada × días transcurridos ÷ duración; es decir, llegar al último nivel justo al terminar). Menos de 75 % de lo esperado = va lento (baja XP por nivel o da más XP por misión); entre 75 % y 125 % = va bien. Con menos de 5 jugadores reportando no se juzga.',
+    '<b>Si dice que falta el SQL:</b> hay que correr <span class="mono">44-pase-progreso.sql</span> en Supabase (Escritorio › Blokku › 02-Documentos › Supabase). Mientras no se corra, la app 2.0 no puede reportar y esta sección queda vacía.',
     H_HORA
   ]
 };
@@ -31,6 +35,7 @@ ICP.tpcofre = 'M4 10h16v10H4zM3 6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v4H3zM12 10v4';
 ICP.tpescudo = 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z';
 ICP.tpblq = 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z';
 
+SQLF.pase_stats = '44-pase-progreso.sql';
 var TP = { c: 'ambos', t: 'todas' };
 var TP_RAR = { common: ['Común', '#8a94a6'], rare: ['Raro', '#3b82f6'], epic: ['Épico', '#a855f7'], legendary: ['Legendario', '#f59e0b'], mythic: ['Mítico', '#ec4899'] };
 var TP_PLU = { common: 'Comunes', rare: 'Raros', epic: 'Épicos', legendary: 'Legendarios', mythic: 'Míticos' };
@@ -186,7 +191,7 @@ A.tpEdit = function (el) {
 };
 A.tpCarril = function (el) { TP.c = el.dataset.v; paintPage(); };
 A.tpVer = function (el) { TP.t = el.dataset.v; paintPage(); };
-A.tpReload = function () { rload('solo_gemas'); rload('pase_bloques'); toast('Recargando…', 'info'); };
+A.tpReload = function () { rload('solo_gemas'); rload('pase_bloques'); TPS.d = {}; TPS.j = {}; toast('Recargando…', 'info'); repaint(); };
 
 /* ---------- casillas ---------- */
 function tpDifTxt(d) {
@@ -284,6 +289,143 @@ function tpTotales(ts) {
   return h + '</div>';
 }
 
+
+/* ================= CÓMO VA LA GENTE (44-pase-progreso.sql) =================
+   admin_pase_stats(p_temporada) → {ok, temporada{}, compradores{total,plus,gemas,lista[]}, reportan, activos, completaron{total,pct},
+     distribucion[{nivel,gratis,premium}], embudo[{nivel,jugadores}], medianas_dias{n10,n20,n30}, ritmo{esperado,mediana,mediana_gratis,mediana_premium,a_tiempo,atrasados}}
+   admin_pase_jugadores(p_temporada, p_orden, p_buscar, p_limite) → {ok, jugadores[{id,nombre,pais,premium,plus,nivel,xp,reporte,comprado,casillas,completo}]}
+   El nivel lo reporta el teléfono: es estadística, no dinero. */
+var TPS = { t: null, d: {}, j: {}, orden: 'nivel', q: '', seq: 0 };
+var TPS_ORD = [['nivel', 'Nivel', 'trend'], ['xp', 'XP', 'spark'], ['reporte', 'Último reporte', 'cal'], ['compra', 'Compra', 'store']];
+var TPS_POCOS = 5;
+
+function tpsSinSql(e) { return e && e.code === 'sin_sql'; }
+function tpsTemp(ts, ahora) {
+  var ok = ts.filter(function (t) { return t.srv || t.d; });
+  var sel = ok.filter(function (t) { return t.id === TPS.t; })[0];
+  if (sel) return sel;
+  var en = ok.filter(function (t) { return tpEstado(t, ahora) === 'en curso'; })[0];
+  var pasadas = ok.filter(function (t) { return tpEstado(t, ahora) === 'terminada'; });
+  return en || pasadas[pasadas.length - 1] || ok[0] || null;
+}
+function tpsLoad(id, force) {
+  var o = TPS.d[id];
+  if (o && !force && (o.loading || o.st || o.err)) return o;
+  o = TPS.d[id] = { st: null, err: null, loading: true };
+  rpc('admin_pase_stats', { p_temporada: id }, { nomiss: true }).then(function (r) {
+    if (r && r.ok === false) o.err = { message: 'El servidor no conoce la temporada ' + id };
+    else o.st = r || {};
+  }, function (e) { o.err = e; }).then(function () { o.loading = false; repaint(); });
+  return o;
+}
+function tpsLoadJ(id, force) {
+  var k = id + '|' + TPS.orden + '|' + TPS.q.trim(), o = TPS.j[id];
+  if (o && o.k === k && !force && (o.loading || o.rows || o.err)) return o;
+  var mine = ++TPS.seq;
+  o = TPS.j[id] = { k: k, rows: (o && o.rows) || null, err: null, loading: true, seq: mine };
+  rpc('admin_pase_jugadores', { p_temporada: id, p_orden: TPS.orden, p_buscar: TPS.q.trim() || null, p_limite: 100 }, { nomiss: true }).then(function (r) {
+    if (TPS.j[id].seq !== mine) return; o.rows = (r && r.jugadores) || []; o.err = null;
+  }, function (e) { if (TPS.j[id].seq === mine) o.err = e; }).then(function () { if (TPS.j[id].seq === mine) { o.loading = false; repaint(); } });
+  return o;
+}
+
+/* Veredicto de dificultad: nivel mediano real contra el esperado hoy (llegar al último nivel justo al terminar). */
+function tpsVeredicto(st) {
+  var r = st.ritmo || {}, n = Number(st.reportan) || 0, esp = Number(r.esperado) || 0, med = Number(r.mediana) || 0;
+  var tot = (Number(r.a_tiempo) || 0) + (Number(r.atrasados) || 0), atr = tot ? Number(r.atrasados) / tot : 0;
+  if (n < TPS_POCOS) return { c: 'info', ic: 'info', t: 'Todavía hay pocos datos', d: 'Solo ' + plural(n, 'jugador ha reportado', 'jugadores han reportado') + ' su nivel; con menos de ' + TPS_POCOS + ' no se puede juzgar la dificultad.' };
+  if (esp < 2) return { c: 'info', ic: 'info', t: 'La temporada apenas empieza', d: 'El nivel esperado hoy es ' + esp.toFixed(1).replace('.0', '') + '; espera unos días para comparar el ritmo.' };
+  var ratio = med / esp, det = 'Nivel mediano ' + med.toFixed(1).replace('.0', '') + ' contra ' + esp.toFixed(1).replace('.0', '') + ' esperado hoy (' + Math.round(ratio * 100) + ' %) · ' + Math.round(atr * 100) + ' % de los jugadores va atrasado.';
+  if (ratio < 0.75 || atr > 0.6) return { c: 'warn', ic: 'warn', t: 'Va más lento de lo esperado', d: 'Considera bajar XP por nivel o dar más XP por misión. ' + det };
+  if (ratio > 1.25 && atr < 0.2) return { c: 'info', ic: 'info', t: 'Va más rápido de lo esperado', d: 'La gente lo termina antes de tiempo: considera subir XP por nivel si quieres que dure toda la temporada. ' + det };
+  return { c: 'ok', ic: 'check', t: 'Va bien', d: det };
+}
+
+function tpsBanner(v) { return '<div class="ban' + (v.c === 'ok' ? ' ok' : v.c === 'info' ? ' info' : '') + '">' + ic(v.ic) + '<div class="tx"><b>' + esc(v.t) + '</b>' + esc(v.d) + '</div></div>'; }
+function tpsEmbudo(st) {
+  var n = Number(st.reportan) || 0, L = st.embudo || [];
+  if (!n || !L.length) return '<p class="mut">Todavía nadie ha reportado su nivel.</p>';
+  return '<div class="tps-emb">' + L.map(function (x) {
+    var p = 100 * x.jugadores / n;
+    return '<div class="tps-er"><span class="tps-el">Nivel ' + nf(x.nivel) + '</span><div class="bar"><i style="width:' + Math.max(p > 0 ? 2 : 0, Math.round(p)) + '%"></i></div><span class="tps-en"><b>' + nf(x.jugadores) + '</b> <span class="xs mut">' + Math.round(p) + ' %</span></span></div>';
+  }).join('') + '</div>';
+}
+function tpsDistrib(st) {
+  var L = (st.distribucion || []).filter(function (x) { return x.nivel >= 1; });
+  var max = Math.max.apply(null, L.map(function (x) { return Math.max(x.gratis, x.premium); }).concat([1]));
+  if (!(Number(st.reportan) > 0)) return '<p class="mut">Todavía nadie ha reportado su nivel.</p>';
+  var cols = L.map(function (x) {
+    var tip = 'Nivel ' + x.nivel + ': ' + nf(x.gratis) + ' gratis · ' + nf(x.premium) + ' premium';
+    return '<div class="tps-col" title="' + esc(tip) + '"><div class="tps-bars"><i class="g" style="height:' + (x.gratis ? Math.max(3, Math.round(100 * x.gratis / max)) : 0) + '%"></i><i class="p" style="height:' + (x.premium ? Math.max(3, Math.round(100 * x.premium / max)) : 0) + '%"></i></div><span class="tps-nv">' + (x.nivel === 1 || x.nivel % 5 === 0 ? x.nivel : '') + '</span></div>';
+  }).join('');
+  return '<div class="tps-leg"><span><i class="tps-sw g"></i>Gratis</span><span><i class="tps-sw p"></i>Premium</span><span class="xs mut">Jugadores por nivel (el más alto de cada uno) · el más grande: ' + nf(max) + '</span></div>' +
+    '<div class="tps-chart" role="img" aria-label="Jugadores por nivel, gratis contra premium">' + cols + '</div>';
+}
+function tpsMed(lbl, v) {
+  return '<div class="tps-md"><div class="xs mut">' + esc(lbl) + '</div><div class="tps-mv">' + (v == null ? '<span class="mut">—</span>' : '<b>' + String(v).replace('.0', '') + '</b> <span class="xs mut">' + (Number(v) === 1 ? 'día' : 'días') + '</span>') + '</div></div>';
+}
+function tpsKpis(st) {
+  var c = st.compradores || {}, cp = st.completaron || {}, n = Number(st.reportan) || 0;
+  return '<div class="kpis">' +
+    kpi('user', 'Compraron el premium', nf(c.total), nf(c.plus) + ' con el plus · ' + (n ? Math.round(100 * c.total / n) + ' % de los que reportan' : 'nadie reporta aún')) +
+    kpi('trend', 'Jugadores activos', nf(st.activos), 'Reportaron en los últimos 7 días · ' + nf(n) + ' en total') +
+    kpi('trophy', 'Completaron el pase', (Number(cp.pct) || 0).toString().replace('.', ',') + ' %', nf(cp.total) + (cp.total === 1 ? ' jugador llegó' : ' jugadores llegaron') + ' al último nivel') +
+    kpi('star', 'Ingresos en gemas', nf(c.gemas), 'Gastadas en el premium de esta temporada') + '</div>';
+}
+function tpsRitmo(st) {
+  var r = st.ritmo || {}, t = st.temporada || {}, m = st.medianas_dias || {};
+  return '<div class="tps-mds">' + tpsMed('Mediana al nivel 10', m.n10) + tpsMed('Mediana al nivel 20', m.n20) + tpsMed('Mediana al nivel ' + (t.niveles || 30), m.n30) + '</div>' +
+    '<p class="xs mut" style="margin:10px 0 0">Días desde que empezó la temporada hasta el primer reporte de ese nivel. ' + nf(r.a_tiempo) + ' a tiempo · ' + nf(r.atrasados) + ' atrasados · nivel mediano gratis ' + (r.mediana_gratis == null ? '—' : String(r.mediana_gratis).replace('.0', '')) + ', premium ' + (r.mediana_premium == null ? '—' : String(r.mediana_premium).replace('.0', '')) + '.</p>';
+}
+
+function tpsTabla(o, id) {
+  var R = o.rows || [];
+  var d = '<div class="tw je-d"><table class="tbl"><thead><tr><th>Jugador</th><th class="num">Nivel</th><th class="num">XP</th><th>Último reporte</th><th class="num">Casillas</th><th>Estado</th></tr></thead><tbody>' + R.map(function (j) {
+    return '<tr class="clk" data-a="tpsJug" data-id="' + esc(j.id) + '" tabindex="0" role="link"><td><b>' + jeBandera(j.pais) + esc(j.nombre || 'Jugador') + '</b>' + (j.premium ? ' ' + chipN(j.plus ? 'premium+' : 'premium', 'ok') : '') + '<div class="xs faint mono">' + esc(String(j.id).slice(0, 8)) + '…</div></td>' +
+      '<td class="num">' + (j.nivel == null ? '<span class="mut">—</span>' : '<b>' + nf(j.nivel) + '</b>') + '</td><td class="num">' + (j.xp == null ? '<span class="mut">—</span>' : nf(j.xp)) + '</td>' +
+      '<td class="xs">' + (j.reporte ? '<span title="' + esc(fdt(j.reporte)) + '">' + esc(relT(j.reporte)) + '</span>' : '<span class="mut">nunca reportó</span>') + '</td>' +
+      '<td class="num">' + nf(j.casillas) + '</td><td>' + (j.completo ? chipN('completó', 'ac') : '') + '</td></tr>';
+  }).join('') + '</tbody></table></div>';
+  var m = '<div class="list je-m">' + R.map(function (j) {
+    return '<button type="button" class="li je-li" data-a="tpsJug" data-id="' + esc(j.id) + '"><div class="t"><b>' + jeBandera(j.pais) + esc(j.nombre || 'Jugador') + '</b>' +
+      '<span>' + (j.nivel == null ? 'Sin reporte' : 'Nivel <b>' + nf(j.nivel) + '</b> · ' + nf(j.xp) + ' XP') + (j.premium ? ' · premium' : '') + (j.completo ? ' · completó' : '') + '</span>' +
+      '<span>' + nf(j.casillas) + ' casilla' + (j.casillas === 1 ? '' : 's') + (j.reporte ? ' · ' + esc(relT(j.reporte)) : '') + '</span></div>' + ic('chr') + '</button>';
+  }).join('') + '</div>';
+  return d + m;
+}
+function tpsJugadores(id) {
+  var o = tpsLoadJ(id);
+  var h = '<div class="card sec"><div class="ch">' + ic('user') + '<h3>Jugadores del pase</h3><span class="sub grow">' + (o.rows ? plural(o.rows.length, 'jugador', 'jugadores') + (o.rows.length >= 100 ? ' · los primeros 100' : '') : '') + '</span></div><div class="cb">' +
+    '<div class="row je-fil">' + searchBox('tps_q', TPS.q, 'Buscar por nombre o id…', 'tpsQ') + '<div class="je-seg">' + seg('tpsOrd', TPS.orden, TPS_ORD) + '</div></div>';
+  if (o.err) h += '<div class="mt12">' + rerr({ err: o.err }, 'los jugadores del pase') + '</div>';
+  else if (o.rows == null) h += '<div class="mt12">' + skel(3) + '</div>';
+  else if (!o.rows.length) h += emptyBox('user', TPS.q.trim() ? 'Nadie con ese nombre' : 'Nadie en este pase todavía', TPS.q.trim() ? 'Prueba con otra parte del nombre o con el comienzo del id.' : 'Aparecen cuando un jugador reporta su nivel o compra el premium.');
+  else h += '<div class="mt12' + (o.loading ? ' je-busy' : '') + '">' + tpsTabla(o, id) + '</div>';
+  return h + '<p class="xs mut mt12">Toca a un jugador para abrir su ficha en Jugadores y economía. Casillas = gemas y Bloques que ya cobró de este pase. El nivel lo reporta su teléfono.</p></div></div>';
+}
+function tpsSeccion(ts, ahora) {
+  var t = tpsTemp(ts, ahora);
+  var h = '<div class="card sec tps"><div class="ch">' + ic('trend') + '<h3>Cómo va la gente</h3><span class="sub grow">El nivel lo reporta el teléfono: es estadística, no dinero</span></div><div class="cb">';
+  if (!t) return h + '<p class="mut">No hay temporadas.</p></div></div>';
+  var opts = ts.filter(function (x) { return x.srv || x.d; }).map(function (x) { return [x.id, x.etq + ' · ' + x.nombre]; });
+  h += '<div class="row" style="gap:12px;flex-wrap:wrap;align-items:center"><div class="tp-fl"><span class="xs mut">Temporada</span>' + seg('tpsT', t.id, opts) + '</div>' + tpEstChip(tpEstado(t, ahora)) + '<span class="xs mut">' + esc(tpRelativo(t, ahora)) + '</span></div>';
+  var o = tpsLoad(t.id);
+  if (tpsSinSql(o.err)) return h + emptyBox('db', 'Falta correr ' + SQLF.pase_stats, 'Está en Escritorio › Blokku › 02-Documentos › Supabase. Va después de 43-exclusivos-pase.sql. Hasta entonces la app no puede reportar el progreso y aquí no hay nada que ver.') + '</div></div>';
+  if (o.err) return h + '<div class="mt12">' + rerr({ err: o.err }, 'las estadísticas del pase') + '</div></div></div>';
+  if (!o.st) return h + '<div class="mt12">' + skel(3) + '</div></div></div>';
+  var st = o.st, v = tpsVeredicto(st);
+  h += '<div class="mt12">' + tpsBanner(v) + '</div><div class="mt12">' + tpsKpis(st) + '</div>';
+  h += '<div class="grid g2 mt16"><div class="card"><div class="ch">' + ic('chart') + '<h3>Embudo</h3><span class="sub grow">Cuántos llegan a cada nivel</span></div><div class="cb">' + tpsEmbudo(st) + '</div></div>' +
+    '<div class="card"><div class="ch">' + ic('cal') + '<h3>Tiempo para llegar</h3><span class="sub grow">Medianas</span></div><div class="cb">' + tpsRitmo(st) + '</div></div></div>';
+  h += '<div class="card mt16"><div class="ch">' + ic('chart') + '<h3>Dónde está cada quien</h3><span class="sub grow">Gratis contra premium</span></div><div class="cb">' + tpsDistrib(st) + '</div></div>';
+  h += '<div class="mt16">' + tpsJugadores(t.id) + '</div>';
+  return h + '</div></div>';
+}
+A.tpsT = function (el) { TPS.t = el.dataset.v; TPS.q = ''; repaint(); };
+A.tpsOrd = function (el) { if (TPS.orden === el.dataset.v) return; TPS.orden = el.dataset.v; repaint(); };
+I.tpsQ = debounce(function (el) { TPS.q = el.value; repaint(); }, 300);
+A.tpsJug = function (el) { go('juego/economia', { open: 'je:' + el.dataset.id }); };
+
 /* ---------- vista ---------- */
 function vPases() {
   var o1 = rm('solo_gemas'), o2 = rm('pase_bloques'), d = tpData();
@@ -296,6 +438,6 @@ function vPases() {
   var ts = tpTemps(), ahora = tpAhora();
   var dist = ts.filter(function (t) { return tpNDif(t) > 0; });
   if (dist.length) avisos += '<div class="ban">' + ic('warn') + '<div class="tx"><b>El servidor paga distinto a la app en ' + esc(dist.map(function (t) { return t.etq; }).join(' y ')) + '</b>Las casillas con «Servidor» enseñan lo que de verdad se paga (se cambió en «Solo gemas › Pase» o el JSON de la app ya cambió y falta regenerar los datos).</div></div>';
-  return h + avisos + tpTimeline(ts, ahora) + tpFiltros(ts) + tpTotales(ts) + tpComparativa(ts);
+  return h + avisos + tpTimeline(ts, ahora) + tpsSeccion(ts, ahora) + tpFiltros(ts) + tpTotales(ts) + tpComparativa(ts);
 }
 VIEWS['juego/pases'] = vPases;
