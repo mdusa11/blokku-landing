@@ -317,6 +317,7 @@ function gmResHtml() {
 }
 function gmFicha(j) {
   var h = '<div class="mt16"><h4 style="margin:0 0 10px">' + esc(j.nombre || 'Jugador') + ' <span class="xs mut mono">' + esc(String(j.id).slice(0, 8)) + '…</span></h4>' +
+    '<div class="row mb12"><button class="btn sm" data-a="jeIr" data-id="' + esc(j.id) + '">' + ic('user') + 'Ver economía completa (Bloques, compras, historial)</button></div>' +
     '<div class="kpis">' + kpi('db', 'Saldo', nf(j.saldo), 'Gemas que tiene ahora') + kpi('warn', 'Deuda', nf(j.deuda), 'Se cobra de su siguiente compra') +
     kpi('star', 'Compradas', nf(j.compradas), 'Con compra o regalo del panel') + kpi('gift', 'Gastadas', nf(j.gastadas), 'Desde el inicio') + '</div>' +
     '<p class="mt8"><b>Cosméticos conseguidos con gemas:</b> ' + ((j.items || []).length ? (j.items || []).map(function (i) { return esc(tiNom(i)); }).join(', ') : '<span class="mut">ninguno</span>') + '</p>' +

@@ -366,7 +366,8 @@ function rkOpenDr(id, modo, per, pers) {
       h += rkAjustar(r, D);
       h += '<div class="dsec"><h4>Jugador</h4><div class="col">' +
         '<button class="btn blk" data-a="rkOculto" data-id="' + esc(r.id) + '" data-v="' + (r.oculto ? 0 : 1) + '">' + ic(r.oculto ? 'eye' : 'eyeoff') + (r.oculto ? 'Mostrar jugador' : 'Ocultar jugador') + '</button>' +
-        '<p class="xs mut">' + (r.oculto ? 'Vuelve a aparecer en todas las tablas.' : 'Desaparece de todas las tablas y modos, sin borrar nada.') + '</p></div></div>';
+        '<p class="xs mut">' + (r.oculto ? 'Vuelve a aparecer en todas las tablas.' : 'Desaparece de todas las tablas y modos, sin borrar nada.') + '</p>' +
+        '<button class="btn blk" data-a="jeIr" data-id="' + esc(r.id) + '">' + ic('db') + 'Ver gemas, Bloques y compras</button><p class="xs mut">Su economía completa: saldos, qué ha comprado y su historial.</p></div></div>';
       h += '<div class="dsec"><h4>Renombrar</h4><div class="f" style="margin-bottom:8px"><label for="rk_nn">Nombre nuevo (2 a 16 caracteres)</label>' + inp('rk_nn', '', { max: 16, ph: r.nombre }) + '<div class="hint">Lo ven todos los jugadores en las tablas. «Poner Jugador» es el nombre neutral por si el anterior era ofensivo.</div></div>' +
         '<div class="row"><button class="btn" data-a="rkNombre" data-id="' + esc(r.id) + '">' + ic('edit') + 'Guardar nombre</button><button class="btn" data-a="rkNombre" data-id="' + esc(r.id) + '" data-n="Jugador">Poner «Jugador»</button></div></div>';
       return h;

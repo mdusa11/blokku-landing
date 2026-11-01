@@ -924,3 +924,33 @@ h1 .v20{font-size:12px;margin-left:10px}
 .pkl{max-height:236px;overflow-y:auto}
 .tbl td input.in[type=number]{width:96px;max-width:100%}
 .tbl td .sel{max-width:190px}
+
+/* ---- Jugadores y economía (69-economia-jugador.js) ---- */
+.je-fil{gap:10px;align-items:center;flex-wrap:wrap}
+.je-fil .srch{flex:1 1 220px}
+.je-seg{max-width:100%;overflow-x:auto}
+.je-m{display:none}
+.je-busy{opacity:.6;transition:opacity .15s}
+.je-sort{background:none;border:0;padding:0;font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.je-sort[aria-pressed="true"]{color:var(--accent-ink)}
+.je-sort .chev{width:12px;height:12px;transform:rotate(90deg)}
+.je-li{width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border);cursor:pointer;font:inherit;color:inherit}
+.je-li .t span{display:block;overflow-wrap:anywhere}
+.je-secs{display:flex;flex-direction:column;gap:10px}
+.je-sec{border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.je-h{display:flex;align-items:center;gap:8px;width:100%;padding:11px 12px;background:none;border:0;cursor:pointer;font:inherit;color:inherit;text-align:left;min-height:44px}
+.je-h .chev{width:16px;height:16px;flex:none;color:var(--faint);transition:transform .15s}
+.je-sec.on .je-h .chev{transform:rotate(90deg)}
+.je-ht{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.je-ht svg{width:16px;height:16px;color:var(--faint);flex:none}
+.je-b{padding:0 12px 6px;border-top:1px solid var(--border)}
+.je-r{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.je-r:last-child{border-bottom:0}
+.je-rt{min-width:0;flex:1;overflow-wrap:anywhere}
+.je-rd{flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.je-it{margin-top:4px;font-size:12.5px;color:var(--text-2);overflow-wrap:anywhere}
+.je-niv{padding:0 0 10px;overflow-wrap:anywhere}
+@media (max-width:760px){.je-d{display:none}.je-m{display:block}.je-seg{width:100%}}
+.je-li .t span span{display:inline}
+.je-seg .seg{flex-wrap:wrap}
+.je-li .t span b{display:inline}
