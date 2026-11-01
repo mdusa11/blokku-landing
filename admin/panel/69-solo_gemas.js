@@ -6,6 +6,7 @@
 //   'oferta' {producto,extra,desde,hasta}  'oferta_quitar' {id}  'articulo' {id,gemas?,activo?,orden?}
 //   'moneda' {item,moneda,precio,rareza?}  'temporada' {id,inicio,fin,niveles?,plus_niveles?,activa?}
 //   'niveles' {temporada,gemas:{"4":50,…}}
+// 41-temporadas.sql: interruptor pase_visible (el pase sale en la app de tienda) y la T2.
 SQLF.solo_gemas = '36-solo-gemas.sql';
 FNF.admin_solo_gemas = 'solo_gemas';
 RFN.solo_gemas = 'admin_solo_gemas';
@@ -26,6 +27,7 @@ AYUDA['juego/solo-gemas'] = {
     '<b>Paquetes de gemas (dinero real):</b> el precio en pesos NO se decide aquí: lo fija Google Play / App Store (ahí se pone $19, $49, $99…). El panel solo decide cuántas gemas y cuánto bonus da cada producto. La tabla de pesos que ves es una referencia fija para calcular «gemas por peso».',
     '<b>Ofertas temporales:</b> gemas extra de regalo para un paquete entre dos fechas (máximo 31 días, sin pisarse con otra del mismo paquete, y el extra no puede pasar de las gemas del paquete). La compra recibe lo que diga el panel en el momento de pagar: gemas + bonus + extra vigente.',
     '<b>Pase:</b> el premium y el «premium + niveles» cuestan gemas. Cada nivel del carril premium puede regalar gemas. El total de gemas que devuelve una temporada no puede pasar del DOBLE del precio del premium (el servidor lo bloquea); arriba del 100 % el jugador gana gemas de más al completarlo, por eso te aviso.',
+    '<b>Temporadas del pase:</b> la app 2.0 trae la T1 «Mundo Blokki» (<span class="mono">t1</span>) y la T2 «Noche de Carnaval» (<span class="mono">t2</span>) y enseña la que esté en fechas. Las fechas de aquí mandan sobre las de la app: si la salida se atrasa, mueve las dos (que no se encimen). El interruptor «el pase sale en la app de tienda» nace apagado; enciéndelo el día de la salida. Al terminar una temporada, la app entrega sola lo que el jugador alcanzó y no reclamó (las gemas solo dentro de los días de gracia).',
     '<b>Tienda con dos monedas:</b> cada artículo se vende en Bloques O en gemas. Al pasarlo a gemas deja de venderse en Bloques y al revés. Con Bloques solo se venden temas, piezas, efectos, marcos y títulos. Lo ya comprado nunca se quita.',
     '<b>Precios generales:</b> cada valor tiene un rango (lo permite el servidor) y, en los de gemas, el valor de fábrica por si quieres volver a él.',
     '<b>Historial:</b> cada cambio queda anotado con fecha, qué se pidió y cómo estaba antes.',
@@ -42,6 +44,10 @@ var SG_ACC = { config: 'Ajustes de gemas', tienda_config: 'Precios de la tienda 
 var SG_KEY = { producto: 'Producto', gemas: 'Gemas', bonus: 'Bonus', a_la_venta: 'A la venta', orden: 'Orden', extra: 'Extra', desde: 'Desde', hasta: 'Hasta', id: 'Id', activo: 'Activo', item: 'Artículo', moneda: 'Moneda', precio: 'Precio', rareza: 'Rareza', inicio: 'Inicio', fin: 'Fin', niveles: 'Niveles', plus_niveles: 'Niveles del plus', activa: 'Activa', temporada: 'Temporada', bloques: 'En Bloques', actualizado: 'Actualizado', vendible: 'Se vende' };
 
 function sgRows() { var o = rm('solo_gemas'); return o && o.rows && typeof o.rows === 'object' && !Array.isArray(o.rows) && o.rows.config ? o.rows : null; }
+// Temporadas que trae la app 2.0 (lib/pase/temporada_N.json). Otra id no la enseña hasta que una versión la traiga.
+var SG_APP_TEMPS = ['t1', 't2'];
+function sgTEstado(t, ahora) { var n = new Date(ahora || Date.now()).getTime(); return n < new Date(t.inicio).getTime() ? 'próxima' : n < new Date(t.fin).getTime() ? 'en curso' : 'terminada'; }
+function sgTEncima(ts, id, ini, fin) { return ts.filter(function (t) { return t.id !== id && t.activa && new Date(t.inicio) < new Date(fin) && new Date(ini) < new Date(t.fin); }); }
 function sgCfg(r, k) { return (r.config || []).filter(function (c) { return c.clave === k; })[0]; }
 function sgDraft(id, srv) { return id in SG.d ? SG.d[id] : (srv == null ? '' : String(srv)); }
 function sgOn(id, srv) { return id in SG.on ? SG.on[id] : !!srv; }
@@ -235,6 +241,9 @@ function sgCfgClean(ch, pre) { Object.keys(ch).forEach(function (k) { delete SG.
 function sgPase(r) {
   var list = (r.config || []).filter(function (c) { return c.grupo === 'pase'; });
   var h = '<div class="card sec"><div class="ch">' + ic('trophy') + '<h3>Pase de temporada (se compra con gemas)</h3><span class="sub grow">Precio, interruptores y reglas</span></div><div class="cb">';
+  var vis = sgCfg(r, 'pase_visible');
+  h += vis ? '<p class="xs mut" style="margin:0 0 12px">«El pase sale en la app de tienda»: ' + (vis.valor ? '<b style="color:var(--ok)">ENCENDIDO</b>: los jugadores con la 2.0 ven la temporada en curso.' : '<b>APAGADO</b>: nadie lo ve en la versión de tienda (los APK de prueba sí). Enciéndelo el día que salga la 2.0, con el OK de Manuel.') + '</p>'
+    : '<p class="xs" style="margin:0 0 12px;color:var(--bad)">Falta correr <span class="mono">41-temporadas.sql</span>: sin él la app 2.0 de tienda no enseña el pase.</p>';
   h += list.length ? sgCfgForm(list, 'sg_c_') + '<div class="row mt16">' + sgBtn('sgSavePase', 'pase', 'check', 'Guardar ajustes del pase') + '<span class="xs mut">Te enseño «antes → después» antes de guardar.</span></div>' : '<p class="mut">El servidor no devolvió ajustes del pase.</p>';
   return h + '</div></div>' + sgTemporadas(r) + sgNiveles(r);
 }
@@ -245,6 +254,12 @@ A.sgSavePase = function () {
   if (!showErrs(errs)) return Promise.resolve();
   if (!x.dl.length) { toast('No hay cambios', 'info'); return Promise.resolve(); }
   var warn = [], pp = x.val.pase_precio;
+  if (x.ch.pase_visible === 1) {
+    var ahora = r.ahora || Date.now(), vivas = (r.temporadas || []).filter(function (t) { return t.activa && sgTEstado(t, ahora) === 'en curso'; });
+    warn.push('Desde ahora TODOS los jugadores con la 2.0 ven el pase' + (vivas.length ? ' de «' + esc(vivas[0].id) + '»' : '') + '. Es un cambio en vivo: necesita el OK de Manuel.');
+    if (!vivas.length) warn.push('Ninguna temporada activa está en fechas ahora: el pase no saldrá hasta que empiece una.');
+  }
+  if (x.ch.pase_visible === 0) warn.push('Se esconde el pase para todos (su progreso se guarda y vuelve al encenderlo).');
   if (pp != null) (r.temporadas || []).forEach(function (t) { if (t.total_gemas > 2 * pp) warn.push('La temporada «' + esc(t.id) + '» regala ' + nf(t.total_gemas) + ' gemas en total: con premium a ' + nf(pp) + ' pasa del doble del precio. Tendrás que bajar sus gemas por nivel para volver a guardarlas.'); else if (t.total_gemas > pp) warn.push('La temporada «' + esc(t.id) + '» regala ' + nf(t.total_gemas) + ' gemas y el premium costaría ' + nf(pp) + ': el jugador ganaría gemas de más.'); });
   return sgDo('config', x.ch, 'pase', '¿Cambiar los ajustes del pase?', 'Afecta a todos los jugadores; la app lo ve en unos 30 minutos.', x.dl, 'Pase guardado', { icon: 'trophy', warn: warn }).then(function (ok) { if (ok) sgCfgClean(x.ch, 'sg_c_'); });
 };
@@ -253,13 +268,16 @@ function sgTemporadas(r) {
   var h = '<div class="card sec"><div class="ch">' + ic('cal') + '<h3>Temporadas del pase</h3><span class="sub grow">' + nf(ts.length) + ' en total</span></div><div class="cb">';
   if (!ts.length) h += '<p class="mut">Todavía no hay temporadas. Crea la primera abajo.</p>';
   else h += '<div class="tw"><table class="tbl"><thead><tr><th>Temporada</th><th>Fechas</th><th class="num">Niveles</th><th class="num">Compradores</th><th class="num">Gemas gastadas</th><th class="num">Gemas devueltas</th><th></th></tr></thead><tbody>' + ts.map(function (t) {
-    return '<tr><td><b class="mono">' + esc(t.id) + '</b> ' + (t.activa ? chip('activa', 'ok') : chip('apagada', 'warn')) + '</td><td>' + esc(fdt(t.inicio)) + ' – ' + esc(fdt(t.fin)) + '</td>' +
+    var est = sgTEstado(t, r.ahora), enc = t.activa ? sgTEncima(ts, t.id, t.inicio, t.fin) : [];
+    return '<tr><td><b class="mono">' + esc(t.id) + '</b> ' + (t.activa ? chip('activa', 'ok') : chip('apagada', 'warn')) + ' ' + chipN(est, est === 'en curso' ? 'ok' : '') +
+      (SG_APP_TEMPS.indexOf(t.id) < 0 ? '<div class="xs" style="color:var(--warn,#B7791F)">La app 2.0 no trae esta temporada.</div>' : '') +
+      (enc.length ? '<div class="xs" style="color:var(--warn,#B7791F)">Se encima con ' + enc.map(function (x) { return esc(x.id); }).join(', ') + ': la app enseña la que empezó antes.</div>' : '') + '</td><td>' + esc(fdt(t.inicio)) + ' – ' + esc(fdt(t.fin)) + '</td>' +
       '<td class="num">' + nf(t.niveles) + '<div class="xs mut">+' + nf(t.plus_niveles) + ' del plus</div></td><td class="num">' + nf(t.compradores) + '<div class="xs mut">' + nf(t.plus) + ' con plus</div></td><td class="num">' + nf(t.gemas_gastadas) + '</td><td class="num">' + nf(t.gemas_devueltas) + '</td>' +
       '<td class="num"><div class="row" style="justify-content:flex-end;flex-wrap:wrap"><button class="btn sm" data-a="sgTEdit" data-id="' + esc(t.id) + '">' + ic('edit') + 'Editar</button><button class="btn sm ghost" data-a="sgTNiv" data-id="' + esc(t.id) + '">' + ic('star') + 'Gemas por nivel</button></div></td></tr>';
   }).join('') + '</tbody></table></div>';
   var d0 = SG.d.sg_te_ini == null ? toLocalInput(new Date()) : SG.d.sg_te_ini, d1 = SG.d.sg_te_fin == null ? toLocalInput(addMs(60 * 864e5)) : SG.d.sg_te_fin;
   h += '<h4 style="margin:16px 0 8px">Crear o editar una temporada</h4><div class="grid g2">' +
-    field('sg_te_id', 'Id de la temporada', inp('sg_te_id', sgDraft('sg_te_id', ''), { ph: 'temporada1', di: 'sgIn', max: 20 }), 'Minúsculas, números y _ (hasta 20). Si ya existe, se edita.') +
+    field('sg_te_id', 'Id de la temporada', inp('sg_te_id', sgDraft('sg_te_id', ''), { ph: 't2', di: 'sgIn', max: 20 }), 'Minúsculas, números y _ (hasta 20). La app 2.0 trae <b>t1</b> y <b>t2</b>. Si ya existe, se edita.') +
     field('sg_te_niv', 'Niveles', inp('sg_te_niv', sgDraft('sg_te_niv', '30'), { type: 'number', mode: 'numeric', min: 2, di: 'sgIn' }), 'De 2 a 100.') +
     field('sg_te_ini', 'Empieza', inp('sg_te_ini', d0, { type: 'datetime-local', di: 'sgIn' }).replace('class="in"', 'class="in" data-c="sgDate"'), 'Hora de México.') +
     field('sg_te_fin', 'Termina', inp('sg_te_fin', d1, { type: 'datetime-local', di: 'sgIn' }).replace('class="in"', 'class="in" data-c="sgDate"'), 'Hora de México. Máximo 120 días.') +
@@ -286,11 +304,14 @@ A.sgTSave = function () {
   if (!showErrs(errs)) return Promise.resolve();
   var t = (r.temporadas || []).filter(function (x) { return x.id === id; })[0], warn = [];
   if (t && t.compradores > 0) warn.push('La temporada ya tiene ' + nf(t.compradores) + ' compradores; cambiar fechas o niveles les afecta.');
+  if (SG_APP_TEMPS.indexOf(id) < 0) warn.push('La app 2.0 solo trae ' + SG_APP_TEMPS.join(' y ') + ': «' + esc(id) + '» no se verá hasta una versión que la traiga.');
+  var enc = act ? sgTEncima(r.temporadas || [], id, ini, fin) : [];
+  if (enc.length) warn.push('Se encima con ' + enc.map(function (x) { return '«' + esc(x.id) + '» (' + esc(fdt(x.inicio)) + ' – ' + esc(fdt(x.fin)) + ')'; }).join(', ') + ': mientras se encimen, la app enseña la que empezó antes. Mueve también la otra.');
   if (t && niv < t.niveles && Object.keys(t.gemas || {}).some(function (n) { return Number(n) > niv; })) warn.push('Hay gemas puestas en niveles arriba de ' + nf(niv) + '. Vuelve a guardar sus gemas por nivel.');
   var lines = t ? [['Temporada', '<span class="mono">' + esc(id) + '</span>'], ['Fechas', esc(fdt(t.inicio)) + ' – ' + esc(fdt(t.fin)) + ' → <b>' + esc(fdt(ini)) + ' – ' + esc(fdt(fin)) + '</b>'], ['Niveles', nf(t.niveles) + ' → <b>' + nf(niv) + '</b> (+' + nf(t.plus_niveles) + ' → <b>+' + nf(plus) + '</b> del plus)'], ['Activa', (t.activa ? 'Sí' : 'No') + ' → <b>' + (act ? 'Sí' : 'No') + '</b>']]
     : [['Temporada', '<span class="mono">' + esc(id) + '</span> (nueva)'], ['Fechas', esc(fdt(ini)) + ' – ' + esc(fdt(fin))], ['Niveles', nf(niv) + ' + ' + nf(plus) + ' del plus'], ['Activa', act ? 'Sí' : 'No']];
   return sgDo('temporada', { id: id, inicio: ini, fin: fin, niveles: niv, plus_niveles: plus, activa: act }, 'temp', t ? '¿Cambiar esta temporada?' : '¿Crear esta temporada?',
-    act ? 'Mientras esté activa y dentro de fechas, los jugadores podrán comprar su premium con gemas.' : 'Apagada: no se podrá comprar su premium.', lines, 'Temporada guardada', { icon: 'cal', warn: warn })
+    act ? 'Mientras esté activa y dentro de fechas, la app la enseña (si el pase está encendido) y se puede comprar su premium con gemas. La app toma estas fechas en unos 30 minutos.' : 'Apagada: la app de tienda no la enseña y no se puede comprar su premium.', lines, 'Temporada guardada', { icon: 'cal', warn: warn })
     .then(function (ok) { if (ok) { ['sg_te_id', 'sg_te_niv', 'sg_te_plus', 'sg_te_ini', 'sg_te_fin'].forEach(function (s) { delete SG.d[s]; }); delete SG.on.sg_te_act; paintPage(); } });
 };
 
