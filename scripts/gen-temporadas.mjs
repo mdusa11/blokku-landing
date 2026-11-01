@@ -1,4 +1,4 @@
-// Genera admin/panel/datos-temporadas.js (var TPD) con el contenido de los pases de la app:
+// Genera admin/panel/11-datos-temporadas.js (var TPD) con el contenido de los pases de la app:
 // niveles, carril gratis y premium, nombres, rareza y exclusivos de cada cosmético.
 // Lee lib/pase/temporada_*.json, lib/models/cosmetic.dart, lib/paquetes/*.dart,
 // lib/l10n/l10n_data.dart y lib/l10n/generado/app_es.arb de la app.
@@ -79,6 +79,6 @@ for (const id of [...usados].sort()) {
 }
 const out = '/* GENERADO por scripts/gen-temporadas.mjs desde lib/pase/*.json, lib/models, lib/paquetes y el ARB en español de la app. No editar a mano. */\n' +
   'var TPD = ' + JSON.stringify({ temporadas: T, cosm: C }) + ';\n';
-writeFileSync(new URL('../admin/panel/datos-temporadas.js', import.meta.url), out);
+writeFileSync(new URL('../admin/panel/11-datos-temporadas.js', import.meta.url), out);
 console.log(`datos-temporadas.js: ${T.length} temporadas, ${Object.keys(C).length} cosméticos, ${Object.values(C).filter((c) => c.x).length} exclusivos`);
 if (sin.length) { console.log('SIN RESOLVER (' + sin.length + '):\n  ' + sin.join('\n  ')); process.exitCode = 2; }
