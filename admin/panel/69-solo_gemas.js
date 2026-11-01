@@ -7,9 +7,15 @@
 //   'moneda' {item,moneda,precio,rareza?}  'temporada' {id,inicio,fin,niveles?,plus_niveles?,activa?}
 //   'niveles' {temporada,gemas:{"4":50,…}}
 // 41-temporadas.sql: interruptor pase_visible (el pase sale en la app de tienda) y la T2.
+// 42-pase-bloques.sql: Bloques y protectores por nivel y carril del pase, por admin_pase_bloques(p_clave, p_accion, p_datos):
+//   sin acción → {ahora, activo, tope, protector_max, temporadas:[{id, niveles, cajas:{"n":{gratis:{bloques,protectores,repetidos},premium}}, totales…}]}
+//   'guardar' {temporada, cajas:{"5":{"gratis":{"bloques":0,"protectores":1}}, …}} (solo las casillas que cambian).
 SQLF.solo_gemas = '36-solo-gemas.sql';
 FNF.admin_solo_gemas = 'solo_gemas';
 RFN.solo_gemas = 'admin_solo_gemas';
+SQLF.pase_bloques = '42-pase-bloques.sql';
+FNF.admin_pase_bloques = 'pase_bloques';
+RFN.pase_bloques = 'admin_pase_bloques';
 N20['juego/solo-gemas'] = 1;
 (function () {
   var g = NAV.filter(function (x) { return x.k === 'juego'; })[0];
@@ -27,6 +33,7 @@ AYUDA['juego/solo-gemas'] = {
     '<b>Paquetes de gemas (dinero real):</b> el precio en pesos NO se decide aquí: lo fija Google Play / App Store (ahí se pone $19, $49, $99…). El panel solo decide cuántas gemas y cuánto bonus da cada producto. La tabla de pesos que ves es una referencia fija para calcular «gemas por peso».',
     '<b>Ofertas temporales:</b> gemas extra de regalo para un paquete entre dos fechas (máximo 31 días, sin pisarse con otra del mismo paquete, y el extra no puede pasar de las gemas del paquete). La compra recibe lo que diga el panel en el momento de pagar: gemas + bonus + extra vigente.',
     '<b>Pase:</b> el premium y el «premium + niveles» cuestan gemas. Cada nivel del carril premium puede regalar gemas. El total de gemas que devuelve una temporada no puede pasar del DOBLE del precio del premium (el servidor lo bloquea); arriba del 100 % el jugador gana gemas de más al completarlo, por eso te aviso.',
+    '<b>Bloques y protectores del pase:</b> cada casilla del carril gratis y del premium puede dar Bloques (los del cofre van sumados) y protectores de racha. Los paga el SERVIDOR al reclamar, una vez por casilla (también entre cuentas unidas), el premium solo a quien lo pagó con gemas, el nivel tiene que ser alcanzable por calendario y hay un tope por temporada. No cuentan para el tope de partidas por hora o por día. Si cambias un valor, el jugador recibe el de aquí (y su botín lo enseña), pero la casilla en la app sigue enseñando el de su versión: úsalo para corregir, no para cambiar la temporada a diario. Los «repetidos» (Bloques por un cosmético que ya tenía) solo se pagan si el servidor sabe que lo tenía.',
     '<b>Temporadas del pase:</b> la app 2.0 trae la T1 «Mundo Blokki» (<span class="mono">t1</span>) y la T2 «Noche de Carnaval» (<span class="mono">t2</span>) y enseña la que esté en fechas. Las fechas de aquí mandan sobre las de la app: si la salida se atrasa, mueve las dos (que no se encimen). El interruptor «el pase sale en la app de tienda» nace apagado; enciéndelo el día de la salida. Al terminar una temporada, la app entrega sola lo que el jugador alcanzó y no reclamó (las gemas solo dentro de los días de gracia).',
     '<b>Tienda con dos monedas:</b> cada artículo se vende en Bloques O en gemas. Al pasarlo a gemas deja de venderse en Bloques y al revés. Con Bloques solo se venden temas, piezas, efectos, marcos y títulos. Lo ya comprado nunca se quita.',
     '<b>Precios generales:</b> cada valor tiene un rango (lo permite el servidor) y, en los de gemas, el valor de fábrica por si quieres volver a él.',
@@ -40,8 +47,8 @@ var SG = { saving: '', tab: 'paq', d: {}, on: {}, q: '', lim: 40, tsel: '', hn: 
 var sgPesos = { blokku_gemas_80: 19, blokku_gemas_210: 49, blokku_gemas_450: 99, blokku_gemas_950: 199, blokku_gemas_2000: 399 };
 var SG_GEM = '#4497F5', SG_BLQ = '#D4A017';
 var SG_TABS = [['paq', 'Paquetes y ofertas', 'store'], ['pase', 'Pase', 'trophy'], ['tienda', 'Tienda', 'gift'], ['precios', 'Precios generales', 'edit'], ['hist', 'Historial', 'history']];
-var SG_ACC = { config: 'Ajustes de gemas', tienda_config: 'Precios de la tienda en Bloques', paquete: 'Paquete de gemas', oferta: 'Oferta nueva', oferta_quitar: 'Oferta quitada', articulo: 'Artículo con gemas', moneda: 'Cambio de moneda', temporada: 'Temporada del pase', niveles: 'Gemas por nivel del pase' };
-var SG_KEY = { producto: 'Producto', gemas: 'Gemas', bonus: 'Bonus', a_la_venta: 'A la venta', orden: 'Orden', extra: 'Extra', desde: 'Desde', hasta: 'Hasta', id: 'Id', activo: 'Activo', item: 'Artículo', moneda: 'Moneda', precio: 'Precio', rareza: 'Rareza', inicio: 'Inicio', fin: 'Fin', niveles: 'Niveles', plus_niveles: 'Niveles del plus', activa: 'Activa', temporada: 'Temporada', bloques: 'En Bloques', actualizado: 'Actualizado', vendible: 'Se vende' };
+var SG_ACC = { config: 'Ajustes de gemas', tienda_config: 'Precios de la tienda en Bloques', paquete: 'Paquete de gemas', oferta: 'Oferta nueva', oferta_quitar: 'Oferta quitada', articulo: 'Artículo con gemas', moneda: 'Cambio de moneda', temporada: 'Temporada del pase', niveles: 'Gemas por nivel del pase', pase_bloques: 'Bloques y protectores del pase' };
+var SG_KEY = { producto: 'Producto', gemas: 'Gemas', bonus: 'Bonus', a_la_venta: 'A la venta', orden: 'Orden', extra: 'Extra', desde: 'Desde', hasta: 'Hasta', id: 'Id', activo: 'Activo', item: 'Artículo', moneda: 'Moneda', precio: 'Precio', rareza: 'Rareza', inicio: 'Inicio', fin: 'Fin', niveles: 'Niveles', plus_niveles: 'Niveles del plus', activa: 'Activa', temporada: 'Temporada', bloques: 'En Bloques', actualizado: 'Actualizado', vendible: 'Se vende', cajas: 'Casillas' };
 
 function sgRows() { var o = rm('solo_gemas'); return o && o.rows && typeof o.rows === 'object' && !Array.isArray(o.rows) && o.rows.config ? o.rows : null; }
 // Temporadas que trae la app 2.0 (lib/pase/temporada_N.json). Otra id no la enseña hasta que una versión la traiga.
@@ -86,11 +93,12 @@ I.sgIn = function (el) { SG.d[el.id] = el.value; sgLive(el.id); };
 C.sgTog = function (el) { SG.on[el.id] = el.checked; };
 C.sgDate = function (el) { SG.d[el.id] = el.value; };
 A.sgTab = function (el) { SG.tab = el.dataset.v; paintPage(); };
-A.sgReload = function () { SG.d = {}; SG.on = {}; rload('solo_gemas'); toast('Recargando…', 'info'); };
+A.sgReload = function () { SG.d = {}; SG.on = {}; rload('solo_gemas'); if (RM.pase_bloques) rload('pase_bloques'); toast('Recargando…', 'info'); };
 function sgLive(id) {
   var m;
   if ((m = /^(sg_p_.+)_[gbo]$/.exec(id))) { var r = sgRows(); if (!r) return; var pr = m[1].slice(5), p = (r.paquetes || []).filter(function (x) { return x.producto === pr; })[0], e = $('#' + m[1] + '_pv'); if (p && e) e.innerHTML = sgPackPrev(p, m[1]); }
   else if (/^sg_nv_/.test(id)) sgNvTot();
+  else if (/^sg_pb_/.test(id)) sgPbTot();
 }
 
 /* ---------- paquetes ---------- */
@@ -245,7 +253,7 @@ function sgPase(r) {
   h += vis ? '<p class="xs mut" style="margin:0 0 12px">«El pase sale en la app de tienda»: ' + (vis.valor ? '<b style="color:var(--ok)">ENCENDIDO</b>: los jugadores con la 2.0 ven la temporada en curso.' : '<b>APAGADO</b>: nadie lo ve en la versión de tienda (los APK de prueba sí). Enciéndelo el día que salga la 2.0, con el OK de Manuel.') + '</p>'
     : '<p class="xs" style="margin:0 0 12px;color:var(--bad)">Falta correr <span class="mono">41-temporadas.sql</span>: sin él la app 2.0 de tienda no enseña el pase.</p>';
   h += list.length ? sgCfgForm(list, 'sg_c_') + '<div class="row mt16">' + sgBtn('sgSavePase', 'pase', 'check', 'Guardar ajustes del pase') + '<span class="xs mut">Te enseño «antes → después» antes de guardar.</span></div>' : '<p class="mut">El servidor no devolvió ajustes del pase.</p>';
-  return h + '</div></div>' + sgTemporadas(r) + sgNiveles(r);
+  return h + '</div></div>' + sgTemporadas(r) + sgNiveles(r) + sgPaseBloques();
 }
 A.sgSavePase = function () {
   var r = sgRows(); if (!r || SG.saving) return Promise.resolve();
@@ -367,6 +375,100 @@ A.sgNvSave = function () {
     'Se REEMPLAZAN las gemas de la temporada «' + t.id + '». Quien compre el premium las reclamará nivel por nivel (una vez). Lo ya reclamado no se quita.',
     [['Temporada', '<span class="mono">' + esc(t.id) + '</span>'], ['Total de gemas', nf(antes) + ' → <b>' + nf(tot) + '</b>'], ['Niveles con gemas', nf(conGemas) + ' de ' + nf(t.niveles)], ['El jugador recupera', '<b>' + nf(tot) + ' de ' + nf(precio) + '</b> gemas (' + (precio ? Math.round(100 * tot / precio) : 0) + ' %)']], 'Gemas por nivel guardadas', { icon: 'star', warn: warn })
     .then(function (ok) { if (ok) sgNvClear(); });
+};
+
+/* bloques y protectores por nivel (42-pase-bloques.sql) */
+function sgPbRows() { var o = rm('pase_bloques'); return o && o.rows && typeof o.rows === 'object' && !Array.isArray(o.rows) && o.rows.temporadas ? o.rows : null; }
+function sgPbSel(r) { var ts = r.temporadas || []; return ts.filter(function (t) { return t.id === SG.pbsel; })[0] || ts.filter(function (t) { return t.id === SG.tsel; })[0] || ts[0] || null; }
+var SG_PB_C = [['g', 'gratis', 'Gratis'], ['p', 'premium', 'Premium']];
+function sgPbSrv(t, n, c, k) { var x = ((t.cajas || {})[String(n)] || {})[c]; return x ? Number(x[k]) || 0 : 0; }
+function sgPbRep(t, n, c) { var x = ((t.cajas || {})[String(n)] || {})[c], m = x && x.repetidos || {}, s = 0; Object.keys(m).forEach(function (k) { s += Number(m[k]) || 0; }); return s; }
+// Lo escrito en el formulario: {n: {g: {b, p}, p: {b, p}}} (null = inválido) y las casillas que cambian.
+function sgPbVals(t) {
+  var out = {}, cambios = {}, bad = [], tb = 0, tp = 0, lines = [];
+  for (var n = 1; n <= t.niveles; n++) {
+    SG_PB_C.forEach(function (c) {
+      var sb = sgPbSrv(t, n, c[1], 'bloques'), sp = sgPbSrv(t, n, c[1], 'protectores');
+      var b = sgInt(sgDraft('sg_pb_' + n + '_' + c[0] + '_b', sb), 0, 100000), p = sgInt(sgDraft('sg_pb_' + n + '_' + c[0] + '_p', sp), 0, 5);
+      if (b == null) bad.push(['sg_pb_' + n + '_' + c[0] + '_b', 'Nivel ' + n + ' ' + c[2].toLowerCase() + ': Bloques, un entero de 0 a 100,000.']);
+      if (p == null) bad.push(['sg_pb_' + n + '_' + c[0] + '_p', 'Nivel ' + n + ' ' + c[2].toLowerCase() + ': protectores, un entero de 0 a 5.']);
+      if (b == null || p == null) return;
+      tb += b; tp += p;
+      if (b !== sb || p !== sp) {
+        (cambios[String(n)] = cambios[String(n)] || {})[c[1]] = { bloques: b, protectores: p };
+        lines.push(['Nivel ' + n + ' ' + c[2].toLowerCase(), nf(sb) + ' Bloques · ' + nf(sp) + ' prot. → <b>' + nf(b) + ' Bloques · ' + nf(p) + ' prot.</b>']);
+      }
+    });
+  }
+  return { cambios: cambios, bad: bad, tb: tb, tp: tp, lines: lines };
+}
+function sgPbTot() {
+  var r = sgPbRows(), t = r && sgPbSel(r), e = $('#sg_pb_tot'); if (!t || !e) return;
+  var v = sgPbVals(t), tope = r.tope || 0, antes = t.total_bloques || 0, nc = v.lines.length;
+  var h = '<b style="font-size:16px">Total: ' + nf(v.tb) + ' Bloques y ' + nf(v.tp) + ' protectores</b> · antes ' + nf(antes) + ' Bloques y ' + nf(t.total_protectores || 0) + ' protectores · ' + (nc ? '<b>' + nf(nc) + ' casilla' + (nc === 1 ? '' : 's') + ' por guardar</b>' : 'sin cambios');
+  if (v.bad.length) h += '<div style="color:var(--bad);margin-top:4px">' + esc(v.bad[0][1]) + (v.bad.length > 1 ? ' (y ' + nf(v.bad.length - 1) + ' más)' : '') + '</div>';
+  if (v.tb > tope) h += '<div style="color:var(--bad);margin-top:4px"><b>Bloqueado:</b> pasa del tope por temporada (' + nf(tope) + ', «Máximo de Bloques que paga el pase» arriba). Baja ' + nf(v.tb - tope) + ' Bloques o sube el tope.</div>';
+  if (v.tp > 30) h += '<div style="color:var(--bad);margin-top:4px"><b>Bloqueado:</b> más de 30 protectores en la temporada.</div>';
+  else if (antes > 0 && Math.abs(v.tb - antes) / antes > 0.5) h += '<div style="color:var(--warn,#B7791F);margin-top:4px"><b>Ojo:</b> el total cambia más de la mitad (' + nf(antes) + ' → ' + nf(v.tb) + ').</div>';
+  e.innerHTML = h;
+  var b = $('#sg_pb_btn'); if (b) b.disabled = !!(v.bad.length || v.tb > tope || v.tp > 30 || !nc || SG.saving);
+}
+function sgPaseBloques() {
+  var o = rm('pase_bloques'), r = sgPbRows();
+  var h = '<div class="card sec"><div class="ch">' + ic('gift') + '<h3>Bloques y protectores por nivel</h3><span class="sub grow">Lo que paga el servidor en cada casilla (gratis y premium)</span></div><div class="cb">';
+  if (o && o.err && o.err.code === 'sin_sql') return h + '<p class="xs" style="margin:0;color:var(--bad)">Falta correr <span class="mono">42-pase-bloques.sql</span>: hasta entonces el pase <b>no paga</b> sus Bloques ni protectores (la app 2.0 los deja pendientes y los cobra cuando el servidor lo tenga).</p></div></div>';
+  if (o && o.err) return h + rerr(o, 'los Bloques del pase') + '</div></div>';
+  if (!r) return h + '<p class="mut">Cargando…</p></div></div>';
+  var ts = r.temporadas || [], t = sgPbSel(r);
+  h += '<p class="xs mut" style="margin:0 0 10px">' + (r.activo ? '<b style="color:var(--ok)">Pagando</b>' : '<b style="color:var(--bad)">APAGADO</b> (interruptor «El pase paga sus Bloques y protectores» o la tienda apagada): nadie recibe nada, la app lo reintenta después') +
+    ' · tope por jugador y temporada <b>' + nf(r.tope) + '</b> Bloques · protectores guardados máximo <b>' + nf(r.protector_max) + '</b> (lo que no cabe se pierde, como en los premios semanales).</p>';
+  if (!t) return h + '<p class="mut">No hay temporadas.</p></div></div>';
+  h += '<div class="row" style="flex-wrap:wrap;margin-bottom:12px"><label for="sg_pbsel" class="xs mut">Temporada</label>' + sel('sg_pbsel', t.id, ts.map(function (x) { return [x.id, x.id + ' (' + nf(x.niveles) + ' niveles)']; }), { dc: 'sgPbTSel' }) +
+    '<span class="xs mut">' + nf(t.jugadores) + ' jugadores han cobrado ' + nf(t.reclamos) + ' casillas: ' + nf(t.bloques_pagados) + ' Bloques y ' + nf(t.protectores_dados) + ' protectores.</span></div>' +
+    '<div class="ban info" style="margin:0 0 12px">' + ic('info') + '<div class="tx"><b>La casilla en la app enseña lo de su versión</b>Si cambias un valor, el jugador recibe el de aquí y su botín lo enseña, pero la casilla sigue mostrando el de la app. Úsalo para corregir. Lo ya cobrado no cambia. «Repetido» = Bloques extra si ya tenía el cosmético de la casilla (solo si el servidor lo puede comprobar); no se edita aquí.</div></div>' +
+    '<div class="tw"><table class="tbl"><thead><tr><th class="num">Nivel</th><th class="num">Gratis · Bloques</th><th class="num">Gratis · prot.</th><th class="num">Premium · Bloques</th><th class="num">Premium · prot.</th><th class="num">Repetido (hasta)</th></tr></thead><tbody>';
+  function celda(id, v, w) { return '<td class="num"><div class="f" id="f_' + id + '" style="margin:0">' + inp(id, sgDraft(id, v), { type: 'number', mode: 'numeric', min: 0, di: 'sgIn' }).replace('class="in"', 'class="in" style="width:' + w + 'px" aria-label="' + id + '"') + '</div></td>'; }
+  for (var n = 1; n <= t.niveles; n++) {
+    var rg = sgPbRep(t, n, 'gratis'), rp = sgPbRep(t, n, 'premium');
+    h += '<tr><td class="num"><b>' + n + '</b></td>' +
+      celda('sg_pb_' + n + '_g_b', sgPbSrv(t, n, 'gratis', 'bloques'), 100) + celda('sg_pb_' + n + '_g_p', sgPbSrv(t, n, 'gratis', 'protectores'), 64) +
+      celda('sg_pb_' + n + '_p_b', sgPbSrv(t, n, 'premium', 'bloques'), 100) + celda('sg_pb_' + n + '_p_p', sgPbSrv(t, n, 'premium', 'protectores'), 64) +
+      '<td class="num xs mut">' + (rg || rp ? (rg ? 'gratis ' + nf(rg) : '') + (rg && rp ? '<br>' : '') + (rp ? 'premium ' + nf(rp) : '') : '—') + '</td></tr>';
+  }
+  h += '</tbody></table></div><div id="sg_pb_tot" style="margin:14px 0"></div><div class="row"><button class="btn pri" id="sg_pb_btn" data-a="sgPbSave"' + (SG.saving ? ' disabled' : '') + '>' + (SG.saving === 'pb' ? '<span class="spin"></span>' : ic('check')) + 'Guardar Bloques y protectores</button><button class="btn sm ghost" data-a="sgPbReset">Deshacer lo escrito</button></div>';
+  setTimeout(sgPbTot, 0);
+  return h + '</div></div>';
+}
+function sgPbClear() { Object.keys(SG.d).forEach(function (k) { if (/^sg_pb_/.test(k)) delete SG.d[k]; }); }
+C.sgPbTSel = function (el) { SG.pbsel = el.value; sgPbClear(); paintPage(); };
+A.sgPbReset = function () { sgPbClear(); paintPage(); };
+A.sgPbSave = function () {
+  var r = sgPbRows(); if (!r || SG.saving) return Promise.resolve();
+  var t = sgPbSel(r); if (!t) return Promise.resolve();
+  var v = sgPbVals(t), errs = {};
+  if (v.bad.length) { errs[v.bad[0][0]] = v.bad[0][1] + (v.bad.length > 1 ? ' Hay ' + nf(v.bad.length - 1) + ' más.' : ''); showErrs(errs); return Promise.resolve(); }
+  if (v.tb > r.tope) { toast('El total (' + nf(v.tb) + ') pasa del tope por temporada (' + nf(r.tope) + ')', 'bad'); return Promise.resolve(); }
+  if (v.tp > 30) { toast('Máximo 30 protectores por temporada', 'bad'); return Promise.resolve(); }
+  if (!v.lines.length) { toast('No hay cambios', 'info'); return Promise.resolve(); }
+  var antes = t.total_bloques || 0, warn = [];
+  if (antes > 0 && Math.abs(v.tb - antes) / antes > 0.5) warn.push('El total de la temporada pasa de ' + nf(antes) + ' a ' + nf(v.tb) + ' Bloques. Es un cambio muy grande.');
+  if (t.reclamos > 0) warn.push('Ya hay ' + nf(t.reclamos) + ' casillas cobradas en esta temporada: lo cobrado no cambia y quien ya la cobró no recibe la diferencia.');
+  var lines = [['Temporada', '<span class="mono">' + esc(t.id) + '</span>']].concat(v.lines.slice(0, 12));
+  if (v.lines.length > 12) lines.push(['…', 'y ' + nf(v.lines.length - 12) + ' casillas más']);
+  lines.push(['Total', nf(antes) + ' → <b>' + nf(v.tb) + '</b> Bloques · ' + nf(t.total_protectores || 0) + ' → <b>' + nf(v.tp) + '</b> protectores']);
+  return (async function () {
+    if (!await confirmDlg({ title: '¿Cambiar los Bloques y protectores del pase?', text: 'Desde ahora, quien reclame esas casillas recibe lo nuevo. Lo ya cobrado no cambia.', html: cbox(lines), ok: 'Sí, guardar', icon: 'gift' })) return;
+    if (warn.length && !await confirmDlg({ title: 'Ojo, revisa esto antes de seguir', text: 'Hay cosas que podrían salir mal. ¿Seguro que quieres guardarlo así?', html: '<div class="conf-box">' + warn.map(function (w) { return '<div>• ' + w + '</div>'; }).join('') + '</div>', ok: 'Sí, guardar de todos modos', danger: true, icon: 'warn' })) return;
+    SG.saving = 'pb'; paintPage();
+    try {
+      var res = await rpc('admin_pase_bloques', { p_accion: 'guardar', p_datos: { temporada: t.id, cajas: v.cambios } });
+      var o = RM.pase_bloques = RM.pase_bloques || { rows: null };
+      if (res && res.temporadas) { o.rows = res; o.err = null; o.t = Date.now(); } else rload('pase_bloques', true);
+      if (RM.solo_gemas) rload('solo_gemas', true);
+      sgPbClear(); toast('Bloques del pase guardados');
+    } catch (e) { toast('No se pudo: ' + e.message, 'bad'); }
+    SG.saving = ''; paintPage();
+  })();
 };
 
 /* ---------- tienda con dos monedas ---------- */

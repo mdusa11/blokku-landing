@@ -43,7 +43,7 @@ var TI_GRP = [
   ['semanal', 'Premio semanal del ranking', 'trophy', 'Bloques por el puesto que se logró en el ranking Clásico de la semana pasada.'],
   ['topes', 'Límites anti-trampas', 'lock', 'Topes de ganancia por partidas, creíble por segundo y líneas por partida: las completas (max_lineas) y hasta cuántas pagan algo (max_lineas_extra).']
 ];
-var TI_TIPO = { partida: 'Partidas (líneas, combos)', mision: 'Misiones', cofre: 'Cofre diario', racha: 'Bonus de racha', semanal: 'Premio semanal', ajuste: 'Ajustes tuyos', compra: 'Compras en la tienda', protector: 'Protectores comprados', cumple: 'Regalo de cumpleaños', cumple_x2: 'Cumpleaños doble', desafio: 'Desafíos semanales', duelo: 'Duelos', gemas: 'Cambio por gemas', protector_gemas: 'Protectores con gemas', premio_semana: 'Premios de la semana', premio_semana_anula: 'Premios de la semana anulados' };
+var TI_TIPO = { partida: 'Partidas (líneas, combos)', mision: 'Misiones', cofre: 'Cofre diario', racha: 'Bonus de racha', semanal: 'Premio semanal', ajuste: 'Ajustes tuyos', compra: 'Compras en la tienda', protector: 'Protectores comprados', cumple: 'Regalo de cumpleaños', cumple_x2: 'Cumpleaños doble', desafio: 'Desafíos semanales', duelo: 'Duelos', gemas: 'Cambio por gemas', protector_gemas: 'Protectores con gemas', premio_semana: 'Premios de la semana', premio_semana_anula: 'Premios de la semana anulados', pase: 'Pase de temporada (Bloques)' };
 var TI_TIPOS_OK = { 'Tema': 1, 'Estilo de pieza': 1, 'Efecto de línea': 1, 'Marco': 1, 'Título': 1 };
 var TI_RAR_OK = { 'Común': 1, 'Raro': 1, 'Épico': 1 };
 
