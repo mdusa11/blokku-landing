@@ -4,7 +4,7 @@
 // Uso: ADMIN_KEY='bk-…' node scripts/build-admin.mjs
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { COSM, VERS, LOGOS } from './admin-images.mjs';
 import { webcrypto as crypto, createHash, createHmac } from 'node:crypto';
 import { homedir } from 'node:os';
@@ -107,6 +107,24 @@ const inject = 'var SEED_DOC=' + JSON.stringify(SEED) + ';\nvar IMGS=' + JSON.st
 // Solo ella acepta ?sb=http://127.0.0.1:PUERTO para probar contra un Supabase local.
 if (process.env.ADMIN_PREVIEW) writeFileSync(process.env.ADMIN_PREVIEW, app.replace('/*INJECT*/', () => 'var PREVIEW=true;\n' + inject));
 app = app.replace('/*INJECT*/', () => 'var PREVIEW=false;\n' + inject);
+app = app.replace(/\r\n?/g, '\n');
+if (/<\/script/i.test(inject)) { console.error('los datos traen «</script»: rompería la página'); process.exit(1); }
+
+// CSP: solo corren los <script> de este build (por su sha256) y el único manejador inline del
+// panel (onerror="this.remove()"); nada inyectado con innerHTML (onerror=…, javascript:) se
+// ejecuta y los datos solo pueden ir a Supabase. Va en <meta> del login y sigue valiendo para
+// el panel, que se escribe en el mismo documento (document.write).
+const sha = (t) => `'sha256-${createHash('sha256').update(t, 'utf8').digest('base64')}'`;
+const inlineScripts = (h) => [...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const csp = (login) => [
+  "default-src 'none'",
+  `script-src ${[...inlineScripts(app), login].map(sha).join(' ')} 'unsafe-hashes' ${sha('this.remove()')}`,
+  "style-src 'unsafe-inline' https://fonts.googleapis.com",
+  'font-src https://fonts.gstatic.com',
+  "img-src 'self' data: blob: https:",
+  'connect-src https://fngbputjfnwtrcwaabue.supabase.co',
+  "base-uri 'none'", "form-action 'none'", "object-src 'none'",
+].join('; ');
 
 const enc = new TextEncoder();
 const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -119,6 +137,7 @@ const b64 = (u) => Buffer.from(u).toString('base64');
 
 const logoTag = LOGIN_LOGO ? `<img class="lg" alt="" width="64" height="64" src="${LOGIN_LOGO}">` : '<span class="lg"></span>';
 const page = `<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="__CSP__">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0b0d16"><title>Blokku HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -178,6 +197,7 @@ input.in:focus{border-color:#8b7fff;box-shadow:0 0 0 3px rgba(139,127,255,.35)}
 <div class="ft">Acceso cifrado · solo para Manuel</div>
 </main>
 <script>
+if(window.top!==window.self){document.body.textContent='';throw new Error('marco')}
 var D={s:"${b64(salt)}",i:"${b64(iv)}",c:"${b64(ct)}",n:${ITER}};
 var EYE="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z",EYEOFF="M17.94 17.94A10 10 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24M1 1l22 22";
 var $=function(i){return document.getElementById(i)};
@@ -201,6 +221,11 @@ $('f').onsubmit=function(ev){ev.preventDefault();var k=$('k').value;if(!k){bad('
 $('e').textContent='';busy(true,'Abriendo…');
 setTimeout(function(){dec(k).then(function(h){save(k,$('r').checked);show(h)},function(){bad('Clave incorrecta')})},30)};
 </script></body></html>`;
-mkdirSync(new URL('../public/admin/', import.meta.url), { recursive: true });
-writeFileSync(new URL('../public/admin/index.html', import.meta.url), page);
-console.log('public/admin/index.html', page.length, 'bytes');
+const loginJs = inlineScripts(page);
+if (loginJs.length !== 1) { console.error('el login debe tener un solo <script>'); process.exit(1); }
+const final = page.replace('__CSP__', () => csp(loginJs[0]));
+// ADMIN_OUT: escribir en otra ruta (pruebas con clave falsa, scripts/test-admin-csp.mjs).
+const OUT = process.env.ADMIN_OUT ? pathToFileURL(process.env.ADMIN_OUT) : new URL('../public/admin/index.html', import.meta.url);
+mkdirSync(new URL('./', OUT), { recursive: true });
+writeFileSync(OUT, final);
+console.log(fileURLToPath(OUT), final.length, 'bytes');
