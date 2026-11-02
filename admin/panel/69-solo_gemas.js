@@ -137,7 +137,7 @@ function sgPaquetes(r) {
       field(k + '_o', 'Orden', inp(k + '_o', sgDraft(k + '_o', p.orden), { type: 'number', mode: 'numeric', min: 0, di: 'sgIn' }).replace('class="in"', 'class="in" style="width:90px"')) +
       '<div class="f">' + tog(k + '_v', sgOn(k + '_v', p.a_la_venta), 'A la venta', { dc: 'sgTog', on: 'Sí', off: 'No' }) + '</div>' +
       '<button class="btn sm" data-a="sgPackSave" data-p="' + esc(p.producto) + '"' + (SG.saving ? ' disabled' : '') + '>' + ic('check') + 'Guardar</button></div>' +
-      '<div class="xs" id="' + k + '_pv" style="margin-top:8px">' + sgPackPrev(p, k) + '</div></div>';
+      '<div class="xs" id="' + esc(k) + '_pv" style="margin-top:8px">' + sgPackPrev(p, k) + '</div></div>';
   }).join('');
   return h + '</div></div>';
 }

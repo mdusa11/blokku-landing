@@ -113,8 +113,8 @@ function vRanking() {
   h += '<div class="row sec mb12"><div class="seg" role="group">' +
     '<button type="button" data-a="rkTab" data-v="tabla" aria-pressed="' + (f.tab === 'tabla') + '">' + ic('trophy') + 'Tablas</button>' +
     '<button type="button" data-a="rkTab" data-v="sosp" aria-pressed="' + (f.tab === 'sosp') + '">' + ic('warn') + 'Sospechosos <span class="n">' + nS + '</span></button>' +
-    '<button type="button" data-a="rkTab" data-v="hoy" aria-pressed="' + (f.tab === 'hoy') + '">' + ic('user') + 'Entraron hoy <span class="n">' + (RKV.rows ? RKV.total : '…') + '</span></button>' +
-    '<button type="button" data-a="rkTab" data-v="nuevos" aria-pressed="' + (f.tab === 'nuevos') + '">' + ic('plus') + 'Nuevos <span class="n">' + (RKN.rows && RKN.rango === 'hoy' ? RKN.total : '…') + '</span></button></div></div>';
+    '<button type="button" data-a="rkTab" data-v="hoy" aria-pressed="' + (f.tab === 'hoy') + '">' + ic('user') + 'Entraron hoy <span class="n">' + (RKV.rows ? nf(RKV.total) : '…') + '</span></button>' +
+    '<button type="button" data-a="rkTab" data-v="nuevos" aria-pressed="' + (f.tab === 'nuevos') + '">' + ic('plus') + 'Nuevos <span class="n">' + (RKN.rows && RKN.rango === 'hoy' ? nf(RKN.total) : '…') + '</span></button></div></div>';
   if (f.tab === 'hoy') rkVLoad();
   if (f.tab === 'nuevos' || !RKN.rows) rkNLoad();
   h += f.tab === 'sosp' ? rkSospView(S1) : f.tab === 'hoy' ? rkVistosView() : f.tab === 'nuevos' ? rkNuevosView() : rkTablaView(f);
@@ -148,7 +148,7 @@ function rkNuevosView() {
     var P = rkPlat(r.plataforma), dash = '<span class="mut">—</span>';
     h += '<tr class="clk' + (r.sospechoso ? ' sus' : '') + (r.oculto ? ' dim' : '') + '" data-a="rkNOpen" data-id="' + esc(r.id) + '"><td>' + rkName({ nombre: r.nombre, pais: r.pais, oculto: r.oculto, sospechoso: r.sospechoso }) + '</td><td>' + rkFlag(r.pais) + ' ' + esc(rkPais(r.pais)) + '</td><td>' + (P ? ic(P.i) + ' ' + esc(P.n) : dash) + '</td><td class="rk-up">' + (r.modelo ? esc(r.modelo) : dash) + '</td><td class="rk-up mono">' + (r.version_app ? esc(r.version_app) : dash) + '</td><td class="nowrap">' + esc(fdt(r.creado)) + '</td><td class="num">' + (r.partidas ? nf(r.partidas) : dash) + '</td><td class="num">' + (r.mejor_clasico != null ? '<b>' + nf(r.mejor_clasico) + '</b>' : dash) + '</td></tr>';
   });
-  return h + '</tbody></table></div>' + (RKN.total > RKN.rows.length ? '<div class="cb xs mut">Se muestran los primeros ' + RKN.rows.length + ' de ' + nf(RKN.total) + '.</div>' : '') + '</div>';
+  return h + '</tbody></table></div>' + (RKN.total > RKN.rows.length ? '<div class="cb xs mut">Se muestran los primeros ' + nf(RKN.rows.length) + ' de ' + nf(RKN.total) + '.</div>' : '') + '</div>';
 }
 A.rkNRango = function (el) { RKN.rango = el.dataset.v; RKN.rows = null; RKN.err = null; rkNLoad(true); repaint(); };
 A.rkNReload = function () { RKN.rows = null; rkNLoad(true); repaint(); };
@@ -223,7 +223,7 @@ function rkSospView(s) {
   h += '<div class="list" style="border:0;box-shadow:none;border-radius:0">';
   s.list.forEach(function (x) {
     var a = 'data-id="' + esc(x.id) + '" data-m="' + esc(x.modo) + '" data-p="' + esc(x.pers[0]) + '" data-ps="' + esc(x.pers.join(',')) + '"';
-    h += '<div class="li clk rk-s" data-a="rkOpen" ' + a + '><span class="rk-fl">' + rkFlag(x.pais) + '</span><div class="t"><b>' + esc(x.nombre) + (x.oculto ? ' ' + chip('oculto', 'line', 'eyeoff') : '') + '</b><span>' + esc(rkModo(x.modo)) + ' · ' + x.pers.map(rkPerLabel).join(' + ') + ' · ' + esc(relT(x.actualizado)) + '</span></div>' +
+    h += '<div class="li clk rk-s" data-a="rkOpen" ' + a + '><span class="rk-fl">' + rkFlag(x.pais) + '</span><div class="t"><b>' + esc(x.nombre) + (x.oculto ? ' ' + chip('oculto', 'line', 'eyeoff') : '') + '</b><span>' + esc(rkModo(x.modo)) + ' · ' + esc(x.pers.map(rkPerLabel).join(' + ')) + ' · ' + esc(relT(x.actualizado)) + '</span></div>' +
       '<div class="rk-pt"><b>' + nf(x.puntos) + '</b></div><div class="r">' +
       '<button class="btn xs" data-a="rkAprobar" ' + a + '>' + ic('check') + 'Aprobar</button>' +
       '<button class="btn xs dng" data-a="rkBorrar" ' + a + '>' + ic('trash') + 'Borrar</button></div></div>';
@@ -356,7 +356,7 @@ function rkOpenDr(id, modo, per, pers) {
       if (!r) return emptyBox('trophy', 'Este puntaje ya no está', 'Se borró o la tabla se actualizó.');
       var a = 'data-id="' + esc(r.id) + '" data-m="' + esc(D.modo) + '" data-p="' + esc(D.per) + '" data-ps="' + esc(D.pers.join(',')) + '"';
       var h = '<div class="row">' + (r.sospechoso ? chip('sospechoso', 'warn', 'warn') : chip('puntaje normal', 'ok', 'check')) + (r.oculto ? chip('oculto', 'line', 'eyeoff') : chip('visible', 'line', 'eye')) + '</div>' +
-        '<div class="list mt12"><div class="li"><div class="t"><b>' + nf(r.puntos) + ' puntos</b><span>' + esc(rkModo(D.modo)) + ' · ' + D.pers.map(rkPerLabel).join(' + ') + '</span></div></div>' +
+        '<div class="list mt12"><div class="li"><div class="t"><b>' + nf(r.puntos) + ' puntos</b><span>' + esc(rkModo(D.modo)) + ' · ' + esc(D.pers.map(rkPerLabel).join(' + ')) + '</span></div></div>' +
         '<div class="li"><div class="t"><b>Última jugada</b><span>' + esc(fdt(r.actualizado)) + ' · ' + esc(relT(r.actualizado)) + '</span></div></div>' +
         '<div class="li"><div class="t"><b>Se registró</b><span>' + esc(fdt(r.creado)) + '</span></div></div></div>';
       h += rkDetalle(r);

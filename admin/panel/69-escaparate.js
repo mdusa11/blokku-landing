@@ -442,7 +442,7 @@ function teTem(r) {
   var evs = (typeof mxEvs === 'function' ? mxEvs() : []), evId = teVal('te_t_evento', t.evento || '');
   var evList = [['', 'Ninguno (solo por fechas)']].concat(evs.map(function (e) { return [e.id, (ml(e.nombre) || e.id) + ' · ' + (EST_L[winEst(e.activo, e.inicio, e.fin)] || '')]; }));
   if (evId && !evs.some(function (e) { return e.id === evId; })) evList.push([evId, evId + ' (no está en el motor)']);
-  var h = '<div class="card sec"><div class="ch">' + ic('spark') + '<h3>Temporada «Feria»</h3><span class="sub grow">' + (has ? 'Guardada' + (t.evento ? ' · evento ' + t.evento : '') : 'Sin temporada') + '</span></div><div class="cb">' +
+  var h = '<div class="card sec"><div class="ch">' + ic('spark') + '<h3>Temporada «Feria»</h3><span class="sub grow">' + (has ? 'Guardada' + (t.evento ? ' · evento ' + esc(t.evento) : '') : 'Sin temporada') + '</span></div><div class="cb">' +
     '<p class="xs mut" style="margin:0 0 12px">El puesto de la Feria en la tienda: un toldo, papel picado, objetos y paquetes a la vista. Se liga a un evento del motor para que salga y se quite junto con él, y/o a fechas propias.</p>' +
     '<div class="grid g2">' + field('te_t_evento', 'Evento del motor', sel('te_t_evento', evId, evList, { dc: 'teTd' }), 'Opcional. Se carga de «Eventos de juego».') + '</div>' +
     '<h4 style="margin:10px 0 8px">Título</h4>' + teLangs('tt', t.titulo, { td: 1, di: 'teTd', req: 1 }) + '<h4 style="margin:10px 0 8px">Subtítulo</h4>' + teLangs('ts', t.sub, { td: 1, di: 'teTd' }) +

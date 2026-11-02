@@ -158,7 +158,7 @@ function mxMuerteCard() {
   if (!t) { mxMuerteLoad(); return ''; }
   var f = (t.filas || []).slice(0, 10);
   return '<div class="card sec"><div class="ch">' + ic('power') + '<h3>Ranking de Muerte súbita</h3><span class="sub grow">Histórico · ' + plural(t.total || 0, 'jugador', 'jugadores') + '</span><button class="btn sm ghost" data-a="mxMuerteRe">' + ic('refresh') + '</button></div><div class="cb">' +
-    (f.length ? '<div class="list">' + f.map(function (r) { return '<div class="li"><b style="width:28px">' + r.pos + '</b><div class="t"><b>' + esc(r.nombre) + '</b><span class="xs mut">' + esc(r.pais || '') + '</span></div><b>' + nf(r.puntos) + '</b></div>'; }).join('') + '</div>' : '<p class="sm mut">Todavía nadie. Aquí llegan las partidas de Muerte súbita sin otros modificadores de puntos (la del selector de modos o un evento «Muerte súbita» puro). Los sospechosos no salen.</p>') +
+    (f.length ? '<div class="list">' + f.map(function (r) { return '<div class="li"><b style="width:28px">' + nf(r.pos) + '</b><div class="t"><b>' + esc(r.nombre) + '</b><span class="xs mut">' + esc(r.pais || '') + '</span></div><b>' + nf(r.puntos) + '</b></div>'; }).join('') + '</div>' : '<p class="sm mut">Todavía nadie. Aquí llegan las partidas de Muerte súbita sin otros modificadores de puntos (la del selector de modos o un evento «Muerte súbita» puro). Los sospechosos no salen.</p>') +
     '<p class="xs mut mt8">La app 2.0 manda el mejor puntaje de cada semana. Mostrar esta tabla dentro de la app queda para una versión siguiente (ver MEJORAS 2.0).</p></div></div>';
 }
 function mxMuerteLoad() {
@@ -232,7 +232,7 @@ A.mxDet = function (el) {
   var e = mxFind(el.dataset.id); if (!e) return;
   var id = e.id;
   drawer({
-    title: 'Detalle: ' + (ml(e.nombre) || id), sub: esc(mxMetaTxt(e.meta)), live: true,
+    title: 'Detalle: ' + esc(ml(e.nombre) || id), sub: esc(mxMetaTxt(e.meta)), live: true,
     body: function () {
       var d = MX.det[id];
       if (!d) return skel(4);

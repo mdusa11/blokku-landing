@@ -80,7 +80,7 @@ function vServidor() {
   // 1. Ajustes con rango
   var pod = '<h4 class="mt16" style="margin:16px 0 4px">Poderes con los que arranca cada partida</h4><p class="fnote">Cuántos usos de cada poder tiene el jugador al empezar una partida. 0 = ninguno.</p><div class="grid g2">' + SV_POD.map(function (p) {
     var id = 'sv_pod_' + p[0], cur = (aj.poderes_inicio || {})[p[0]];
-    return field(id, p[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: 0, ph: 'De fábrica: ' + p[2], di: 'svIn' }), 'Número de usos, de 0 a 5. ' + (cur != null ? '<b>Ahora:</b> ' + cur + '.' : '<b>Ahora:</b> de fábrica.'));
+    return field(id, p[1], inp(id, svDraft(id, cur), { type: 'number', mode: 'numeric', min: 0, ph: 'De fábrica: ' + p[2], di: 'svIn' }), 'Número de usos, de 0 a 5. ' + (cur != null ? '<b>Ahora:</b> ' + nf(cur) + '.' : '<b>Ahora:</b> de fábrica.'));
   }).join('') + '</div>';
   h += svNumCard('Valores del juego', 'sliders', 'Misiones, XP, reto diario, avisos', SV_AJ, function (k) { return aj[k]; }, 'sv_aj_', 'svSaveAj', pod);
   h += svNumCard('Anuncios entre partidas', 'zap', 'App 1.0.9 o más nueva', SV_AD, function (k) { return aj[k]; }, 'sv_ad_', 'svSaveAd',

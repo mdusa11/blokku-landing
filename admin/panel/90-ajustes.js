@@ -13,7 +13,7 @@ function vAjustes() {
   /* secciones */
   h += '<div class="card mb16"><div class="ch">' + ic('cloud') + '<h3>Tus datos en Supabase</h3><span class="sub">Cada sección guarda sus últimas 30 versiones</span></div>' + ALLSEC.filter(function (n) { return n !== 'meta'; }).map(function (n) {
     var s = DB.s[n]; if (!s) return '';
-    return '<div class="li"><div class="t"><b>' + esc(SECN[n]) + '</b><span>' + plural(secCount(n), 'elemento') + ' · ' + kb(secSize(n)) + ' · versión ' + (s.rev || 0) + (s.at ? ' · cambió ' + ago(s.at) : '') + '</span></div><button class="btn sm" data-a="histOpen" data-n="' + n + '"' + (S.ro ? ' disabled' : '') + '>' + ic('history') + '<span class="hide-sm">Historial</span></button></div>';
+    return '<div class="li"><div class="t"><b>' + esc(SECN[n]) + '</b><span>' + plural(secCount(n), 'elemento') + ' · ' + kb(secSize(n)) + ' · versión ' + nf(s.rev) + (s.at ? ' · cambió ' + ago(s.at) : '') + '</span></div><button class="btn sm" data-a="histOpen" data-n="' + n + '"' + (S.ro ? ' disabled' : '') + '>' + ic('history') + '<span class="hide-sm">Historial</span></button></div>';
   }).join('') + '</div>';
   /* respaldo */
   h += '<div class="grid g2 mb16"><div class="card pad"><h3 style="font-size:15px;font-weight:700">' + ic('down') + ' Exportar respaldo</h3><p class="sm mut mt8">Descarga un archivo con todas las secciones y tus imágenes. Guárdalo donde quieras.</p><button class="btn mt12" data-a="expJson">' + ic('down') + 'Descargar respaldo</button></div>' +
@@ -54,7 +54,7 @@ function histDrawer(n) {
       if (!H.rows.length) return emptyBox('history', 'Todavía no hay versiones anteriores', 'Aparecen en cuanto cambies algo de esta sección.');
       return '<div class="list">' + H.rows.map(function (r) {
         var o = H.open[r.rev];
-        return '<div class="li" style="flex-wrap:wrap"><div class="t"><b>' + esc(fdt(r.creado)) + '</b><span>versión ' + r.rev + ' · ' + kb(r.tam) + ' · ' + ago(r.creado) + '</span></div><div class="r"><button class="btn sm" data-a="histSee" data-n="' + n + '" data-rev="' + r.rev + '">' + ic('eye') + '<span class="hide-sm">Ver cambios</span></button><button class="btn sm" data-a="histRestore" data-n="' + n + '" data-rev="' + r.rev + '">' + ic('history') + 'Restaurar</button></div>' +
+        return '<div class="li" style="flex-wrap:wrap"><div class="t"><b>' + esc(fdt(r.creado)) + '</b><span>versión ' + nf(r.rev) + ' · ' + kb(Number(r.tam) || 0) + ' · ' + ago(r.creado) + '</span></div><div class="r"><button class="btn sm" data-a="histSee" data-n="' + n + '" data-rev="' + Number(r.rev) + '">' + ic('eye') + '<span class="hide-sm">Ver cambios</span></button><button class="btn sm" data-a="histRestore" data-n="' + n + '" data-rev="' + Number(r.rev) + '">' + ic('history') + 'Restaurar</button></div>' +
           (o ? '<div style="flex-basis:100%" class="sm mut">' + (o === 1 ? 'Cargando…' : o.map(function (x) { return '<div>• ' + esc(x) + '</div>'; }).join('')) + '</div>' : '') + '</div>';
       }).join('') + '</div>';
     }

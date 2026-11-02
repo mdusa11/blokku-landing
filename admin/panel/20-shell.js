@@ -39,7 +39,7 @@ function logoImg(cls) { return IMGS.icono ? '<img class="' + (cls || '') + '" al
 function navCount(r) {
   if (r === 'proyecto/pendientes' && DB.ready) { var n = items('pendientes').filter(function (k) { return k.quien === 'Manuel' && k.col !== 'hecho' && !k.bloqueo; }).length; return n ? '<span class="ct">' + n + '</span>' : ''; }
   if (r === 'vivo/avisos') { var a = rows('avisos').filter(function (x) { return avEst(x) === 'activo'; }).length; return a ? '<span class="ct hot">' + a + '</span>' : ''; }
-  if (r === 'juego/ranking') { var rr = RM.rkres && RM.rkres.rows; return rr && rr.sospechosos ? '<span class="ct hot">' + rr.sospechosos + '</span>' : ''; }
+  if (r === 'juego/ranking') { var rr = RM.rkres && RM.rkres.rows; return rr && rr.sospechosos ? '<span class="ct hot">' + nf(rr.sospechosos) + '</span>' : ''; }
   if (r === 'proyecto/errores') { var en = erNuevos(); return en ? '<span class="ct hot">' + en + '</span>' : ''; }
   return '';
 }
@@ -158,7 +158,7 @@ A.syncinfo = function () {
       ALLSEC.forEach(function (n) {
         var x = DB.s[n]; if (!x) return;
         var st = x.err && x.dirty ? chip('Reintentando', 'warn') : x.saving || x.dirty ? chip('Guardando', 'ac') : chip('Guardado', 'ok');
-        h += '<div class="li"><div class="t"><b>' + esc(SECN[n] || n) + '</b><span>' + (x.at ? 'Último cambio ' + ago(x.at) : 'Sin cambios en esta sesión') + ' · versión ' + (x.rev || 0) + '</span></div><div class="r">' + st + '</div></div>';
+        h += '<div class="li"><div class="t"><b>' + esc(SECN[n] || n) + '</b><span>' + (x.at ? 'Último cambio ' + ago(x.at) : 'Sin cambios en esta sesión') + ' · versión ' + nf(x.rev) + '</span></div><div class="r">' + st + '</div></div>';
       });
       return h + '</div>';
     },

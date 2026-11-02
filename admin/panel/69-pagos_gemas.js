@@ -133,7 +133,7 @@ function gmValores(r) {
       var id = 'gm_' + c.clave, cur = gmDraft(id, c.valor);
       var row = field(id, c.nota, inp(id, cur, { type: 'number', mode: 'numeric', min: c.lo, ph: 'De fábrica: ' + nf(c.def), di: 'gmIn' }),
         'Entero de ' + nf(c.lo) + ' a ' + nf(c.hi) + '. <b>Ahora:</b> ' + nf(c.valor) + (c.valor !== c.def ? ' (de fábrica ' + nf(c.def) + ')' : '') + '.' +
-        (GM_PRECIO[c.clave] ? ' <b id="' + id + '_mx" class="mono">' + gmMxn(cur) + '</b>' : ''));
+        (GM_PRECIO[c.clave] ? ' <b id="' + esc(id) + '_mx" class="mono">' + gmMxn(cur) + '</b>' : ''));
       if (GM_OLD.test(c.clave)) old += row; else h += row;
     });
     h += '</div>' + (g[0] === 'precios' ? '<p class="xs mut" style="margin:6px 0 0">El «≈ $ MXN» es solo una guía con ' + GM_PESO + ' gemas por peso (aproximado, no es un precio real).</p>' : '') + '</div></div>';
@@ -164,11 +164,11 @@ function gmPaquetes(r) {
     h += '<div class="tw"><table class="tbl"><thead><tr><th>Producto</th><th class="num">Gemas</th><th class="num">Bonus</th><th class="num">Total</th><th>A la venta</th><th class="num">Orden</th><th class="num">Ventas</th><th></th></tr></thead><tbody>' + ps.map(function (p) {
       var k = 'gm_p_' + p.producto, g = gmDraft(k + '_g', p.gemas), b = gmDraft(k + '_b', p.bonus), o = gmDraft(k + '_o', p.orden);
       return '<tr><td class="mono xs">' + esc(p.producto) + '</td>' +
-        '<td class="num"><label class="sr" for="' + k + '_g">Gemas de ' + esc(p.producto) + '</label>' + inp(k + '_g', g, { type: 'number', mode: 'numeric', min: 1, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:92px"') + '</td>' +
-        '<td class="num"><label class="sr" for="' + k + '_b">Bonus de ' + esc(p.producto) + '</label>' + inp(k + '_b', b, { type: 'number', mode: 'numeric', min: 0, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:92px"') + '</td>' +
+        '<td class="num"><label class="sr" for="' + esc(k) + '_g">Gemas de ' + esc(p.producto) + '</label>' + inp(k + '_g', g, { type: 'number', mode: 'numeric', min: 1, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:92px"') + '</td>' +
+        '<td class="num"><label class="sr" for="' + esc(k) + '_b">Bonus de ' + esc(p.producto) + '</label>' + inp(k + '_b', b, { type: 'number', mode: 'numeric', min: 0, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:92px"') + '</td>' +
         '<td class="num"><b>' + nf((Number(g) || 0) + (Number(b) || 0)) + '</b></td>' +
         '<td>' + tog(k + '_v', gmOn(k + '_v', p.a_la_venta), '', { dc: 'gmTog', on: 'Sí', off: 'No' }) + '</td>' +
-        '<td class="num"><label class="sr" for="' + k + '_o">Orden de ' + esc(p.producto) + '</label>' + inp(k + '_o', o, { type: 'number', mode: 'numeric', min: 0, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:72px"') + '</td>' +
+        '<td class="num"><label class="sr" for="' + esc(k) + '_o">Orden de ' + esc(p.producto) + '</label>' + inp(k + '_o', o, { type: 'number', mode: 'numeric', min: 0, di: 'gmIn' }).replace('class="in"', 'class="in" style="width:72px"') + '</td>' +
         '<td class="num">' + nf(p.ventas) + '</td>' +
         '<td class="num"><button class="btn sm" data-a="gmPackSave" data-p="' + esc(p.producto) + '"' + (GM.saving ? ' disabled' : '') + '>' + ic('check') + 'Guardar</button></td></tr>';
     }).join('') + '</tbody></table></div>';
@@ -232,7 +232,7 @@ function gmMiticos(r) {
     return '<tr><td><b>' + esc(pgPack(m.id)) + '</b><div class="xs mut mono">' + esc(m.id) + '</div></td>' +
       '<td>' + (m.a_la_venta ? chip('sí', 'ok') : chip('no', '')) + '</td>' +
       '<td class="num">' + (m.precio != null ? nf(m.precio) + '<div class="xs mut">' + gmMxn(m.precio) + '</div>' : '—') + '</td>' +
-      '<td><label class="sr" for="' + k + '">Precio propio en gemas de ' + esc(m.id) + '</label>' + inp(k, cur, { type: 'number', mode: 'numeric', min: 10, ph: 'El general', di: 'gmIn' }).replace('class="in"', 'class="in" style="width:110px"') + '</td>' +
+      '<td><label class="sr" for="' + esc(k) + '">Precio propio en gemas de ' + esc(m.id) + '</label>' + inp(k, cur, { type: 'number', mode: 'numeric', min: 10, ph: 'El general', di: 'gmIn' }).replace('class="in"', 'class="in" style="width:110px"') + '</td>' +
       '<td>' + est + '</td><td class="num">' + nf(m.ventas) + '</td>' +
       '<td class="num"><div class="row" style="justify-content:flex-end;flex-wrap:wrap"><button class="btn sm" data-a="gmMitSave" data-id="' + esc(m.id) + '"' + (GM.saving ? ' disabled' : '') + '>' + ic('check') + 'Guardar precio</button>' +
       '<button class="btn sm ghost" data-a="gmMitOculto" data-id="' + esc(m.id) + '" data-v="' + (m.oculto ? 0 : 1) + '"' + (GM.saving ? ' disabled' : '') + '>' + (m.oculto ? 'Volver a ofrecer' : 'Retirar de gemas') + '</button></div></td></tr>';

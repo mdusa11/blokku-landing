@@ -135,7 +135,7 @@ function caListHtml(a) {
     var c = caFind(x.b.destino), iss = caIssue(c, a.fin), loaded = RM.codigos && Array.isArray(RM.codigos.rows);
     var head = '<div class="row sm"><span class="mut">Código</span><span class="code">' + esc(x.b.destino) + '</span>' + (x.b.codigo_auto ? chipN('automático', 'ac') : '') + (loaded ? caChips(c, a.fin) : '<span class="chip line">revisando…</span>') + '</div>';
     if (!loaded || !iss || !live) return head;
-    return '<div class="ban bad" style="margin-top:0">' + ic('warn') + '<div class="tx"><b>' + (live && avEst(a) === 'activo' ? 'Este aviso se ve en la app, pero ' : 'Este aviso saldrá con un código que no sirve: ') + (iss === 'falta' ? 'el código ya no existe' : 'el código ' + caWhyTxt(c, iss, a.fin)) + '</b>' +
+    return '<div class="ban bad" style="margin-top:0">' + ic('warn') + '<div class="tx"><b>' + (live && avEst(a) === 'activo' ? 'Este aviso se ve en la app, pero ' : 'Este aviso saldrá con un código que no sirve: ') + (iss === 'falta' ? 'el código ya no existe' : 'el código ' + esc(caWhyTxt(c, iss, a.fin))) + '</b>' +
       (x.b.codigo_auto ? 'Se generó con este aviso: puedes crear otro igual en un toque.' : 'Quien toque «Canjear» verá el error «caducado».') +
       caFixHtml(c, iss, a.fin, 'caL', 'data-id="' + esc(a.id) + '" data-k="' + x.k + '"')+ '</div></div>';
   }).join('') + '</div>';

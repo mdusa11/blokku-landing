@@ -355,14 +355,14 @@ function tpsDistrib(st) {
   var max = Math.max.apply(null, L.map(function (x) { return Math.max(x.gratis, x.premium); }).concat([1]));
   if (!(Number(st.reportan) > 0)) return '<p class="mut">Todavía nadie ha reportado su nivel.</p>';
   var cols = L.map(function (x) {
-    var tip = 'Nivel ' + x.nivel + ': ' + nf(x.gratis) + ' gratis · ' + nf(x.premium) + ' premium';
-    return '<div class="tps-col" title="' + esc(tip) + '"><div class="tps-bars"><i class="g" style="height:' + (x.gratis ? Math.max(3, Math.round(100 * x.gratis / max)) : 0) + '%"></i><i class="p" style="height:' + (x.premium ? Math.max(3, Math.round(100 * x.premium / max)) : 0) + '%"></i></div><span class="tps-nv">' + (x.nivel === 1 || x.nivel % 5 === 0 ? x.nivel : '') + '</span></div>';
+    var tip = 'Nivel ' + nf(x.nivel) + ': ' + nf(x.gratis) + ' gratis · ' + nf(x.premium) + ' premium';
+    return '<div class="tps-col" title="' + esc(tip) + '"><div class="tps-bars"><i class="g" style="height:' + (x.gratis ? Math.max(3, Math.round(100 * x.gratis / max)) : 0) + '%"></i><i class="p" style="height:' + (x.premium ? Math.max(3, Math.round(100 * x.premium / max)) : 0) + '%"></i></div><span class="tps-nv">' + (x.nivel === 1 || x.nivel % 5 === 0 ? nf(x.nivel) : '') + '</span></div>';
   }).join('');
   return '<div class="tps-leg"><span><i class="tps-sw g"></i>Gratis</span><span><i class="tps-sw p"></i>Premium</span><span class="xs mut">Jugadores por nivel (el más alto de cada uno) · el más grande: ' + nf(max) + '</span></div>' +
     '<div class="tps-chart" role="img" aria-label="Jugadores por nivel, gratis contra premium">' + cols + '</div>';
 }
 function tpsMed(lbl, v) {
-  return '<div class="tps-md"><div class="xs mut">' + esc(lbl) + '</div><div class="tps-mv">' + (v == null ? '<span class="mut">—</span>' : '<b>' + String(v).replace('.0', '') + '</b> <span class="xs mut">' + (Number(v) === 1 ? 'día' : 'días') + '</span>') + '</div></div>';
+  return '<div class="tps-md"><div class="xs mut">' + esc(lbl) + '</div><div class="tps-mv">' + (v == null ? '<span class="mut">—</span>' : '<b>' + esc(String(v).replace('.0', '')) + '</b> <span class="xs mut">' + (Number(v) === 1 ? 'día' : 'días') + '</span>') + '</div></div>';
 }
 function tpsKpis(st) {
   var c = st.compradores || {}, cp = st.completaron || {}, n = Number(st.reportan) || 0;
@@ -375,7 +375,7 @@ function tpsKpis(st) {
 function tpsRitmo(st) {
   var r = st.ritmo || {}, t = st.temporada || {}, m = st.medianas_dias || {};
   return '<div class="tps-mds">' + tpsMed('Mediana al nivel 10', m.n10) + tpsMed('Mediana al nivel 20', m.n20) + tpsMed('Mediana al nivel ' + (t.niveles || 30), m.n30) + '</div>' +
-    '<p class="xs mut" style="margin:10px 0 0">Días desde que empezó la temporada hasta el primer reporte de ese nivel. ' + nf(r.a_tiempo) + ' a tiempo · ' + nf(r.atrasados) + ' atrasados · nivel mediano gratis ' + (r.mediana_gratis == null ? '—' : String(r.mediana_gratis).replace('.0', '')) + ', premium ' + (r.mediana_premium == null ? '—' : String(r.mediana_premium).replace('.0', '')) + '.</p>';
+    '<p class="xs mut" style="margin:10px 0 0">Días desde que empezó la temporada hasta el primer reporte de ese nivel. ' + nf(r.a_tiempo) + ' a tiempo · ' + nf(r.atrasados) + ' atrasados · nivel mediano gratis ' + (r.mediana_gratis == null ? '—' : esc(String(r.mediana_gratis).replace('.0', ''))) + ', premium ' + (r.mediana_premium == null ? '—' : esc(String(r.mediana_premium).replace('.0', ''))) + '.</p>';
 }
 
 function tpsTabla(o, id) {

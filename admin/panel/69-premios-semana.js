@@ -153,8 +153,8 @@ A.psTrSave = async function () {
   out.sort(function (a, b) { return a.desde - b.desde; });
   for (var i = 0; i < out.length; i++) { if (out[i].desde <= prev) { toast('Los tramos se enciman en el lugar ' + out[i].desde, 'warn'); return; } prev = out[i].hasta; }
   if (out.length > 12) { toast('Como mucho 12 tramos', 'warn'); return; }
-  var antes = (r.config.tramos || []).map(function (t) { return psLugar(t) + ': ' + psPremio(t); }).join('<br>') || 'nada';
-  var despues = out.map(function (t) { return psLugar(t) + ': ' + psPremio(t); }).join('<br>') || 'nada';
+  var antes = (r.config.tramos || []).map(function (t) { return esc(psLugar(t) + ': ' + psPremio(t)); }).join('<br>') || 'nada';
+  var despues = out.map(function (t) { return esc(psLugar(t) + ': ' + psPremio(t)); }).join('<br>') || 'nada';
   if (antes === despues) { toast('No hay cambios', 'info'); return; }
   var ok = await confirmDlg({ title: '¿Guardar los premios por lugar?', text: 'Aplica a las semanas que cierren de aquí en adelante.', html: cbox([['Antes', antes], ['Después', '<b>' + despues + '</b>'], ['Semanas cerradas', 'No cambian: guardan lo que daban.']]), ok: 'Sí, guardar', icon: 'trophy' });
   if (!ok) return;

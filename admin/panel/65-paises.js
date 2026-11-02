@@ -78,7 +78,7 @@ function paHistorial(r) {
   var medal = ['🥇', '🥈', '🥉'];
   h += '<div class="tw"><table class="tbl"><thead><tr><th>Semana</th><th>Puesto</th><th>País</th><th class="num">Puntos</th><th class="num">Jugadores</th></tr></thead><tbody>';
   l.forEach(function (x) {
-    h += '<tr><td class="mono">' + esc(x.semana) + '</td><td>' + (medal[x.puesto - 1] || x.puesto) + ' ' + nf(x.puesto) + '</td><td>' + paLabel(x.pais) + '</td><td class="num">' + nf(x.puntos) + '</td><td class="num">' + nf(x.jugadores) + '</td></tr>';
+    h += '<tr><td class="mono">' + esc(x.semana) + '</td><td>' + esc(medal[x.puesto - 1] || x.puesto) + ' ' + nf(x.puesto) + '</td><td>' + paLabel(x.pais) + '</td><td class="num">' + nf(x.puntos) + '</td><td class="num">' + nf(x.jugadores) + '</td></tr>';
   });
   return h + '</tbody></table></div><div class="cb"><span class="xs mut">El campeón (puesto 1) gana la insignia y el título «Campeón de la Copa» para sus jugadores que jugaron esa semana. Los puestos 2 y 3 solo quedan en el historial.</span></div></div>';
 }
