@@ -49,6 +49,7 @@ function jeLoad() {
   }, function (e) { if (mine === JE.seq) JE.err = e; }).then(function () { if (mine === JE.seq) { JE.loading = false; repaint(); } });
 }
 function jeLoadSum() {
+  jeSaLoad();
   rpc('admin_economia_resumen', {}, { nomiss: true }).then(function (r) { JE.sum = r || {}; JE.sumErr = null; }, function (e) { JE.sumErr = e; }).then(function () { repaint(); });
 }
 function jeReload() { JE.rows = null; JE.sum = null; jeLoad(); jeLoadSum(); repaint(); if (JE.f && JE.f.id) jeFicha(JE.f.id, true); }
@@ -74,7 +75,7 @@ function jeKpis(s) {
     kpi('db', 'Bloques en circulación', nf(s.bloques_circulacion), nf(s.con_bloques) + ' jugadores con saldo · ' + nf(s.bloques_ganados) + ' ganados · ' + nf(s.bloques_gastados) + ' gastados') +
     kpi('star', 'Gemas en circulación', nf(s.gemas_circulacion), nf(s.con_gemas) + ' jugadores con saldo · ' + nf(s.gemas_compradas) + ' compradas · ' + nf(s.gemas_gastadas) + ' gastadas' + (s.gemas_deuda ? ' · deuda ' + nf(s.gemas_deuda) : '')) +
     kpi('store', 'Ingresos por gemas', jeUsd(ing.usd) + ' USD', nf(ing.compras) + ' compras de ' + nf(ing.compradores) + ' compradores · ' + nf(ing.reembolsos) + ' reembolsos') +
-    kpi('user', 'Pase premium', nf(s.pase_premium), 'Jugadores con el premium de alguna temporada · ' + nf(s.jugadores) + ' jugadores en total') + '</div>';
+    kpi('user', 'Pase premium', nf(s.pase_premium), 'Jugadores con el premium de alguna temporada · ' + nf(s.jugadores) + ' jugadores en total') + jeSaKpi() + '</div>';
 }
 function jeTops(s) {
   var tb = (s.top_bloques || []).map(function (x) { return { l: jeObj(x.item), v: Number(x.compras) }; });
@@ -92,14 +93,14 @@ function jeTh(k, t, num) {
 function jeTabla(R) {
   var d = '<div class="tw je-d"><table class="tbl"><thead><tr><th>Jugador</th>' + jeTh('bloques', 'Bloques', 1) + jeTh('gastado', 'Gastado', 1) + jeTh('gemas', 'Gemas', 1) + jeTh('dinero', 'Dinero', 1) +
     '<th class="num">Compras</th><th>Actividad</th></tr></thead><tbody>' + R.map(function (j) {
-      return '<tr class="clk" data-a="jeOpen" data-id="' + esc(j.id) + '" tabindex="0" role="link"><td><b>' + jeBandera(j.pais) + jeNom(j) + '</b>' + (j.pase_premium ? ' ' + chipN('pase', 'ok') : '') + '<div class="xs faint mono">' + esc(String(j.id).slice(0, 8)) + '…</div></td>' +
+      return '<tr class="clk" data-a="jeOpen" data-id="' + esc(j.id) + '" tabindex="0" role="link"><td><b>' + jeBandera(j.pais) + jeNom(j) + '</b>' + (j.pase_premium ? ' ' + chipN('pase', 'ok') : '') + jeSaChip(j.id) + '<div class="xs faint mono">' + esc(String(j.id).slice(0, 8)) + '…</div></td>' +
         '<td class="num"><b>' + nf(j.bloques) + '</b><div class="xs mut">ganó ' + nf(j.ganado) + '</div></td><td class="num">' + nf(j.gastado) + '</td>' +
         '<td class="num"><b>' + nf(j.gemas) + '</b><div class="xs mut">compró ' + nf(j.gemas_compradas) + ' · gastó ' + nf(j.gemas_gastadas) + '</div></td>' +
         '<td class="num">' + jeUsdCel(j.dinero_usd) + '</td><td class="num">' + nf(j.compras) + '</td>' +
         '<td class="xs">' + (j.actividad ? '<span title="' + esc(fdt(j.actividad)) + '">' + esc(relT(j.actividad)) + '</span>' : '<span class="mut">—</span>') + '</td></tr>';
     }).join('') + '</tbody></table></div>';
   var m = '<div class="list je-m">' + R.map(function (j) {
-    return '<button type="button" class="li je-li" data-a="jeOpen" data-id="' + esc(j.id) + '"><div class="t"><b>' + jeBandera(j.pais) + jeNom(j) + '</b>' +
+    return '<button type="button" class="li je-li" data-a="jeOpen" data-id="' + esc(j.id) + '"><div class="t"><b>' + jeBandera(j.pais) + jeNom(j) + '</b>' + jeSaChip(j.id) +
       '<span><span style="color:' + JE_BLQ + '"><b>' + nf(j.bloques) + '</b> Bloques</span> · <span style="color:' + JE_GEM + '"><b>' + nf(j.gemas) + '</b> gemas</span></span>' +
       '<span>' + (Number(j.dinero_usd) > 0 ? esc(jeUsd(j.dinero_usd)) + ' USD · ' : '') + nf(j.compras) + (j.compras === 1 ? ' compra' : ' compras') + (j.pase_premium ? ' · pase' : '') + (j.actividad ? ' · ' + esc(relT(j.actividad)) : '') + '</span></div>' + ic('chr') + '</button>';
   }).join('') + '</div>';
@@ -113,15 +114,16 @@ function vEconomia() {
   var s = JE.sum;
   h += s ? jeKpis(s) + jeTops(s) : (JE.sumErr ? '<div class="card">' + emptyBox('warn', 'No se pudo cargar el resumen', JE.sumErr.message, '<button class="btn" data-a="jeReload">Reintentar</button>') + '</div>' : skel(2));
   h += '<div class="card sec mt16"><div class="ch">' + ic('user') + '<h3>Jugadores</h3><span class="sub grow">' + (JE.rows ? plural(JE.rows.length, 'jugador', 'jugadores') + (JE.rows.length >= 200 ? ' · los primeros 200' : '') : '') + '</span></div><div class="cb">' +
-    '<div class="row je-fil">' + searchBox('je_q', JE.q, 'Buscar por nombre o id…', 'jeQ') + '<div class="je-seg">' + seg('jeOrd', JE.orden, JE_ORD) + '</div></div>';
-  if (JE.err) h += '<div class="mt12">' + rerr({ err: JE.err }, 'los jugadores') + '</div>';
+    '<div class="row je-fil">' + searchBox('je_q', JE.q, 'Buscar por nombre o id…', 'jeQ') + (JE.vista === 'sa' ? '' : '<div class="je-seg">' + seg('jeOrd', JE.orden, JE_ORD) + '</div>') + jeSaSeg() + '</div>';
+  if (JE.vista === 'sa') h += jeSaVista();
+  else if (JE.err) h += '<div class="mt12">' + rerr({ err: JE.err }, 'los jugadores') + '</div>';
   else if (JE.rows == null) h += '<div class="mt12">' + skel(4) + '</div>';
   else if (!JE.rows.length) h += emptyBox('user', JE.q.trim() ? 'Nadie con ese nombre' : 'Todavía no hay jugadores', JE.q.trim() ? 'Prueba con otra parte del nombre o con el comienzo del id.' : 'Aparecen cuando alguien se registra en el ranking.');
   else h += '<div class="mt12' + (JE.loading ? ' je-busy' : '') + '">' + jeTabla(JE.rows) + '</div>';
   return h + '</div></div>';
 }
 VIEWS['juego/economia'] = vEconomia;
-I.jeQ = debounce(function (el) { JE.q = el.value; jeLoad(); }, 300);
+I.jeQ = debounce(function (el) { JE.q = el.value; if (JE.vista === 'sa') repaint(); else jeLoad(); }, 300);
 A.jeOrd = function (el) { if (JE.orden === el.dataset.v) return; JE.orden = el.dataset.v; jeLoad(); repaint(); };
 A.jeReload = function () { jeReload(); };
 
@@ -130,7 +132,7 @@ function jeFicha(id, force) {
   var f = JE.f;
   if (!f || f.id !== id || force) f = JE.f = { id: id, d: null, err: null, loading: true };
   else if (f.d || f.loading) return f;
-  f.loading = true;
+  f.loading = true; jeSaFicha(f);
   rpc('admin_economia_jugador', { p_id: id }, { nomiss: true }).then(function (r) { f.d = r; f.err = r ? null : { message: 'Ese jugador no existe' }; }, function (e) { f.err = e; })
     .then(function () { f.loading = false; drawerRefresh(); });
   return f;
@@ -229,7 +231,7 @@ function jeFichaHtml() {
   d.compras_tienda = d.compras_tienda || []; d.gastos_gemas = d.gastos_gemas || []; d.compras_dinero = d.compras_dinero || []; d.entregas_paquetes = d.entregas_paquetes || [];
   d.pase = d.pase || []; d.canjes = d.canjes || []; d.movs_bloques = d.movs_bloques || []; d.movs_gemas = d.movs_gemas || [];
   var P = typeof rkPlat === 'function' ? rkPlat(d.plataforma) : null;
-  var h = '<div class="row">' + (d.oculto ? chipN('oculto del ranking', 'line') : '') + (P ? chipN(P.n, 'line') : '') + (d.modelo ? chipN(d.modelo, 'line') : '') + (d.version_app ? chipN('v' + d.version_app, 'line') : '') +
+  var h = '<div class="row">' + jeSaChipFicha(f) + (d.oculto ? chipN('oculto del ranking', 'line') : '') + (P ? chipN(P.n, 'line') : '') + (d.modelo ? chipN(d.modelo, 'line') : '') + (d.version_app ? chipN('v' + d.version_app, 'line') : '') +
     '<span class="xs mut">Se registró ' + esc(fdt(d.creado, true)) + '</span></div>' +
     '<div class="kpis mt12">' +
     kpi('db', 'Bloques', nf(b.saldo), 'Ganó ' + nf(b.ganado) + ' · gastó ' + nf(b.gastado) + (b.protectores ? ' · ' + nf(b.protectores) + (b.protectores === 1 ? ' protector' : ' protectores') : '')) +
@@ -240,6 +242,7 @@ function jeFichaHtml() {
     jeSec('tienda', 'Compras con Bloques', d.compras_tienda.length, jeSecTienda(d), 'db') +
     jeSec('gastos', 'Gastos con gemas', d.gastos_gemas.length, jeSecGastos(d), 'star') +
     jeSec('dinero', 'Compras con dinero', d.compras_dinero.length + d.entregas_paquetes.length, jeSecDinero(d), 'store') +
+    jeSaSec(f) +
     jeSec('pase', 'Pase de temporada', d.pase.length, jeSecPase(d), 'trophy') +
     jeSec('canjes', 'Códigos canjeados', d.canjes.length, jeSecCanjes(d), 'ticket') +
     jeSec('movb', 'Movimientos de Bloques', d.movs_bloques.length, jeSecMovB(d), 'history') +

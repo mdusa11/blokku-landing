@@ -94,8 +94,32 @@ const DESAF = {
   semanas: [{ semana: '2026-10-26', inicia: isoIn(-3), termina: isoIn(4), actual: true, programada: false, retos: [RT[0], RT[1], RT[2]], cosmetico: null }, { semana: '2026-11-02', inicia: isoIn(4), termina: isoIn(11), actual: false, programada: true, retos: [RT[0]], cosmetico: 'frame_borrado' }],
   stats: [{ semana: '2026-10-19', retos: 3, activos: 300, jugadores: 280, bonus: 90, bloques: 120000, retos: RT, por_reto: { f_lineas: 200, m_combos: 120 } }],
 };
+// Jugadores y economía + Sin anuncios (45): datos falsos. Ids con el mismo formato que los reales.
+const uid = (n) => `0000000${n}-aaaa-4bbb-8ccc-00000000000${n}`;
+const JE_J = [['Luna_MX', 'MX', 1], ['Pixel', 'MX', 0], ['Ximena', 'CO', 1], ['Toño', 'AR', 0], ['Dani Blocks', 'US', 0]].map(([nombre, pais, pase], i) => ({
+  id: uid(i + 1), nombre, pais, visto: isoIn(-i), bloques: 20000 - i * 3000, ganado: 40000 - i * 4000, gastado: 20000 - i * 1000, gemas: 300 - i * 50, gemas_compradas: 600, gemas_gastadas: 300 + i * 50,
+  dinero_usd: i === 0 ? 9.99 : 0, pase_premium: !!pase, compras: 5 - i, actividad: isoIn(-i / 3) }));
+const JE_RES = { bloques_circulacion: 1200000, gemas_circulacion: 8000, con_bloques: 340, con_gemas: 120, bloques_ganados: 3000000, bloques_gastados: 1800000, gemas_compradas: 20000, gemas_gastadas: 12000, gemas_deuda: 0, pase_premium: 41, jugadores: 350,
+  top_bloques: [{ item: 'theme_forest', compras: 30 }], top_gemas: [{ que: 'paquete', id: 'mitico', compras: 12 }], ingresos: { usd: 249.5, compras: 40, compradores: 25, reembolsos: 2, por_producto: [{ producto: 'blokku_gemas_300', usd: 120, compras: 30 }] } };
+const SA_C = (r) => ({ pais: 'MX', fuente: 'rc', tienda: 'PLAY_STORE', pais_tienda: 'MX', comprado: isoIn(-5), precio_usd: 2.99, precio: 59, moneda: 'MXN', reembolsado: null, entorno: 'PRODUCTION', ...r });
+const SA_LISTA = [
+  { jugador: uid(1), nombre: 'Luna_MX', visto: isoIn(0), cuentas: [uid(1), uid(4)], ...SA_C({ comprado: isoIn(-2) }) },
+  { jugador: uid(2), nombre: 'Pixel', visto: isoIn(-1), cuentas: [uid(2)], ...SA_C({ pais: 'MX', fuente: 'app', tienda: 'APP_STORE', pais_tienda: null, comprado: isoIn(-30), precio_usd: null, precio: null, moneda: null }) },
+  { jugador: uid(3), nombre: 'Ximena', visto: isoIn(-2), cuentas: [uid(3)], ...SA_C({ pais: 'CO', pais_tienda: 'CO', precio_usd: 2.99, precio: 11900, moneda: 'COP', reembolsado: isoIn(-1), comprado: isoIn(-9) }) },
+  { jugador: uid(5), nombre: 'Dani Blocks', visto: isoIn(-3), cuentas: [uid(5)], ...SA_C({ pais: 'US', pais_tienda: 'US', precio_usd: 2.99, precio: 2.99, moneda: 'USD', entorno: 'SANDBOX', comprado: isoIn(-12) }) },
+];
+const SA_RES = { compradores: 2, compras: 3, reembolsos: 1, usd: 2.99, solo_app: 1, sin_jugador: 1, pruebas: 1,
+  por_tienda: [{ tienda: 'PLAY_STORE', compras: 2, usd: 2.99 }, { tienda: 'APP_STORE', compras: 1, usd: 0 }], lista: SA_LISTA,
+  anonimos: [{ rc_id: '$RCAnonymousID:0a1b2c3d4e5f…', tienda: 'PLAY_STORE', pais_tienda: 'BR', comprado: isoIn(-40), precio_usd: 1.8, precio: 9.9, moneda: 'BRL', reembolsado: null, entorno: 'PRODUCTION' }] };
+const jeFicha = (id) => { const j = JE_J.find((x) => x.id === id) || JE_J[0]; return { id: j.id, nombre: j.nombre, pais: j.pais, visto: j.visto, creado: isoIn(-60), plataforma: 'android', modelo: 'SM-A175M', version_app: '2.0.0',
+  bloques: { saldo: j.bloques, ganado: j.ganado, gastado: j.gastado, protectores: 1, racha: 4, mejor_racha: 9 }, gemas: { saldo: j.gemas, compradas: j.gemas_compradas, gastadas: j.gemas_gastadas, deuda: 0 }, dinero_usd: j.dinero_usd,
+  compras_tienda: [{ item: 'theme_forest', creado: isoIn(-3), rareza: 'raro', precio: 9000 }], gastos_gemas: [], compras_dinero: [], entregas_paquetes: [], pase: [], canjes: [], movs_bloques: [], movs_gemas: [] }; };
+const saFicha = (id) => id === uid(1) ? { jugador: uid(1), cuentas: [uid(1), uid(4)], identidades: 1, compras: [{ fuente: 'rc', cuenta: uid(4), tienda: 'PLAY_STORE', pais_tienda: 'MX', comprado: isoIn(-2), precio_usd: 2.99, precio: 59, moneda: 'MXN', reembolsado: null, entorno: 'PRODUCTION', transaccion: 'GPA.1' }],
+    transfers: [{ recibido: isoIn(-1), tienda: 'PLAY_STORE', entorno: 'PRODUCTION', llego: true, salio: false }], app: { jugador_id: uid(1), comprado: isoIn(-2), tienda: 'PLAY_STORE', primero: isoIn(-1), visto: isoIn(0) } }
+  : id === uid(2) ? { jugador: uid(2), cuentas: [uid(2)], identidades: 0, compras: [{ fuente: 'app', cuenta: uid(2), tienda: 'APP_STORE', pais_tienda: null, comprado: isoIn(-30), precio_usd: null, precio: null, moneda: null, reembolsado: null, entorno: 'PRODUCTION', transaccion: null }], transfers: [], app: { jugador_id: uid(2), comprado: isoIn(-30), tienda: 'APP_STORE', primero: isoIn(-3), visto: isoIn(-1) } }
+  : { jugador: id, cuentas: [id], identidades: 0, compras: [], transfers: [], app: null };
 export const FIX = {
-  routes: ['juego/pases', 'juego/pases@tpsT:t2', 'juego/solo-gemas', 'juego/gemas', 'juego/escaparate', 'juego/desafios', 'juego/duelos', 'juego/wrapped', 'juego/premios-semana', 'juego/anuncio-poderes', 'codigos/canjes', 'juego/cumple', 'juego/tienda', 'juego/pagos'],
+  routes: ['juego/pases', 'juego/pases@tpsT:t2', 'juego/solo-gemas', 'juego/gemas', 'juego/escaparate', 'juego/desafios', 'juego/duelos', 'juego/wrapped', 'juego/premios-semana', 'juego/anuncio-poderes', 'codigos/canjes', 'juego/cumple', 'juego/tienda', 'juego/pagos', 'juego/economia', 'juego/economia@jeVista:sa', 'juego/economia?open=je:' + uid(1), 'juego/economia?open=je:' + uid(2)],
   rpc(fn, body) {
     if (fn === 'admin_panel') return { secciones: { meta: { rev: 1, datos: { origen: 'x', decidido: true } } } };
     if (fn === 'admin_anuncio_poderes') return { config: { activo: true, por_poder: 1 }, hoy: { vistos: 12, dados: 10, vacios: 2 }, d7: { vistos: 80, dados: 70, vacios: 10 }, total: { vistos: 900, dados: 800, vacios: 100 }, por_poder: [{ poder: 'bomb', vistos: 5, dados: 4, vacios: 1 }, { poder: 'lightning', vistos: 7, dados: 6, vacios: 1 }] };
@@ -109,6 +133,10 @@ export const FIX = {
     }
     if (fn === 'admin_tienda') return TIENDA;
     if (fn === 'admin_desafios') return DESAF;
+    if (fn === 'admin_economia_jugadores') return JE_J;
+    if (fn === 'admin_economia_resumen') return JE_RES;
+    if (fn === 'admin_economia_jugador') return jeFicha(body.p_id);
+    if (fn === 'admin_sin_anuncios') return process.env.SA_SINSQL ? { __status: 404, body: { code: 'PGRST202', message: 'function not found' } } : body.p_id ? saFicha(body.p_id) : SA_RES;
     return [];
   },
 };
