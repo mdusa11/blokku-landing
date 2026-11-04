@@ -6,8 +6,15 @@ import {
 } from 'lucide-react'
 import { useSecret, SecretModal } from './secret.jsx'
 import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
-import DemoGame from './DemoGame.jsx'
+import DemoGame from './demo/DemoGame.jsx'
 import { STORE_URL, StoreBadges } from './extras.jsx'
+
+const FEATS = [
+  { I: Gift, big: 'GRATIS', small: 'para jugar', c: '#43d9a3' },
+  { I: WifiOff, big: 'OFFLINE', small: 'juega sin internet', c: '#4ea1ff' },
+  { I: LayoutGrid, big: '4 MODOS', small: 'de juego', c: '#ff5d8f' },
+  { I: Zap, big: '5 PODERES', small: 'para salvarte', c: '#ffc93c', dark: true },
+]
 
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
 export function Hero() {
@@ -48,12 +55,17 @@ export function Hero() {
           >
             <Rocket size={15} /> ¡Ya disponible en Google Play y App Store!
           </motion.p>
-          <motion.div className="tagrow hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
-            <span className="tag"><Gift size={15} /> GRATIS</span>
-            <span className="tag"><WifiOff size={15} /> SIN INTERNET</span>
-            <span className="tag"><LayoutGrid size={15} /> 4 MODOS</span>
-            <span className="tag"><Zap size={15} /> 5 PODERES</span>
-          </motion.div>
+          <ul className="feats" aria-label="Lo que trae Blokku">
+            {FEATS.map(({ I, big, small, c, dark }, i) => (
+              <li key={big} className={`feat${dark ? ' dark' : ''}`} style={{ '--c': c, '--i': i }}>
+                <span className="feat-ic"><I size={20} strokeWidth={2.6} /></span>
+                <span className="feat-txt">
+                  <b className="display">{big}</b>
+                  <small>{small}</small>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <motion.div
@@ -95,6 +107,7 @@ export function MarqueeStrip() {
 export function DemoSection() {
   return (
     <section id="demo">
+      <div className="demo-aurora" aria-hidden><span /><span /><span /></div>
       <FallingGems count={8} opacity={0.08} />
       <div className="wrap">
         <Reveal>
@@ -102,7 +115,7 @@ export function DemoSection() {
           <h2 className="display">PRUÉBALO <span className="shimmer" style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
           <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae 4 modos, 5 poderes, reto diario y logros — todo gratis.</p>
         </Reveal>
-        <Reveal delay={0.15} style={{ marginTop: 54 }}>
+        <Reveal delay={0.15} style={{ marginTop: 44 }}>
           <DemoGame />
         </Reveal>
       </div>
