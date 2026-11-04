@@ -4,7 +4,7 @@ import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 
 export const SUPPORT_EMAIL = 'mdusa1104@gmail.com'
-const UPDATED = '28 de octubre de 2026'
+const UPDATED = '4 de noviembre de 2026'
 
 function LegalLayout({ title, children }) {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -121,11 +121,11 @@ export function Privacidad() {
       <h3>1. Datos que recopilamos</h3>
       <ul>
         <li><strong>Identificadores de dispositivo y publicidad</strong> (ej. Advertising ID) — usados por nuestros proveedores de anuncios y para prevenir fraude.</li>
-        <li><strong>Datos de compras</strong> — Google Play y RevenueCat procesan tus compras; recibimos confirmaciones de transacción (no vemos ni almacenamos datos de tarjetas).</li>
+        <li><strong>Datos de compras</strong> — Google Play, App Store y RevenueCat procesan tus compras; recibimos confirmaciones de transacción (producto, fecha, tienda, país de la tienda y precio), nunca datos de tarjetas. Si tienes cuenta del ranking (App 1.1.3 o posterior), ligamos tus compras a tu perfil de juego para poder restaurarlas y darte soporte: la App se identifica en RevenueCat con el identificador aleatorio de tu perfil, no con tu nombre ni tu correo. Sin cuenta, la compra sigue anónima.</li>
         <li><strong>Datos técnicos y de uso</strong> — modelo de dispositivo, versión del sistema, métricas de rendimiento y eventos de juego agregados.</li>
         <li><strong>Registros de fallos y diagnóstico</strong> — si la App se cierra por un error, se envía un informe técnico (qué falló, modelo y sistema del dispositivo) para poder corregirlo. No incluye datos personales.</li>
         <li><strong>Progreso de juego</strong> — se guarda en tu dispositivo.</li>
-        <li><strong>Respaldo en la nube del progreso (App 2.2 o posterior)</strong> — si tienes cuenta del ranking, la App guarda en nuestro servidor una copia de tu progreso ligada a esa cuenta: nivel y XP, cosméticos ganados y equipados, logros, racha, récords, estadísticas de juego y ajustes visuales. Sirve para recuperarlo al reinstalar o al cambiar de teléfono con un código de recuperación (un solo uso, caduca en 24 horas; solo guardamos su huella cifrada, nunca el código). No incluye identificadores del dispositivo, compras, saldo de monedas ni datos personales.</li>
+        <li><strong>Respaldo en la nube del progreso (App 2.2 o posterior)</strong> — si tienes cuenta del ranking, la App guarda en nuestro servidor una copia de tu progreso ligada a esa cuenta: nivel y XP, cosméticos ganados y equipados, logros, racha, récords, estadísticas de juego y ajustes visuales. Sirve para recuperarlo al reinstalar o al cambiar de teléfono con un código de recuperación (un solo uso, caduca en 24 horas; solo guardamos su huella cifrada, nunca el código). No incluye identificadores del dispositivo, saldo de monedas ni datos personales; las compras se ligan al perfil por separado (ver «Datos de compras»).</li>
         <li><strong>Ranking (opcional)</strong> — si decides entrar al ranking, guardamos en nuestro servidor el apodo público que eliges, tus puntuaciones, la insignia y el título que muestras, un identificador aleatorio generado por la App y el país aproximado (deducido de la conexión, nunca por GPS). El ranking guarda tu plataforma, el modelo de tu teléfono, la versión de la App y cuántas partidas juegas. No pedimos correo, contraseña ni cuenta.</li>
         <li><strong>Cumpleaños (opcional, App 2.0 o posterior)</strong> — si decides ponerlo, guardamos el día y el mes de tu cumpleaños (nunca el año), ligados a tu cuenta del ranking, solo para darte tu regalo de cumpleaños. No lo mostramos a otros jugadores: ese día solo aparece un 🎂 junto a tu apodo en el ranking. Puedes quitarlo cuando quieras en Perfil › Mi cumpleaños; «Eliminar mis datos» también lo borra.</li>
         <li><strong>Códigos canjeados con el ranking (App 1.1.2 o posterior)</strong> — si canjeas un código (de una promoción, un sorteo o un sticker) y usas el ranking, el canje queda asociado a tu apodo del ranking, junto con la plataforma, la versión de la App y la hora. Sirve para evitar abusos y medir qué promociones funcionan. Si no usas el ranking, el canje sigue siendo anónimo. «Eliminar mis datos» quita esa asociación.</li>
@@ -234,7 +234,9 @@ export function EliminarDatos() {
           no nosotros.
         </li>
         <li>
-          El identificador anónimo que RevenueCat asocia a tu compra se elimina si lo pides por correo.
+          El identificador que RevenueCat asocia a tu compra (anónimo, o el de tu perfil de juego desde la App 1.1.3) se
+          desvincula de tu perfil con «Eliminar mis datos» y se elimina en RevenueCat si lo pides por correo; la compra sigue
+          siendo tuya y se recupera con <em>"Restaurar compras"</em>.
         </li>
       </ul>
 
