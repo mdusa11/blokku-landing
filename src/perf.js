@@ -12,7 +12,9 @@ export function startOffscreenPause() {
     for (const e of entries) {
       const el = e.target
       if (el.tagName === 'VIDEO') {
-        if (e.isIntersecting) el.play().catch(() => {})
+        vids.add(el)
+        el.dataset.onscreen = e.isIntersecting ? '1' : '0'
+        if (e.isIntersecting && !document.hidden) el.play().catch(() => {})
         else el.pause()
       } else {
         el.classList.toggle('is-off', !e.isIntersecting)
@@ -26,6 +28,14 @@ export function startOffscreenPause() {
     list.push(...root.querySelectorAll(SEL))
     for (const el of list) if (!seen.has(el)) { seen.add(el); io.observe(el) }
   }
+  // Pestaña oculta: los videos se detienen; al volver, solo los que están a la vista.
+  const vids = new Set()
+  document.addEventListener('visibilitychange', () => {
+    for (const v of vids) {
+      if (document.hidden) v.pause()
+      else if (v.dataset.onscreen === '1') v.play().catch(() => {})
+    }
+  })
   scan(document.body)
   new MutationObserver((ms) => { for (const m of ms) m.addedNodes.forEach(scan) })
     .observe(document.body, { childList: true, subtree: true })

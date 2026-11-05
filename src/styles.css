@@ -277,13 +277,17 @@ footer .brand-link { color: inherit; }
 @keyframes drift2 { 0%,100% { transform: translate3d(0,0,0) scale(1.1); } 50% { transform: translate3d(-7vw,-5vh,0) scale(1); } }
 
 /* ── Shimmer en títulos ── */
-.shimmer {
-  background: linear-gradient(100deg, currentColor 30%, #fff 50%, currentColor 70%);
-  background-size: 220% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: shimmer 4.5s linear infinite;
+/* Copia blanca del texto en una ventana con máscara (ver Shine en bits.jsx).
+   Ventana e interior se mueven igual y al revés: solo transform, sin repintar. */
+.shimmer { position: relative; display: inline-block; }
+.sh-win {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 45%; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 50%, transparent); mask-image: linear-gradient(90deg, transparent, #000 50%, transparent);
+  transform: translateX(-100%); animation: shWin 4.5s linear infinite;
 }
-@keyframes shimmer { to { background-position: -220% 0; } }
+.sh-txt { position: absolute; top: 0; left: 0; width: 222.3%; color: #fff; text-shadow: none; white-space: nowrap; transform: translateX(45%); animation: shTxt 4.5s linear infinite; }
+@keyframes shWin { 0% { transform: translateX(-100%); } 75%, 100% { transform: translateX(222.3%); } }
+@keyframes shTxt { 0% { transform: translateX(45%); } 75%, 100% { transform: translateX(-100%); } }
 
 /* ── Sweep de brillo en botones (pseudo, GPU) ── */
 .btn3d { position: relative; overflow: hidden; }
@@ -334,7 +338,8 @@ footer .brand-link { color: inherit; }
 
 /* ── Reduced motion: apagar lo decorativo ── */
 @media (prefers-reduced-motion: reduce) {
-  .fgem, .aurora span, .shimmer, .btn3d::after { animation: none !important; }
+  .fgem, .aurora span, .btn3d::after { animation: none !important; }
+  .sh-win { display: none; }
   .fgem { display: none; }
 }
 
@@ -354,7 +359,8 @@ footer .brand-link { color: inherit; }
 @media (max-width: 760px) {
   /* backdrop-filter sobre una barra fija = re-desenfocar la página en cada cuadro */
   .stickynav { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(14,22,58,.96); }
-  .aurora span { animation: none; }
+  /* .aurora .a1/.a2 ganaban en especificidad a ".aurora span": seguían animándose */
+  .aurora .a1, .aurora .a2 { animation: none; will-change: auto; }
   .fgem:nth-child(n+8) { display: none; }
   .phone, .sc-phone { box-shadow: 0 24px 50px rgba(0,0,0,.55); }
 }
@@ -443,8 +449,9 @@ footer .brand-link { color: inherit; }
 .prog-vip::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: linear-gradient(120deg, transparent 40%, rgba(179,136,255,.18) 50%, transparent 60%);
-  background-size: 250% 100%; animation: shimmer 5s linear infinite;
+  transform: translateX(-100%); animation: vipSweep 5s linear infinite;
 }
+@keyframes vipSweep { to { transform: translateX(100%); } }
 
 /* ═══ SCREENSHOTS v2 — escaparate 2 filas ═════════════════════════════════════ */
 .sec-shots { padding-bottom: 60px; overflow: hidden; }
@@ -554,7 +561,7 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
   background: linear-gradient(180deg, color-mix(in srgb, var(--c) 92%, #fff), color-mix(in srgb, var(--c) 72%, #000));
   box-shadow: inset 0 0 0 2px rgba(255,255,255,.28), inset 0 -4px 0 rgba(0,0,0,.18), 0 5px 0 color-mix(in srgb, var(--c) 45%, #000), 0 14px 26px rgba(0,0,0,.35);
   transform: rotate(calc((var(--i) - 1.5) * -1.6deg));
-  animation: featIn .6s cubic-bezier(.3,1.6,.5,1) calc(1.3s + var(--i) * .1s) both;
+  animation: featIn .6s cubic-bezier(.3,1.6,.5,1) calc(.8s + var(--i) * .08s) both;
   transition: transform .25s cubic-bezier(.3,1.6,.5,1);
   cursor: default; -webkit-tap-highlight-color: transparent;
 }
@@ -589,3 +596,30 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
 @keyframes aur1 { to { transform: translate(14vmax, -8vmax) scale(1.15); } }
 @keyframes aur2 { to { transform: translate(-12vmax, 10vmax) scale(.9); } }
 @media (prefers-reduced-motion: reduce) { .demo-aurora span { animation: none; } }
+
+/* ═══ ENTRADA DEL HERO (CSS, sin esperar a framer-motion) ════════════════════ */
+.h-in { animation: .6s cubic-bezier(.3,1.5,.5,1) var(--d, 0s) both; }
+.h-icon { animation-name: hIcon; animation-duration: .7s; animation-timing-function: cubic-bezier(.3,1.7,.5,1); }
+.h-up { animation-name: hUp; }
+.h-fade { animation-name: hFade; animation-duration: .45s; animation-timing-function: ease; }
+.h-phone { animation-name: hPhone; animation-duration: .9s; animation-timing-function: cubic-bezier(.25,1.35,.5,1); }
+@keyframes hIcon { from { transform: scale(0) rotate(-20deg); } }
+@keyframes hUp { from { opacity: 0; transform: translateY(30px); } }
+@keyframes hFade { from { opacity: 0; } }
+@keyframes hPhone { from { opacity: 0; transform: translateY(90px) rotate(8deg); } }
+/* backwards: al terminar, el hover de framer vuelve a mandar en transform */
+.logo-l { animation: logoIn .65s cubic-bezier(.3,1.6,.5,1) var(--d, 0s) backwards; }
+@keyframes logoIn { from { opacity: 0; transform: translateY(-80px) rotate(-12deg); } }
+@media (prefers-reduced-motion: reduce) { .h-in, .logo-l { animation: none; } }
+
+/* ═══ HUECOS DE LAS SECCIONES PEREZOSAS (altura real aprox., sin saltos) ═════ */
+.lazy-hole { display: block; }
+.ph-tut { min-height: 1560px; }
+.ph-demo { min-height: 960px; }
+.ph-nov { min-height: 4200px; }
+@media (min-width: 640px) { .ph-nov { min-height: 3900px; } }
+@media (min-width: 900px) { .ph-demo { min-height: 746px; } }
+@media (min-width: 1000px) { .ph-tut { min-height: 1150px; } .ph-nov { min-height: 2817px; } }
+/* En celular las manchas de la demo quedan quietas (como la aurora global):
+   3 capas de 60vmax animadas obligaban a componer cada cuadro. */
+@media (max-width: 760px) { .demo-aurora span:nth-child(n) { animation: none; will-change: auto; } }

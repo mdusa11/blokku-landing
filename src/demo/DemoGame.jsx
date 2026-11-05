@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { RotateCcw, Play, Trophy, Zap, Pointer, Check } from 'lucide-react'
 import { PlayBadge, AppStoreBadge, isIOS } from '../extras.jsx'
@@ -179,12 +179,12 @@ export default function DemoGame() {
   }, [entered])
   useEffect(() => { if (entered) setWave({ n: 1, seq: seq.current }) }, [entered])
 
-  const pickTheme = (id) => {
+  const pickTheme = useCallback((id) => {
     if (id === themeId) return
     setThemeId(id)
     setWave((w) => ({ n: w.n + 1, seq: seq.current }))
     setBubble({ id: Date.now(), text: id === 'clasico' ? '¡El de siempre!' : `¡${THEME[id].name}!` })
-  }
+  }, [themeId])
 
   /* marcador que sube */
   useEffect(() => {
@@ -454,7 +454,7 @@ export default function DemoGame() {
 
   return (
     <div className={`dg-layout${entered ? '' : ' pre'}`}>
-      {THEMES.map((t) => <GlyphDefs key={t.id} theme={t.id} />)}
+      <AllGlyphDefs />
 
       <ThemePicker themeId={themeId} onPick={pickTheme} />
 
@@ -661,13 +661,19 @@ function ThemeBg({ id }) {
   )
 }
 
-function ThemePicker({ themeId, onPick }) {
+// Lo que no cambia en cada jugada no se vuelve a renderizar.
+const AllGlyphDefs = memo(function AllGlyphDefs() {
+  return THEMES.map((t) => <GlyphDefs key={t.id} theme={t.id} />)
+})
+const PICKER_VARS = Object.fromEntries(THEMES.map((t) => [t.id, t.colors.map(gemVars)]))
+
+const ThemePicker = memo(function ThemePicker({ themeId, onPick }) {
   return (
     <div className="dg-picker">
       <div className="dg-picker-title display">ELIGE UN ESTILO</div>
       <div className="dg-picker-list" role="radiogroup" aria-label="Estilo del tablero">
         {THEMES.map((t) => {
-          const v = t.colors.map(gemVars)
+          const v = PICKER_VARS[t.id]
           return (
             <button
               key={t.id}
@@ -694,4 +700,4 @@ function ThemePicker({ themeId, onPick }) {
       <p className="dg-picker-note">Así se ven algunos paquetes de la app: cada uno trae su tablero, su marco y su efecto al reventar líneas.</p>
     </div>
   )
-}
+})

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { m as motion, useInView } from 'framer-motion'
 import { Play } from 'lucide-react'
 import { Logo } from './bits.jsx'
 import { STORE_URL } from './extras.jsx'

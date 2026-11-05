@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import { Mail, ShoppingCart, Gamepad2, Bug } from 'lucide-react'
 import { AppIcon, Logo } from './bits.jsx'
 

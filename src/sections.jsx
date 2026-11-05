@@ -1,13 +1,16 @@
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { m as motion } from 'framer-motion'
 import {
   Play, Gamepad2, Gift, WifiOff, LayoutGrid, Zap, Puzzle, Sparkles, Flame, Trophy,
   Bomb, Pipette, Undo2, Shuffle, Infinity as InfinityIcon, Timer, Leaf, Medal,
   CalendarDays, TrendingUp, Ban, Rocket,
 } from 'lucide-react'
 import { useSecret, SecretModal } from './secret.jsx'
-import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
-import DemoGame from './demo/DemoGame.jsx'
+import { AppIcon, FallingGems, Logo, Reveal, Shine } from './bits.jsx'
+import { LazyDemoGame, WhenNear } from './lazy.jsx'
 import { STORE_URL, StoreBadges } from './extras.jsx'
+
+const BASE = import.meta.env.BASE_URL
 
 const FEATS = [
   { I: Gift, big: 'GRATIS', small: 'para jugar', c: '#43d9a3' },
@@ -19,42 +22,40 @@ const FEATS = [
 /* ═══ HERO ════════════════════════════════════════════════════════════════════ */
 export function Hero() {
   const secret = useSecret()
+  const video = useLateSrc(`${BASE}media/105/juego.mp4`)
+  // Entrada con CSS (no espera a que llegue framer-motion): el hero pinta en
+  // cuanto React monta. Mismo orden y rebote que antes, en menos tiempo.
   return (
     <div className="hero" id="inicio">
       <FallingGems count={18} opacity={0.18} />
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <motion.div initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 12 }} style={{ marginBottom: 26 }}>
+          <div className="h-in h-icon" style={{ marginBottom: 26 }}>
             <AppIcon size={92} />
-          </motion.div>
+          </div>
           <h1><Logo size={'clamp(64px, 9vw, 110px)'} onLetter={secret.tap} pulse={secret.pulse} /></h1>
           <SecretModal open={secret.open} onClose={secret.close} />
-          <motion.p className="display hero-tagline" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}>
+          <p className="display hero-tagline h-in h-up" style={{ '--d': '.45s' }}>
             EL PUZZLE MÁS ADICTIVO
-          </motion.p>
-          <motion.p className="hero-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+          </p>
+          <p className="hero-desc h-in h-fade" style={{ '--d': '.55s' }}>
             Arrastra piezas, encaja y <strong>revienta líneas</strong> en combos explosivos.
             Fácil de aprender, imposible de soltar.
-          </motion.p>
-          <motion.div className="hero-ctas" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, type: 'spring' }}>
+          </p>
+          <div className="hero-ctas h-in h-up" style={{ '--d': '.65s' }}>
             <a className="btn3d pulse-cta" href={STORE_URL} target="_blank" rel="noopener noreferrer">
               <Play size={20} strokeWidth={3} fill="currentColor" /> JUGAR GRATIS
             </a>
             <a className="btn3d blue" href="#demo"><Gamepad2 size={21} strokeWidth={2.5} /> Probar la demo</a>
-          </motion.div>
-          <motion.div className="hero-ctas" style={{ marginTop: 18 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
+          </div>
+          <div className="hero-ctas h-in h-fade" style={{ marginTop: 18, '--d': '.7s' }}>
             <StoreBadges />
-          </motion.div>
+          </div>
           {/* Aviso de lanzamiento: va en el hero porque es lo primero que se
               ve sin hacer scroll. Repetido en la FAQ y en el CTA final. */}
-          <motion.p
-            className="hero-soon"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.25 }}
-          >
+          <p className="hero-soon h-in h-fade" style={{ '--d': '.75s' }}>
             <Rocket size={15} /> ¡Ya disponible en Google Play y App Store!
-          </motion.p>
+          </p>
           <ul className="feats" aria-label="Lo que trae Blokku">
             {FEATS.map(({ I, big, small, c, dark }, i) => (
               <li key={big} className={`feat${dark ? ' dark' : ''}`} style={{ '--c': c, '--i': i }}>
@@ -68,18 +69,28 @@ export function Hero() {
           </ul>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 90, rotate: 8 }}
-          animate={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 130, damping: 15 }}
-        >
+        <div className="h-in h-phone" style={{ '--d': '.3s' }}>
           <div className="phone float-y">
-            <video src={`${import.meta.env.BASE_URL}media/105/juego.mp4`} poster={`${import.meta.env.BASE_URL}media/105/juego.webp`} width="540" height="1044" autoPlay muted loop playsInline preload="metadata" data-autopause aria-label="Partida real de Blokku 1.0.5" />
+            <video src={video} poster={`${BASE}media/105/juego.webp`} width="540" height="1044" autoPlay muted loop playsInline preload="none" data-autopause aria-label="Partida real de Blokku 1.0.5" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
+}
+
+/* El video del hero (440 KB) espera a que la página termine de cargar: el
+   póster se ve igual y no le quita ancho de banda al JS ni a las fuentes. */
+function useLateSrc(url) {
+  const [src, setSrc] = useState()
+  useEffect(() => {
+    let t = 0
+    const go = () => { t = setTimeout(() => setSrc(url), 600) }
+    if (document.readyState === 'complete') go()
+    else window.addEventListener('load', go, { once: true })
+    return () => { window.removeEventListener('load', go); clearTimeout(t) }
+  }, [url])
+  return src
 }
 
 /* ═══ MARQUEE ═════════════════════════════════════════════════════════════════ */
@@ -112,11 +123,11 @@ export function DemoSection() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Sin descargar nada</span>
-          <h2 className="display">PRUÉBALO <span className="shimmer" style={{ color: 'var(--pink)' }}>AQUÍ MISMO</span></h2>
+          <h2 className="display">PRUÉBALO <Shine color="var(--pink)">AQUÍ MISMO</Shine></h2>
           <p className="sub">Esta es una probadita del modo Clásico. El juego completo trae 4 modos, 5 poderes, reto diario y logros — todo gratis.</p>
         </Reveal>
         <Reveal delay={0.15} style={{ marginTop: 44 }}>
-          <DemoGame />
+          <WhenNear className="ph-demo" margin="700px 0px"><LazyDemoGame /></WhenNear>
         </Reveal>
       </div>
     </section>
@@ -139,7 +150,7 @@ export function Powers() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Cuando el tablero se pone feo</span>
-          <h2 className="display">5 PODERES <span className="shimmer" style={{ color: 'var(--yellow)' }}>ÉPICOS</span></h2>
+          <h2 className="display">5 PODERES <Shine color="var(--yellow)">ÉPICOS</Shine></h2>
           <p className="sub">Cada partida empieza con poderes gratis. Si te quedas sin espacio, Blokku te dice cuál te puede salvar.</p>
         </Reveal>
         <div className="powers-grid">
@@ -181,7 +192,7 @@ export function Modes() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Para cada mood</span>
-          <h2 className="display">4 MODOS <span className="shimmer" style={{ color: 'var(--green)' }}>DE JUEGO</span></h2>
+          <h2 className="display">4 MODOS <Shine color="var(--green)">DE JUEGO</Shine></h2>
         </Reveal>
         <div className="modes-grid">
           {MODES.map((m, i) => (
@@ -222,7 +233,7 @@ export function Progression() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Siempre hay algo que ganar</span>
-          <h2 className="display">PROGRESA <span className="shimmer" style={{ color: 'var(--purple)' }}>A TU RITMO</span></h2>
+          <h2 className="display">PROGRESA <Shine color="var(--purple)">A TU RITMO</Shine></h2>
         </Reveal>
         <div className="prog-grid">
           {PROGS.map((p, i) => (
@@ -247,9 +258,6 @@ export function Progression() {
     </section>
   )
 }
-
-/* ═══ NOVEDADES 1.0.5 — vive en novedades.jsx ═══════════════════════════════════ */
-export { Novedades } from './novedades.jsx'
 
 /* ═══ SCREENSHOTS — escaparate de 2 filas opuestas ════════════════════════════ */
 // Capturas de la 1.0.5 en un Galaxy A17 (nombres de prueba difuminados)
@@ -279,7 +287,7 @@ export function Shots() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Directo del juego</span>
-          <h2 className="display">ASÍ SE <span className="shimmer" style={{ color: 'var(--blue)' }}>VE</span></h2>
+          <h2 className="display">ASÍ SE <Shine color="var(--blue)">VE</Shine></h2>
           <p className="sub">Capturas de la versión 1.0.5, tal cual se ve en el teléfono.</p>
         </Reveal>
       </div>

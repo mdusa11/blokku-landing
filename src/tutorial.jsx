@@ -1,11 +1,11 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m as motion, useReducedMotion } from 'framer-motion'
 import {
   Move, Rows3, Bookmark, Zap, Gamepad2, Gift, Bomb, Undo2, Shuffle, Pipette, Hourglass, Leaf,
   CalendarDays, Trophy, Flag, Lock, Sparkles, Lightbulb, RotateCw, ArrowRight, ArrowUp, Play,
   Medal, Ghost, Crown, Globe, Download,
 } from 'lucide-react'
-import { Reveal } from './bits.jsx'
+import { Reveal, Shine } from './bits.jsx'
 import { STORE_URL } from './extras.jsx'
 import './tutorial.css'
 
@@ -703,7 +703,7 @@ export function HowToPlay() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Igualito que en la app</span>
-          <h2 className="display">CÓMO <span className="shimmer" style={{ color: 'var(--green)' }}>JUGAR</span></h2>
+          <h2 className="display">CÓMO <Shine color="var(--green)">JUGAR</Shine></h2>
           <p className="sub">El tutorial de Blokku en 7 pasos. Desliza, usa las flechas o tu teclado.</p>
         </Reveal>
 

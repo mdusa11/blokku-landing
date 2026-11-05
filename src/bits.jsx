@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 
 export const COLORS = ['#00BCD4', '#E91E63', '#8BC34A', '#FF9800', '#9C27B0', '#FFEB3B', '#2196F3', '#FF5722', '#00E5FF', '#FF4081']
 
@@ -63,12 +63,10 @@ export function Logo({ size = 64, onLetter, pulse }) {
       {letters.map(([ch, c], i) => (
         <motion.span
           key={i}
-          initial={{ y: -80, opacity: 0, rotate: -12 }}
-          animate={{ y: 0, opacity: 1, rotate: 0 }}
-          transition={{ delay: 0.15 + i * 0.09, type: 'spring', stiffness: 320, damping: 14 }}
+          className="logo-l"
           whileHover={{ y: -12, rotate: i % 2 ? 6 : -6, scale: 1.12 }}
           onClick={onLetter ? () => onLetter(i) : undefined}
-          style={{ position: 'relative', cursor: onLetter ? 'pointer' : undefined, touchAction: 'manipulation', color: c, textShadow: '0 6px 0 rgba(0,0,0,.28), 0 16px 34px rgba(0,0,0,.45)', display: 'inline-block' }}
+          style={{ '--d': `${0.05 + i * 0.07}s`, position: 'relative', cursor: onLetter ? 'pointer' : undefined, touchAction: 'manipulation', color: c, textShadow: '0 6px 0 rgba(0,0,0,.28), 0 16px 34px rgba(0,0,0,.45)', display: 'inline-block' }}
         >
           {ch}
           {pulse && pulse.i === i && (
@@ -81,16 +79,29 @@ export function Logo({ size = 64, onLetter, pulse }) {
   )
 }
 
-/* Ícono de la app (el mismo PNG del launcher) */
+/* Ícono de la app (el del launcher, en WebP a 256 px: sobra para 2x) */
 export function AppIcon({ size = 84 }) {
   return (
     <img
-      src="/icon-512.png"
+      src="/icon-256.webp"
       alt="Blokku"
       width={size}
       height={size}
       style={{ width: size, height: size, borderRadius: size * 0.24, boxShadow: '0 14px 34px rgba(0,0,0,.5)', display: 'block' }}
     />
+  )
+}
+
+/* Título con brillo que lo recorre. El brillo es una copia blanca del texto
+   dentro de una ventana con máscara: ventana e interior se mueven con
+   transform en sentidos opuestos, así corre en el compositor sin repintar
+   (el gradiente con background-position repintaba el título en cada cuadro). */
+export function Shine({ children, color }) {
+  return (
+    <span className="shimmer" style={{ color }}>
+      {children}
+      <span className="sh-win" aria-hidden><span className="sh-txt">{children}</span></span>
+    </span>
   )
 }
 

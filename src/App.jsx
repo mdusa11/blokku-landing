@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Suspense, lazy, useEffect, useState } from 'react'
+import { m as motion, AnimatePresence } from 'framer-motion'
 import { Play, Plus, Heart, Bot, Download } from 'lucide-react'
-import { AppIcon, FallingGems, Logo, Reveal } from './bits.jsx'
-import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Novedades, Shots } from './sections.jsx'
+import { AppIcon, FallingGems, Logo, Reveal, Shine } from './bits.jsx'
+import { Hero, MarqueeStrip, DemoSection, Powers, Modes, Progression, Shots } from './sections.jsx'
 import { ScrollProgress, StickyNav, Stats } from './interactive.jsx'
 import { StoreBadges, STORE_URL } from './extras.jsx'
-import { HowToPlay } from './tutorial.jsx'
-import { Terminos, Privacidad, EliminarDatos, Soporte } from './legal.jsx'
+import { LazyHowToPlay, LazyNovedades, WhenNear, warmOnFirstInput } from './lazy.jsx'
+
+const legal = (name) => lazy(() => import('./legal.jsx').then((m) => ({ default: m[name] })))
 
 /* ═══ FAQ ═════════════════════════════════════════════════════════════════════ */
 const FAQS = [
@@ -25,7 +26,7 @@ function Faq() {
       <div className="wrap">
         <Reveal>
           <span className="kicker">Dudas rápidas</span>
-          <h2 className="display">PREGUNTAS <span className="shimmer" style={{ color: 'var(--pink)' }}>FRECUENTES</span></h2>
+          <h2 className="display">PREGUNTAS <Shine color="var(--pink)">FRECUENTES</Shine></h2>
         </Reveal>
         <div className="faq">
           {FAQS.map(([q, a], i) => (
@@ -104,12 +105,12 @@ function Landing() {
       <Hero />
       <MarqueeStrip />
       <Stats />
-      <HowToPlay />
+      <WhenNear id="como-jugar" className="ph-tut"><LazyHowToPlay /></WhenNear>
       <DemoSection />
       <Powers />
       <Modes />
       <Progression />
-      <Novedades />
+      <WhenNear id="novedades" className="ph-nov"><LazyNovedades /></WhenNear>
       <Shots />
       <Faq />
       <FinalCta />
@@ -134,10 +135,10 @@ function Landing() {
 
 /* ═══ APP + ROUTER (hash) ═════════════════════════════════════════════════════ */
 const ROUTES = {
-  '#/terminos': Terminos,
-  '#/privacidad': Privacidad,
-  '#/eliminar-datos': EliminarDatos,
-  '#/soporte': Soporte,
+  '#/terminos': legal('Terminos'),
+  '#/privacidad': legal('Privacidad'),
+  '#/eliminar-datos': legal('EliminarDatos'),
+  '#/soporte': legal('Soporte'),
 }
 
 export default function App() {
@@ -147,6 +148,7 @@ export default function App() {
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
+  useEffect(warmOnFirstInput, [])
   const Page = ROUTES[hash]
-  return Page ? <Page /> : <Landing />
+  return Page ? <Suspense fallback={<div style={{ minHeight: '100vh' }} />}><Page /></Suspense> : <Landing />
 }
