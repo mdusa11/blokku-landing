@@ -196,7 +196,7 @@ h2.display {
 /* ── FAQ ── */
 .faq { max-width: 720px; margin: 50px auto 0; display: flex; flex-direction: column; gap: 14px; }
 .faq-item { border-radius: 18px; }
-.faq-q { width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 14px; font-weight: 600; font-size: 17.5px; padding: 4px 2px; }
+.faq-q { width: 100%; text-align: start; display: flex; justify-content: space-between; align-items: center; gap: 14px; font-weight: 600; font-size: 17.5px; padding: 4px 2px; }
 .faq-a { color: var(--muted); line-height: 1.6; padding-top: 12px; font-size: 15.5px; }
 
 /* ── FOOTER ── */
@@ -322,11 +322,11 @@ footer .brand-link { color: inherit; }
 }
 .stickynav-inner { display: flex; align-items: center; gap: 20px; padding-top: 12px; padding-bottom: 12px; }
 .stickynav-logo { text-decoration: none; line-height: 0; }
-.stickynav-links { display: flex; gap: 22px; margin-left: auto; }
+.stickynav-links { display: flex; gap: 22px; margin-inline-start: auto; }
 .stickynav-links a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 15px; transition: color .15s; }
 .stickynav-links a:hover { color: #fff; }
 .stickynav-cta { font-size: 15px !important; padding: 9px 22px !important; box-shadow: 0 4px 0 #2c9a45, 0 8px 18px rgba(0,0,0,.35) !important; }
-@media (max-width: 640px) { .stickynav-links { display: none; } .stickynav-cta { margin-left: auto; } }
+@media (max-width: 640px) { .stickynav-links { display: none; } .stickynav-cta { margin-inline-start: auto; } }
 
 /* ── Stats ── */
 .stats-sec { padding: 60px 0; border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); background: rgba(0,0,0,.14); }
@@ -572,7 +572,7 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
 @keyframes featIn { from { opacity: 0; transform: translateY(26px) scale(.6) rotate(-8deg); } }
 .feat-ic { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: color-mix(in srgb, var(--c) 55%, #000); background: rgba(255,255,255,.92); box-shadow: 0 3px 0 rgba(0,0,0,.18); flex: none; }
 .feat-txt { position: relative; display: flex; flex-direction: column; min-width: 0; }
-.feat-txt b { font-weight: 400; font-size: 21px; line-height: 1.05; letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0,0,0,.28); white-space: nowrap; }
+.feat-txt b { font-weight: 400; font-size: 21px; line-height: 1.05; letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0,0,0,.28); text-wrap: balance; }
 .feat-txt small { font-family: var(--utility); font-weight: 800; font-size: 12px; line-height: 1.2; margin-top: 3px; color: rgba(255,255,255,.92); text-shadow: 0 1px 0 rgba(0,0,0,.25); }
 .feat.dark .feat-txt b, .feat.dark .feat-txt small { color: #4a2a00; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
 @media (max-width: 900px) { .feats { margin-left: auto; margin-right: auto; } }
@@ -623,3 +623,43 @@ a:focus-visible, button:focus-visible { outline-color: var(--yellow); }
 /* En celular las manchas de la demo quedan quietas (como la aurora global):
    3 capas de 60vmax animadas obligaban a componer cada cuadro. */
 @media (max-width: 760px) { .demo-aurora span:nth-child(n) { animation: none; will-change: auto; } }
+
+
+/* ── Selector de idioma ── */
+.langpick { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid var(--stroke); color: var(--muted); font-family: var(--utility); font-weight: 800; font-size: 13px; line-height: 1; }
+.langpick:hover, .langpick:focus-within { color: #fff; background: rgba(255,255,255,.14); }
+.langpick select { appearance: none; -webkit-appearance: none; background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; max-width: 9.5em; padding: 2px 0; }
+.langpick select option { color: #111; background: #fff; }
+.langpick-hero { position: absolute; top: 14px; inset-inline-end: 16px; z-index: 5; }
+.langpick-nav { margin-inline-start: auto; }
+.langpick-nav + .stickynav-cta { margin-inline-start: 0; }
+.langpick-foot { margin: 16px auto 0; }
+@media (max-width: 640px) { .langpick-nav { margin-inline-start: auto; } .langpick-nav select { max-width: 6.5em; } }
+.stickynav-links ~ .langpick-nav { margin-inline-start: 0; }
+
+/* ── Fuentes por idioma: Luckiest Guy y Fredoka solo traen latino; el resto cae al sistema ── */
+:root { --sys: system-ui, -apple-system, 'Segoe UI', 'Noto Sans', 'Noto Sans Arabic', 'Noto Sans Devanagari', 'PingFang SC', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Microsoft YaHei', sans-serif; }
+:root:lang(ru), :root:lang(tr), :root:lang(vi), :root:lang(ar), :root:lang(hi), :root:lang(ja), :root:lang(ko), :root:lang(zh) {
+  --display: 'Luckiest Guy', 'Fredoka', var(--sys);
+  --body: 'Fredoka', var(--sys);
+  --utility: 'Nunito', var(--sys);
+}
+:root:lang(ar), :root:lang(hi), :root:lang(ja), :root:lang(ko), :root:lang(zh), :root:lang(ru), :root:lang(vi), :root:lang(tr) { font-synthesis-weight: none; }
+:root:lang(ru) .display, :root:lang(tr) .display, :root:lang(vi) .display, :root:lang(ar) .display, :root:lang(hi) .display, :root:lang(ja) .display, :root:lang(ko) .display, :root:lang(zh) .display,
+:root:lang(ru) [class*="-name"], :root:lang(ar) [class*="-name"], :root:lang(hi) [class*="-name"], :root:lang(ja) [class*="-name"], :root:lang(ko) [class*="-name"], :root:lang(zh) [class*="-name"],
+:root:lang(ar) .tut-ch-t strong, :root:lang(hi) .tut-ch-t strong, :root:lang(ja) .tut-ch-t strong, :root:lang(ko) .tut-ch-t strong, :root:lang(zh) .tut-ch-t strong,
+:root:lang(ar) .tut-sheet h3, :root:lang(hi) .tut-sheet h3, :root:lang(ja) .tut-sheet h3, :root:lang(ko) .tut-sheet h3, :root:lang(zh) .tut-sheet h3,
+:root:lang(ar) .nv-item-t, :root:lang(hi) .nv-item-t, :root:lang(ja) .nv-item-t, :root:lang(ko) .nv-item-t, :root:lang(zh) .nv-item-t { font-weight: 800; }
+/* Escrituras sin mayúsculas o que se unen: sin espaciado entre letras y con más alto de línea */
+:root:lang(ar) *, :root:lang(hi) *, :root:lang(ja) *, :root:lang(ko) *, :root:lang(zh) * { letter-spacing: 0 !important; }
+:root:lang(ar) .display, :root:lang(hi) .display { line-height: 1.35; }
+:root:lang(ja) .display, :root:lang(ko) .display, :root:lang(zh) .display, :root:lang(vi) .display { line-height: 1.2; }
+:root:lang(ja) body, :root:lang(zh) body, :root:lang(ko) body { line-break: strict; overflow-wrap: break-word; }
+:root:lang(ko) body { word-break: keep-all; }
+.dg-tag { max-width: 100%; overflow-wrap: anywhere; }
+
+/* ── Derecha a izquierda (árabe) ── */
+/* Lo que se desplaza en bucle, los lienzos de juego y las demos del tutorial se quedan en LTR (su geometría es absoluta). */
+:root[dir="rtl"] .marquee, :root[dir="rtl"] .shots-viewport, :root[dir="rtl"] .dg-screen, :root[dir="rtl"] .tut-demo, :root[dir="rtl"] .phone, :root[dir="rtl"] .dg-hand { direction: ltr; }
+:root[dir="rtl"] .tut-btn svg:first-child  { transform: scaleX(-1); }
+:root:lang(ja) .feat-txt b, :root:lang(ko) .feat-txt b, :root:lang(zh) .feat-txt b { font-size: 17px; }

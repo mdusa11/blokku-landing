@@ -26,32 +26,32 @@ export const gemVars = (hex) => {
 
 export const THEMES = [
   {
-    id: 'clasico', name: 'Clásico', tag: 'Gratis', tagKind: 'free',
+    id: 'clasico', tagKind: 'free',
     colors: ['#00BCD4', '#E91E63', '#8BC34A', '#FF9800', '#9C27B0', '#FFEB3B', '#2196F3', '#FF5722'],
     beam: '#ffffff', light: false,
   },
   {
-    id: 'blokki', name: 'Mundo Blokki', tag: 'Próximamente', tagKind: 'soon',
+    id: 'blokki', tagKind: 'soon',
     colors: ['#4FB8FF', '#FF6FA3', '#6FD35E', '#FF9A3D', '#A98BFF', '#FFCF3A', '#FF5E5E', '#35D6A6'],
     beam: '#fff6c2', light: true, glyphs: true,
   },
   {
-    id: 'espacio', name: 'Espacio', tag: 'Con el código ESPACIO', tagKind: 'code',
+    id: 'espacio', tagKind: 'code',
     colors: ['#2EB8A3', '#E9588C', '#5DAF4E', '#F0A32F', '#9B5DE5', '#E6D24A', '#3C7FE0', '#E2523C'],
     beam: '#9fe8ff', glyphs: true,
   },
   {
-    id: 'neon', name: 'Neón', tag: 'En eventos', tagKind: 'event',
+    id: 'neon', tagKind: 'event',
     colors: ['#29F0FF', '#FF2E9A', '#3DFF8B', '#FFB020', '#B04DFF', '#F5FF3D', '#3D7BFF', '#FF4D3D'],
     beam: '#29f0ff', glyphs: true,
   },
   {
-    id: 'carnaval', name: 'Carnaval', tag: 'Pase de temporada', tagKind: 'pass',
+    id: 'carnaval', tagKind: 'pass',
     colors: ['#B45CE6', '#F2C94C', '#FF7A3D', '#2EC4E6', '#FF4F9A', '#7BC96F', '#3D8BFF', '#FF5A5A'],
-    beam: '#ffe27a', glyphs: true, sign: '¡CARNAVAL!',
+    beam: '#ffe27a', glyphs: true, sign: true,
   },
   {
-    id: 'dragon', name: 'Dragón', tag: 'Pase de temporada', tagKind: 'pass',
+    id: 'dragon', tagKind: 'pass',
     colors: ['#E8483C', '#FF8A2B', '#FFC93C', '#2ECFC4', '#E85AA0', '#8FD14F', '#9B5CE6', '#3D9BFF'],
     beam: '#ffb14a',
   },

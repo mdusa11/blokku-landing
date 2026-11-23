@@ -59,7 +59,7 @@ export function Logo({ size = 64, onLetter, pulse }) {
     ['K', THEME.pink], ['K', THEME.yellow], ['U', THEME.green],
   ]
   return (
-    <span className="display" style={{ fontSize: size, display: 'inline-flex' }}>
+    <span className="display" style={{ fontSize: size, display: 'inline-flex', direction: 'ltr' }}>
       {letters.map(([ch, c], i) => (
         <motion.span
           key={i}

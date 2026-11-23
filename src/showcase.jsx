@@ -1,24 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
+import { useT } from './i18n/index.js'
 
 /* Personalizar: clips reales de la 1.0.5 (Galaxy A17). El video solo carga y
    corre mientras la vitrina está en pantalla; con reduced-motion, póster fijo. */
 const M = `${import.meta.env.BASE_URL}media/105/`
 
 const CLIPS = [
-  { id: 'personalizar', n: 'Vista previa', c: '#4EA1FF',
-    d: 'Escoges tema, piezas o efecto y lo ves en el tablero de muestra antes de tocar «Usar».' },
-  { id: 'galaxia', n: 'Galaxia', c: '#B388FF',
-    d: 'Índigo con brillos de nebulosa, aquí con el efecto Cristal roto.' },
-  { id: 'chicle', n: 'Chicle', c: '#FF5D8F',
-    d: 'Claro y rosado, con piezas Caramelo y Fuegos artificiales al limpiar.' },
-  { id: 'bosque', n: 'Bosque', c: '#43D9A3',
-    d: 'Verde profundo con piezas de Hielo. Este se gana: limpias 250 líneas y es tuyo.' },
-  { id: 'efectos', n: 'Efectos', c: '#FFC93C',
-    d: 'Fuegos artificiales, Cristal roto, Confeti… tú decides cómo truenan tus líneas.' },
+  { id: 'personalizar', c: '#4EA1FF' },
+  { id: 'galaxia', c: '#B388FF' },
+  { id: 'chicle', c: '#FF5D8F' },
+  { id: 'bosque', c: '#43D9A3' },
+  { id: 'efectos', c: '#FFC93C' },
 ]
 
 function ClipVideo({ clip, live, loop, onEnded }) {
+  const t = useT()
   const ref = useRef(null)
   useEffect(() => {
     const v = ref.current
@@ -37,7 +34,7 @@ function ClipVideo({ clip, live, loop, onEnded }) {
       loop={loop}
       preload="none"
       onEnded={onEnded}
-      aria-label={`${clip.n} en Blokku 1.0.5`}
+      aria-label={t('sc.alt', { n: t(`sc.${clip.id}.n`) })}
       width="540"
       height="1044"
     />
@@ -45,6 +42,7 @@ function ClipVideo({ clip, live, loop, onEnded }) {
 }
 
 export function Showcase() {
+  const t = useT()
   const reduce = useReducedMotion()
   const [idx, setIdx] = useState(0)
   const [pinned, setPinned] = useState(false)
@@ -69,7 +67,7 @@ export function Showcase() {
         <div className="phone nv-perso-phone">
           <div className="nv-screen" key={clip.id}>
             {reduce
-              ? <img src={`${M}${clip.id}.webp`} alt={`${clip.n} en Blokku 1.0.5`} width="540" height="1044" />
+              ? <img src={`${M}${clip.id}.webp`} alt={t('sc.alt', { n: t(`sc.${clip.id}.n`) })} width="540" height="1044" />
               : <ClipVideo clip={clip} live={inView} loop={pinned} onEnded={next} />}
           </div>
         </div>
@@ -77,12 +75,9 @@ export function Showcase() {
 
       <div className="nv-perso-copy">
         <span className="nv-num" style={{ color: 'var(--pink)' }}>02</span>
-        <h3 className="display nv-h3">Personalizar</h3>
-        <p className="nv-p">
-          Una pantalla nueva para probar temas, piezas, efectos, marcos e insignias.
-          Más de 40 son nuevos en esta versión.
-        </p>
-        <div className="nv-tabs" role="tablist" aria-label="Qué ver en el teléfono">
+        <h3 className="display nv-h3">{t('sc.title')}</h3>
+        <p className="nv-p">{t('sc.p')}</p>
+        <div className="nv-tabs" role="tablist" aria-label={t('sc.tabsAria')}>
           {CLIPS.map((c, i) => (
             <button
               key={c.id}
@@ -92,11 +87,11 @@ export function Showcase() {
               style={{ '--c': c.c }}
               onClick={() => pick(i)}
             >
-              <i className="gem nv-tab-gem" aria-hidden /> {c.n}
+              <i className="gem nv-tab-gem" aria-hidden /> {t(`sc.${c.id}.n`)}
             </button>
           ))}
         </div>
-        <p className="nv-cap" key={clip.id} aria-live="polite">{clip.d}</p>
+        <p className="nv-cap" key={clip.id} aria-live="polite">{t(`sc.${clip.id}.d`)}</p>
       </div>
     </div>
   )

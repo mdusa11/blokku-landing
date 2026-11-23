@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { Reveal, Shine } from './bits.jsx'
 import { STORE_URL } from './extras.jsx'
+import { useT } from './i18n/index.js'
 import './tutorial.css'
 
 /* ═══ CÓMO JUGAR — el tutorial de la app (1.0.5), en la web ═══════════════════
@@ -102,7 +103,6 @@ const geo = (x, y, side) => {
   return { cell, at: (r, c) => ({ x: x + FP + c * cell, y: y + FP + r * cell }) }
 }
 const G = { blue: '#4EA1FF', pink: '#FF5D8F', gold: '#FFC93C', mint: '#43D9A3', cyan: '#3ED1E0', purple: '#9C6BFF', orange: '#FF8A3D' }
-const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 
 function Gem({ x, y, w, h = w, c, anim, gap = 1.2, children }) {
   return (
@@ -201,6 +201,7 @@ const Demo = ({ T, still, css, w, h, children }) => (
 const DRAG_ROWS = ['........', '.....aa.', '.....aa.', 'b.......', 'bb...cc.', 'b.....cc', 'dd.eee..', 'dddeee.f']
 const L_SHAPE = [[1, 0], [1, 0], [1, 1]]
 function DragDemo() {
+  const tx = useT()
   const side = 210, bx = 45, land = 0.62, slotA = { x: 55, y: 285 }
   const g = geo(bx, 0, side)
   const { a, css } = build('tdrag', (t) => {
@@ -239,7 +240,7 @@ function DragDemo() {
       <Piece shape={[[1, 1, 1], [0, 1, 0]]} cell={17} c={PC[1]} {...pieceAt([[1, 1, 1], [0, 1, 0]], 150, 285, 17)} />
       <Piece shape={[[1, 1], [1, 1]]} cell={17} c={PC[2]} {...pieceAt([[1, 1], [1, 1]], 245, 285, 17)} />
       <Piece shape={L_SHAPE} cell={g.cell} c={PC[4]} anim={a.flyer} />
-      <Tag text="Toca = girar" color={G.pink} I={RotateCw} anim={a.tag} style={{ left: 0, top: 200, transformOrigin: '0 100%' }} />
+      <Tag text={tx('tut.rotate')} color={G.pink} I={RotateCw} anim={a.tag} style={{ left: 0, top: 200, transformOrigin: '0 100%' }} />
       <Finger anim={a.finger} />
     </Demo>
   )
@@ -248,6 +249,7 @@ function DragDemo() {
 // ─── 2. Líneas y combos ──────────────────────────────────────────────────────
 const LINE_ROWS = ['.a...b..', '.aa..b.c', 'dd...bcc', 'ddeef.gg', '...h.ii.', '..hh.i..', 'j....kk.', 'jj..lkkm']
 function LinesDemo() {
+  const tx = useT()
   const side = 230, top = 72, left = 35, R = 3, C = 5, landAt = 0.3, clearAt = 0.36
   const g = geo(left, top, side)
   const cells = cellsOf(LINE_ROWS)
@@ -290,10 +292,10 @@ function LinesDemo() {
   return (
     <Demo T={4.6} still={0.62} css={css} w={300} h={330}>
       <div className="tscore">
-        <small>PUNTAJE</small>
+        <small>{tx('tut.score')}</small>
         <span className="tscore-num">
           {a.digits.map((d, k) => (
-            <b key={k} className="ta" style={{ animationName: d }}>{fmt(24000 + k * 1000)}</b>
+            <b key={k} className="ta" style={{ animationName: d }}>{tx.n(24000 + k * 1000)}</b>
           ))}
         </span>
       </div>
@@ -310,8 +312,8 @@ function LinesDemo() {
         return <i key={n} className="tpart ta" style={{ left: p.x + g.cell / 2 - 5, top: p.y + g.cell / 2 - 5, '--c': cells[idx] ?? PC[5], animationName: a.parts[n] }} />
       })}
       <Gem x={0} y={0} w={g.cell} c={PC[5]} anim={a.fly} />
-      <div className="tcombo ta" style={{ top: top + side * 0.32 - 22, animationName: a.combo }}>COMBO x3</div>
-      <div className="tgain ta" style={{ top: top + side * 0.56 - 14, animationName: a.gain }}>+12.000</div>
+      <div className="tcombo ta" style={{ top: top + side * 0.32 - 22, animationName: a.combo }}>{tx('tut.combo', { n: 3 })}</div>
+      <div className="tgain ta" style={{ top: top + side * 0.56 - 14, animationName: a.gain }}>+{tx.n(12000)}</div>
     </Demo>
   )
 }
@@ -320,6 +322,7 @@ function LinesDemo() {
 const HOLD_ROWS = ['........', '..aa....', '..aa..c.', 'b....cc.', 'bb...c..', 'b.......', 'dd.ee.ff', 'ddeee.ff']
 const T_SHAPE = [[1, 1, 1], [0, 1, 0]]
 function HoldDemo() {
+  const tx = useT()
   const dy = 200, cell = 19, slot = { x: 8, y: dy + 34, w: 76, h: 102 }
   const p1 = { x: 205, y: dy + 85 }
   const slotC = { x: slot.x + slot.w / 2, y: slot.y + slot.h / 2 + 8 }
@@ -345,11 +348,11 @@ function HoldDemo() {
     <Demo T={5.2} still={0.62} css={css} w={320} h={384}>
       <Board x={67} y={0} side={186} cells={cellsOf(HOLD_ROWS)} />
       <div className="tslot" style={{ left: slot.x, top: slot.y, width: slot.w, height: slot.h }}>
-        <small>GUARDAR</small>
+        <small>{tx('tut.hold')}</small>
         <Bookmark className="ta" style={{ animationName: a.mark }} size={24} strokeWidth={2.4} fill="currentColor" />
       </div>
       <div className="tslot on ta" style={{ left: slot.x, top: slot.y, width: slot.w, height: slot.h, animationName: a.lit }}>
-        <small>GUARDAR</small>
+        <small>{tx('tut.hold')}</small>
       </div>
       <div className="ttray" style={{ left: 100, top: dy + 34, width: 220, height: 102 }} />
       <Piece shape={L_SHAPE} cell={cell} c={PC[0]} {...pieceAt(L_SHAPE, 128, dy + 85, cell)} />
@@ -357,8 +360,8 @@ function HoldDemo() {
       <Piece shape={[[1, 1], [1, 1]]} cell={cell} c={PC[6]} {...pieceAt([[1, 1], [1, 1]], 280, dy + 85, cell)} />
       <Finger anim={a.press} ringAnim={a.ring} />
       <Finger anim={a.tap} />
-      <Tag text="Mantén pulsado" color={G.mint} I={Bookmark} anim={a.chip} style={{ left: 100, top: dy - 6 }} />
-      <Tag text="Toca para sacarla" color={G.blue} I={ArrowUp} anim={a.chip2} style={{ left: 8, top: dy + 146 }} />
+      <Tag text={tx('tut.holdPress')} color={G.mint} I={Bookmark} anim={a.chip} style={{ left: 100, top: dy - 6 }} />
+      <Tag text={tx('tut.holdTap')} color={G.blue} I={ArrowUp} anim={a.chip2} style={{ left: 8, top: dy + 146 }} />
     </Demo>
   )
 }
@@ -366,11 +369,11 @@ function HoldDemo() {
 // ─── 4. Poderes ──────────────────────────────────────────────────────────────
 // Color e ícono de la barra de poderes de la app.
 const POWERS = [
-  { n: 'Bomba', d: 'Borra un área de 3×3', I: Bomb, c: '#FF6A00', ink: '#C24A00' },
-  { n: 'Rayo', d: 'Borra una fila entera', I: Zap, c: '#FFC400', ink: '#A87A00' },
-  { n: 'Retroceso', d: 'Deshace tu última jugada', I: Undo2, c: '#12E0C4', ink: '#0A8F7C' },
-  { n: 'Mezcla', d: 'Cambia las piezas de la bandeja', I: Shuffle, c: '#9A5CFF', ink: '#6A35D0' },
-  { n: 'Destructor de color', d: 'Borra todas las piezas de un color', I: Pipette, c: '#FF2E88', ink: '#C21463' },
+  { k: 'bomb', I: Bomb, c: '#FF6A00', ink: '#C24A00' },
+  { k: 'lightning', I: Zap, c: '#FFC400', ink: '#A87A00' },
+  { k: 'undo', I: Undo2, c: '#12E0C4', ink: '#0A8F7C' },
+  { k: 'shuffle', I: Shuffle, c: '#9A5CFF', ink: '#6A35D0' },
+  { k: 'color', I: Pipette, c: '#FF2E88', ink: '#C21463' },
 ]
 const POW_ROWS = ['..aab.', 'c.dab.', 'cddpee', 'cfpfge', 'hijklm', 'p.nnp.']
 const POW_COL = { a: 0, b: 4, c: 2, d: 6, e: 3, f: 5, g: 0, p: 1, h: 0, i: 6, j: 5, k: 3, l: 4, m: 2, n: 6 }
@@ -378,6 +381,7 @@ const hit = (w, r, c, ch) => (w === 0 ? r >= 1 && r <= 3 && c >= 1 && c <= 3 : w
 const TRAY_A = [[[1, 1], [1, 0]], [[1, 1, 1]], [[1], [1]]]
 const TRAY_B = [[[1, 1], [1, 1]], [[0, 1], [1, 1]], [[1, 1, 1], [0, 1, 0]]]
 function PowersDemo() {
+  const tx = useT()
   const cell = 26, gx = 82, gy = 86
   const phase = (v) => {
     const x = v * 5
@@ -446,13 +450,13 @@ function PowersDemo() {
       })}
       {POWERS.map((pw, k) => (
         <div key={k} className="tpow-name ta" style={{ animationName: a.on[k], '--ink': pw.ink }}>
-          <strong><pw.I size={18} strokeWidth={2.6} color={pw.c} /> {pw.n}</strong>
-          <span>{pw.d}</span>
+          <strong><pw.I size={18} strokeWidth={2.6} color={pw.c} /> {tx(`pow.${pw.k}`)}</strong>
+          <span>{tx(`tutpow.${pw.k}`)}</span>
         </div>
       ))}
       <div className="trescue">
         <Tile c={G.gold} I={Lightbulb} size={32} tilt={-7} />
-        <span>¿No cabe nada? Te sugerimos el poder que te salva.</span>
+        <span>{tx('tut.rescue')}</span>
       </div>
     </Demo>
   )
@@ -460,13 +464,14 @@ function PowersDemo() {
 
 // ─── 5. Modos de juego ───────────────────────────────────────────────────────
 const MODES = [
-  { I: Gamepad2, c: '#FF5D8F', n: 'CLÁSICO', d: 'Sin fin · cuenta para tu récord' },
-  { I: Hourglass, c: '#9C6BFF', n: 'CONTRA RELOJ', d: '90 segundos · puntaje máximo' },
-  { I: Leaf, c: '#FFAD45', n: 'ZEN', d: 'Sin game over · solo relájate' },
-  { I: CalendarDays, c: '#4EA1FF', n: 'DESAFÍO DIARIO', d: 'El mismo tablero para todos, una vez al día' },
-  { I: Trophy, c: '#FF5D8F', n: 'EVENTO DE FIN DE SEMANA', d: 'Sábado y domingo, con reglas especiales' },
+  { I: Gamepad2, c: '#FF5D8F', k: 'classic' },
+  { I: Hourglass, c: '#9C6BFF', k: 'timed' },
+  { I: Leaf, c: '#FFAD45', k: 'zen' },
+  { I: CalendarDays, c: '#4EA1FF', k: 'daily' },
+  { I: Trophy, c: '#FF5D8F', k: 'weekend' },
 ]
 function ModesDemo() {
+  const tx = useT()
   const { a, css } = build('tmode', (t) => ({
     rows: MODES.map((_, i) => t((v) => {
       const x = v * 5
@@ -481,7 +486,7 @@ function ModesDemo() {
         <div key={i} className="tmode ta" style={{ top: 9 + i * 70, '--c': m.c, animationName: a.rows[i] }}>
           <i className="tmode-glow ta" style={{ animationName: a.glow[i] }} />
           <span className="tmode-ic"><m.I size={21} strokeWidth={2.6} /></span>
-          <span className="tmode-tx"><strong>{m.n}</strong><small>{m.d}</small></span>
+          <span className="tmode-tx"><strong>{tx(`mode.${m.k}`)}</strong><small>{tx(`tutmode.${m.k}`)}</small></span>
         </div>
       ))}
     </Demo>
@@ -489,12 +494,13 @@ function ModesDemo() {
 }
 
 // ─── 6. Progreso y premios ───────────────────────────────────────────────────
-const RARITY = { comun: ['COMÚN', '#8FA0C8'], raro: ['RARO', '#4EA1FF'], epico: ['ÉPICO', '#9C6BFF'], legendario: ['LEGENDARIO', '#FFB020'], mitico: ['SECRETO', '#FF4FD8'] }
+const RARITY = { comun: ['common', '#8FA0C8'], raro: ['rare', '#4EA1FF'], epico: ['epic', '#9C6BFF'], legendario: ['legendary', '#FFB020'], mitico: ['mythic', '#FF4FD8'] }
 const UNLOCKS = [
   { k: 'galaxy', r: 'epico' }, { k: 'diamond', r: 'legendario' }, { k: 'aurora', r: 'epico' }, { k: 'nova', r: 'legendario' },
   { k: 'phoenix', r: 'legendario' }, { k: 'jewel', r: 'comun' }, { k: 'gold', r: 'legendario' }, { k: 'prism', r: 'raro' },
 ]
 function Unlock({ k, r }) {
+  const tx = useT()
   const [label, c] = RARITY[r]
   const gems = { diamond: ['#3ED1E0', '#8BC34A', '#B388FF', '#2196F3', '#00E5FF', '#43D9A3'], jewel: ['#E91E63', '#FFEB3B', '#00BCD4', '#9C27B0', '#FF9800', '#8BC34A'], prism: ['#FF5D8F', '#FFC93C', '#43D9A3', '#4EA1FF', '#9C6BFF', '#3ED1E0'] }[k]
   return (
@@ -504,11 +510,12 @@ function Unlock({ k, r }) {
         {k === 'gold' && <div className="tunl-grid">{Array.from({ length: 9 }, (_, i) => <i key={i} />)}</div>}
         {k === 'phoenix' && <div className="tunl-grid fire">{Array.from({ length: 9 }, (_, i) => <i key={i} />)}</div>}
       </div>
-      <span className="tchip" style={{ '--c': c }}>{label}</span>
+      <span className="tchip" style={{ '--c': c }}>{tx.up(`rar.${label}`)}</span>
     </div>
   )
 }
 function ProgressDemo() {
+  const tx = useT()
   const TILE = 96, GAP = 12, loop = (UNLOCKS.length + 1) * (TILE + GAP)
   const { a, css } = build('tprog', (t) => {
     const st = (v) => {
@@ -539,7 +546,7 @@ function ProgressDemo() {
         <div className="tlevel-info">
           <div className="tlevel-row">
             <span className="tlevel-lbl">
-              {[23, 24, 25, 26, 27].map((n, i) => <b key={n} className="ta" style={{ animationName: a.lv[i] }}>Nivel {n} de 100</b>)}
+              {[23, 24, 25, 26, 27].map((n, i) => <b key={n} className="ta" style={{ animationName: a.lv[i] }}>{tx('tut.level', { n })}</b>)}
             </span>
             <em>+XP</em>
           </div>
@@ -547,23 +554,26 @@ function ProgressDemo() {
         </div>
       </div>
       <div className="tfeats" style={{ top: 82 }}>
-        <Feature c={G.mint} I={Flag} text="Ruta de nivel" />
-        <Feature c={G.gold} I={Trophy} text="Logros por escalones" />
-        <Feature c={G.pink} I={Gift} text="Cofres" />
+        <Feature c={G.mint} I={Flag} text={tx('tut.chipRoute')} />
+        <Feature c={G.gold} I={Trophy} text={tx('tut.chipAch')} />
+        <Feature c={G.pink} I={Gift} text={tx('tut.chipChests')} />
       </div>
       <div className="tstrip-win">
         <div className="tstrip ta" style={{ animationName: a.strip }}>{items}{items.map((it) => <Fragment key={`b${it.key}`}>{it}</Fragment>)}</div>
       </div>
-      <p className="tcustom"><Sparkles size={16} color="#FF5D8F" /> Personalízalo todo en Personalizar</p>
+      <p className="tcustom"><Sparkles size={16} color="#FF5D8F" /> {tx('tut.custom')}</p>
     </Demo>
   )
 }
-const Mystery = () => (
-  <div className="tunl">
-    <div className="tunl-art tu-mystery"><Lock size={28} strokeWidth={2.6} /><b>???</b></div>
-    <span className="tchip" style={{ '--c': RARITY.mitico[1] }}>SECRETO</span>
-  </div>
-)
+const Mystery = () => {
+  const tx = useT()
+  return (
+    <div className="tunl">
+      <div className="tunl-art tu-mystery"><Lock size={28} strokeWidth={2.6} /><b>???</b></div>
+      <span className="tchip" style={{ '--c': RARITY.mitico[1] }}>{tx.up('tut.secret')}</span>
+    </div>
+  )
+}
 const Feature = ({ c, I, text }) => (
   <div className="tfeat">
     <Tile c={c} I={I} size={30} tilt={-5} />
@@ -576,6 +586,7 @@ const Feature = ({ c, I, text }) => (
 const WORLD = [['GemaVeloz', 980000], ['ComboKing', 884000], ['Bloquecito', 851000]]
 const LOCAL = [['TacoCombo', 905000], ['ReinaDelRayo', 860000], ['Pixelito', 846000]]
 function CompeteDemo() {
+  const tx = useT()
   const ROW = 50
   const { a, css } = build('tcomp', (t) => {
     const climb = (v) => easeInOutBack(seg(((v % 0.5) * 2), 0.35, 0.65))
@@ -596,8 +607,8 @@ function CompeteDemo() {
   )
   const pts = (k) => (
     <span className="trk-pts">
-      <b className="ta" style={{ animationName: a.world }}>{fmt(WORLD[k][1])}</b>
-      <b className="ta" style={{ animationName: a.local }}>{fmt(LOCAL[k][1])}</b>
+      <b className="ta" style={{ animationName: a.world }}>{tx.n(WORLD[k][1])}</b>
+      <b className="ta" style={{ animationName: a.local }}>{tx.n(LOCAL[k][1])}</b>
     </span>
   )
   const pos = (from, to) => (
@@ -609,8 +620,8 @@ function CompeteDemo() {
   return (
     <Demo T={6} still={0.6} css={css} w={320} h={370}>
       <div className="ttoggles">
-        <div className="ttog"><Globe size={16} strokeWidth={2.6} /> Mundial<i className="ttog-on ta" style={{ animationName: a.world }}><Globe size={16} strokeWidth={2.6} /> Mundial</i></div>
-        <div className="ttog"><Flag size={16} strokeWidth={2.6} /> Tu país<i className="ttog-on ta" style={{ animationName: a.local }}><Flag size={16} strokeWidth={2.6} /> Tu país</i></div>
+        <div className="ttog"><Globe size={16} strokeWidth={2.6} /> {tx('tut.world')}<i className="ttog-on ta" style={{ animationName: a.world }}><Globe size={16} strokeWidth={2.6} /> {tx('tut.world')}</i></div>
+        <div className="ttog"><Flag size={16} strokeWidth={2.6} /> {tx('tut.country')}<i className="ttog-on ta" style={{ animationName: a.local }}><Flag size={16} strokeWidth={2.6} /> {tx('tut.country')}</i></div>
       </div>
       {[0, 1, 2].map((k) => (
         <div key={k} className={`trk ta ${k === 0 ? 'first' : ''}`} style={{ animationName: a.others[k] }}>
@@ -622,13 +633,13 @@ function CompeteDemo() {
       <div className="trk me ta" style={{ animationName: a.me }}>
         {pos(4, 2)}
         <Crown size={20} strokeWidth={2.6} fill="#FFC93C" color="#B07A00" />
-        <span className="trk-name"><b>Tú</b></span>
-        <span className="trk-pts"><b className="ta" style={{ animationName: a.rankA }}>812.000</b><b className="ta" style={{ animationName: a.rankB }}>902.000</b></span>
+        <span className="trk-name"><b>{tx('tut.you')}</b></span>
+        <span className="trk-pts"><b className="ta" style={{ animationName: a.rankA }}>{tx.n(812000)}</b><b className="ta" style={{ animationName: a.rankB }}>{tx.n(902000)}</b></span>
       </div>
       <div className="tfeats" style={{ bottom: 0 }}>
-        <Feature c={G.gold} I={Medal} text="Insignias" />
-        <Feature c={G.orange} I={Ghost} text="Eventos de temporada" />
-        <Feature c={G.purple} I={Gift} text="Códigos" />
+        <Feature c={G.gold} I={Medal} text={tx('tut.chipBadges')} />
+        <Feature c={G.orange} I={Ghost} text={tx('tut.chipSeason')} />
+        <Feature c={G.purple} I={Gift} text={tx('tut.chipCodes')} />
       </div>
     </Demo>
   )
@@ -642,17 +653,19 @@ const Podium = ({ size = 20, strokeWidth = 2.6 }) => (
 )
 
 const PAGES = [
-  { I: Move, c: G.blue, t: 'Arrastra y coloca', b: 'Arrastra una pieza de la bandeja al tablero. Tócala antes para girarla 90°.', D: DragDemo, ch: ['ARRASTRA', 'y coloca'], ms: 8800 },
-  { I: Rows3, c: G.gold, t: 'Líneas y combos', b: 'Llena una fila o una columna y desaparece. Limpia varias a la vez o seguidas para encadenar combos: más puntos y más XP.', D: LinesDemo, ch: ['LLENA', 'filas y columnas'], ms: 9200 },
-  { I: Bookmark, c: G.mint, t: 'Guarda una pieza', b: 'Mantén pulsada una pieza para mandarla a GUARDAR. Toca GUARDAR cuando quieras usarla.', D: HoldDemo, ch: ['GUARDA', 'una pieza'], ms: 10400 },
-  { I: Zap, c: G.purple, t: 'Poderes', b: 'Cada partida empiezas con poderes gratis. Úsalos cuando el tablero se complique.', D: PowersDemo, ch: ['5 PODERES', 'para salvarte'], ms: 9500 },
-  { I: Gamepad2, c: G.pink, t: 'Modos de juego', b: 'Cinco formas de jugar: elige la tuya cada vez.', D: ModesDemo, ch: ['ELIGE', 'tu modo'], ms: 7000 },
-  { I: Gift, c: G.orange, t: 'Progreso y premios', b: 'Cada partida da XP: sube hasta el nivel 100, sigue la ruta de nivel, completa logros por escalones y abre cofres.', D: ProgressDemo, ch: ['SUBE', 'de nivel'], ms: 9000 },
-  { I: Podium, c: G.cyan, t: 'Compite', b: 'Ranking mundial y de tu país, semanal e histórico. Luce tu insignia, entra a los eventos de temporada y canjea códigos en Ajustes.', D: CompeteDemo, ch: ['COMPITE', 'con todos'], ms: 12000 },
+  { I: Move, c: G.blue, D: DragDemo, ms: 8800 },
+  { I: Rows3, c: G.gold, D: LinesDemo, ms: 9200 },
+  { I: Bookmark, c: G.mint, D: HoldDemo, ms: 10400 },
+  { I: Zap, c: G.purple, D: PowersDemo, ms: 9500 },
+  { I: Gamepad2, c: G.pink, D: ModesDemo, ms: 7000 },
+  { I: Gift, c: G.orange, D: ProgressDemo, ms: 9000 },
+  { I: Podium, c: G.cyan, D: CompeteDemo, ms: 12000 },
 ]
 const LAST = PAGES.length - 1
 
 export function HowToPlay() {
+  const tx = useT()
+  const rtl = document.documentElement.dir === 'rtl'
   const [page, setPage] = useState(0)
   const [dir, setDir] = useState(1)
   const [auto, setAuto] = useState(true)
@@ -682,8 +695,8 @@ export function HowToPlay() {
     setPage(to)
   }
   const onKey = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(page + 1) }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(page - 1) }
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(page + (rtl ? -1 : 1)) }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(page + (rtl ? 1 : -1)) }
     else if (e.key === 'Home') { e.preventDefault(); go(0) }
     else if (e.key === 'End') { e.preventDefault(); go(LAST) }
   }
@@ -693,27 +706,27 @@ export function HowToPlay() {
     swipe.current = null
     if (!s) return
     const dx = e.clientX - s.x, dy = e.clientY - s.y
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) go(page + (dx < 0 ? 1 : -1))
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) go(page + ((dx < 0) !== rtl ? 1 : -1))
   }
 
   const P = PAGES[page]
-  const enter = reduced ? { opacity: 0 } : { opacity: 0, transform: `translateX(${dir * 36}px)` }
+  const enter = reduced ? { opacity: 0 } : { opacity: 0, transform: `translateX(${(rtl ? -dir : dir) * 36}px)` }
   return (
     <section id="como-jugar" className="sec-how">
       <div className="wrap">
         <Reveal>
-          <span className="kicker">Igualito que en la app</span>
-          <h2 className="display">CÓMO <Shine color="var(--green)">JUGAR</Shine></h2>
-          <p className="sub">El tutorial de Blokku en 7 pasos. Desliza, usa las flechas o tu teclado.</p>
+          <span className="kicker">{tx('tut.kicker')}</span>
+          <h2 className="display">{tx('tut.t1')} <Shine color="var(--green)">{tx('tut.t2')}</Shine></h2>
+          <p className="sub">{tx('tut.sub')}</p>
         </Reveal>
 
         <div className="tut-layout">
-          <ol className="tut-chapters" aria-label="Pasos del tutorial">
+          <ol className="tut-chapters" aria-label={tx('tut.stepsAria')}>
             {PAGES.map((p, i) => (
               <li key={i}>
                 <button type="button" className={i === page ? 'on' : ''} style={{ '--c': p.c }} onClick={() => go(i)} aria-current={i === page ? 'step' : undefined}>
                   <span className="tut-ch-n">{i + 1}</span>
-                  <span className="tut-ch-t"><strong>{p.ch[0]}</strong><small>{p.ch[1]}</small></span>
+                  <span className="tut-ch-t"><strong>{tx(`tut.ch${i + 1}a`)}</strong><small>{tx(`tut.ch${i + 1}b`)}</small></span>
                   {i === page && running && <i key={page} className="tut-prog" style={{ '--ms': `${p.ms}ms` }} />}
                 </button>
               </li>
@@ -725,8 +738,8 @@ export function HowToPlay() {
               ref={sheetRef}
               className="tut-sheet"
               role="region"
-              aria-roledescription="carrusel"
-              aria-label="Tutorial de Blokku"
+              aria-roledescription={tx('tut.carousel')}
+              aria-label={tx('tut.aria')}
               tabIndex={0}
               onKeyDown={onKey}
               onPointerEnter={(e) => e.pointerType === 'mouse' && setHover(true)}
@@ -735,10 +748,10 @@ export function HowToPlay() {
               <div className="tut-top">
                 <div className="tut-dots">
                   {PAGES.map((p, i) => (
-                    <button key={i} type="button" className={i === page ? 'on' : i < page ? 'past' : ''} onClick={() => go(i)} aria-label={`Paso ${i + 1}: ${p.t}`} aria-current={i === page ? 'step' : undefined} />
+                    <button key={i} type="button" className={i === page ? 'on' : i < page ? 'past' : ''} onClick={() => go(i)} aria-label={tx('tut.step', { n: i + 1, t: tx(`tut.p${i + 1}t`) })} aria-current={i === page ? 'step' : undefined} />
                   ))}
                 </div>
-                <a className="tut-skip" href="#demo">Saltar</a>
+                <a className="tut-skip" href="#demo">{tx('tut.skip')}</a>
               </div>
 
               <div className="tut-swipe" onPointerDown={onDown} onPointerUp={onUp} onPointerCancel={() => { swipe.current = null }}>
@@ -747,21 +760,21 @@ export function HowToPlay() {
                     <P.D />
                   </div>
                   <div className="tut-text" aria-live="polite">
-                    <h3><Tile c={P.c} I={P.I} size={38} tilt={page % 2 ? 6 : -6} /> {P.t}</h3>
-                    <p>{P.b}</p>
+                    <h3><Tile c={P.c} I={P.I} size={38} tilt={page % 2 ? 6 : -6} /> {tx(`tut.p${page + 1}t`)}</h3>
+                    <p>{tx(`tut.p${page + 1}b`)}</p>
                   </div>
                 </motion.div>
               </div>
 
               <div className="tut-nav">
-                {page > 0 ? <button type="button" className="tut-back" onClick={() => go(page - 1)}>Atrás</button> : <span />}
+                {page > 0 ? <button type="button" className="tut-back" onClick={() => go(page - 1)}>{tx('tut.back')}</button> : <span />}
                 {page < LAST ? (
                   <button type="button" className="tut-btn" style={{ '--c': P.c }} onClick={() => go(page + 1)}>
-                    <ArrowRight size={20} strokeWidth={3} /> Siguiente
+                    <ArrowRight size={20} strokeWidth={3} /> {tx('tut.next')}
                   </button>
                 ) : (
                   <a className="tut-btn" style={{ '--c': G.pink }} href="#demo" onClick={() => setAuto(false)}>
-                    <Play size={18} strokeWidth={3} fill="currentColor" /> ¡A jugar!
+                    <Play size={18} strokeWidth={3} fill="currentColor" /> {tx('tut.go')}
                   </a>
                 )}
               </div>
@@ -769,7 +782,7 @@ export function HowToPlay() {
           </Reveal>
         </div>
         <p className="tut-store">
-          ¿Ya le agarraste? <a href={STORE_URL} target="_blank" rel="noopener noreferrer"><Download size={15} strokeWidth={3} /> Descarga Blokku gratis</a>
+          {tx('tut.foot')} <a href={STORE_URL} target="_blank" rel="noopener noreferrer"><Download size={15} strokeWidth={3} /> {tx('tut.footLink')}</a>
         </p>
       </div>
     </section>

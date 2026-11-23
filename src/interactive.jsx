@@ -3,6 +3,8 @@ import { m as motion, useInView } from 'framer-motion'
 import { Play } from 'lucide-react'
 import { Logo } from './bits.jsx'
 import { STORE_URL } from './extras.jsx'
+import { useT } from './i18n/index.js'
+import { LangPicker } from './i18n/LangPicker.jsx'
 
 /* Barra de progreso de scroll — transform scaleX en compositor (barato). */
 export function ScrollProgress() {
@@ -27,6 +29,7 @@ export function ScrollProgress() {
 
 /* Nav sticky que aparece al pasar el hero. */
 export function StickyNav() {
+  const t = useT()
   const [show, setShow] = useState(false)
   useEffect(() => {
     let raf = 0
@@ -48,14 +51,15 @@ export function StickyNav() {
       <div className="wrap stickynav-inner">
         <a href="#inicio" className="stickynav-logo"><Logo size={26} /></a>
         <div className="stickynav-links">
-          <a href="#demo">Demo</a>
-          <a href="#poderes">Poderes</a>
-          <a href="#modos">Modos</a>
-          <a href="#novedades">Novedades</a>
-          <a href="#faq">FAQ</a>
+          <a href="#demo">{t('nav.demo')}</a>
+          <a href="#poderes">{t('nav.powers')}</a>
+          <a href="#modos">{t('nav.modes')}</a>
+          <a href="#novedades">{t('nav.news')}</a>
+          <a href="#faq">{t('nav.faq')}</a>
         </div>
+        <LangPicker className="langpick-nav" />
         <a href={STORE_URL} target="_blank" rel="noopener noreferrer" className="btn3d stickynav-cta">
-          <Play size={15} strokeWidth={3} fill="currentColor" /> Jugar
+          <Play size={15} strokeWidth={3} fill="currentColor" /> {t('nav.play')}
         </a>
       </div>
     </motion.nav>
@@ -84,13 +88,14 @@ function CountUp({ to, suffix = '', duration = 1100 }) {
 }
 
 const STATS = [
-  { to: 8, suffix: '×8', label: 'Tablero clásico' },
-  { to: 4, suffix: '', label: 'Modos de juego' },
-  { to: 5, suffix: '', label: 'Poderes épicos' },
-  { to: 100, suffix: '%', label: 'Gratis · sin internet' },
+  { to: 8, suffix: '×8', k: 'stats.board' },
+  { to: 4, suffix: '', k: 'stats.modes' },
+  { to: 5, suffix: '', k: 'stats.powers' },
+  { to: 100, suffix: '%', k: 'stats.free' },
 ]
 
 export function Stats() {
+  const t = useT()
   return (
     <section className="stats-sec">
       <div className="wrap stats-grid">
@@ -104,7 +109,7 @@ export function Stats() {
             transition={{ delay: i * 0.1, type: 'spring', stiffness: 240, damping: 16 }}
           >
             <div className="stat-num display"><CountUp to={s.to} suffix={s.suffix} /></div>
-            <div className="stat-label">{s.label}</div>
+            <div className="stat-label">{t(s.k)}</div>
           </motion.div>
         ))}
       </div>

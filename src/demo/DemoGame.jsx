@@ -5,6 +5,7 @@ import { PlayBadge, AppStoreBadge, isIOS } from '../extras.jsx'
 import { THEMES, THEME, gemVars, loadFx } from './themes.js'
 import { Fx, classicFx } from './fx-core.js'
 import { GlyphDefs, Glyph } from './Glyphs.jsx'
+import { getT, useT } from '../i18n/index.js'
 import './demo.css'
 
 /* ═══ DEMO JUGABLE ════════════════════════════════════════════════════════════
@@ -29,14 +30,14 @@ const WEIGHTS = [3, 5, 5, 6, 6, 6, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 1, 2, 
 const WSUM = WEIGHTS.reduce((a, b) => a + b, 0)
 
 const TIERS = [
-  { at: 2, label: '¡BIEN!', ramp: ['#7DD3FC', '#7DD3FC'] },
-  { at: 3, label: '¡GENIAL!', ramp: ['#86EFAC', '#22C55E'] },
-  { at: 5, label: '¡INCREÍBLE!', ramp: ['#FDE68A', '#F59E0B'], rays: true },
-  { at: 7, label: '¡BRUTAL!', ramp: ['#FDBA74', '#EF4444'], rays: true },
-  { at: 10, label: '¡LEYENDA!', ramp: ['#F0ABFC', '#A855F7'], rays: true },
+  { at: 2, key: 'Nice', ramp: ['#7DD3FC', '#7DD3FC'] },
+  { at: 3, key: 'Great', ramp: ['#86EFAC', '#22C55E'] },
+  { at: 5, key: 'Amazing', ramp: ['#FDE68A', '#F59E0B'], rays: true },
+  { at: 7, key: 'Insane', ramp: ['#FDBA74', '#EF4444'], rays: true },
+  { at: 10, key: 'Legendary', ramp: ['#F0ABFC', '#A855F7'], rays: true },
 ]
-const MULTI = ['', '', '¡DOBLE!', '¡TRIPLE!', '¡CUÁDRUPLE!', '¡QUÍNTUPLE!', '¡SÉXTUPLE!']
-const CHEERS = ['¡Eso!', '¡Wow!', '¡Qué crack!', '¡Así se hace!']
+const MULTI = ['', '', 'dg.x2', 'dg.x3', 'dg.x4', 'dg.x5', 'dg.x6']
+const CHEERS = ['dg.cheer1', 'dg.cheer2', 'dg.cheer3', 'dg.cheer4']
 
 let uid = 1
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -103,6 +104,7 @@ const openingGrid = () => {
 const openingPieces = () => [newPiece([[1, 1, 1]], 5), newPiece([[1, 1], [1, 1]], 1), newPiece([[1, 0], [1, 0], [1, 1]], 2)]
 
 export default function DemoGame() {
+  const tx = useT()
   const reduced = useMemo(reducedMotion, [])
   const [themeId, setThemeId] = useState(() => (THEME[store.get('blokku_demo_theme', 'clasico')] ? store.get('blokku_demo_theme', 'clasico') : 'clasico'))
   const theme = THEME[themeId]
@@ -121,7 +123,7 @@ export default function DemoGame() {
   const [floats, setFloats] = useState([])
   const [card, setCard] = useState(null)
   const [mood, setMood] = useState('feliz')
-  const [bubble, setBubble] = useState({ id: 0, text: '¡Arrastra una pieza!' })
+  const [bubble, setBubble] = useState({ id: 0, key: 'dg.say.start' })
   const [dragIdx, setDragIdx] = useState(-1)
   const [ghost, setGhost] = useState(null)
   const [entered, setEntered] = useState(reduced)
@@ -183,7 +185,7 @@ export default function DemoGame() {
     if (id === themeId) return
     setThemeId(id)
     setWave((w) => ({ n: w.n + 1, seq: seq.current }))
-    setBubble({ id: Date.now(), text: id === 'clasico' ? '¡El de siempre!' : `¡${THEME[id].name}!` })
+    setBubble({ id: Date.now(), key: id === 'clasico' ? 'dg.say.classic' : 'dg.th.' + id, theme: id !== 'clasico' })
   }, [themeId])
 
   /* marcador que sube */
@@ -191,15 +193,15 @@ export default function DemoGame() {
     const el = scoreRef.current
     if (!el) return
     const from = shown.current, to = score
-    if (from === to) { el.textContent = to.toLocaleString('es-MX'); return }
-    if (reduced || to < from) { shown.current = to; el.textContent = to.toLocaleString('es-MX'); return }
+    if (from === to) { el.textContent = getT().n(to); return }
+    if (reduced || to < from) { shown.current = to; el.textContent = getT().n(to); return }
     const t0 = performance.now(), dur = 520
     let raf
     const step = (now) => {
       const k = Math.min(1, (now - t0) / dur)
       const v = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))
       shown.current = v
-      el.textContent = v.toLocaleString('es-MX')
+      el.textContent = getT().n(v)
       if (k < 1) raf = requestAnimationFrame(step)
     }
     raf = requestAnimationFrame(step)
@@ -207,7 +209,7 @@ export default function DemoGame() {
     return () => cancelAnimationFrame(raf)
   }, [score, reduced])
 
-  const say = useCallback((text) => setBubble({ id: Date.now() + Math.random(), text }), [])
+  const say = useCallback((key) => setBubble({ id: Date.now() + Math.random(), key }), [])
 
   /* ── colocar ── */
   const place = useCallback((idx, r0, c0) => {
@@ -248,7 +250,7 @@ export default function DemoGame() {
       if (ns > best) { setBest(ns); store.set('blokku_demo_best', String(ns)) }
       if (ns > bestAtStart.current && bestAtStart.current > 0 && !record) {
         setRecord(true)
-        say('¡Nuevo récord!')
+        say('dg.say.record')
       }
       return ns
     })
@@ -310,17 +312,17 @@ export default function DemoGame() {
 
     setBeams(lines.map((_, i) => ({ id: uid++, dir: i < rows.length ? 'r' : 'c', idx: i < rows.length ? rows[i] : cols[i - rows.length], n })))
     const fid = uid++
-    setFloats((f) => [...f, { id: fid, x: cx, y: Math.max(cy, oy + gr.height * 0.84), text: `+${gained.toLocaleString('es-MX')}`, big: n >= 2 || st >= 3 }])
+    setFloats((f) => [...f, { id: fid, x: cx, y: Math.max(cy, oy + gr.height * 0.84), text: `+${getT().n(gained)}`, big: n >= 2 || st >= 3 }])
     later(() => setFloats((f) => f.filter((x) => x.id !== fid)), 1200)
 
     const tier = [...TIERS].reverse().find((t) => st >= t.at)
-    const head = perfect ? '¡TABLERO LIMPIO!' : n >= 4 && theme.sign ? null : MULTI[Math.min(n, 6)]
+    const head = perfect ? 'dg.perfect' : n >= 4 && theme.sign ? null : MULTI[Math.min(n, 6)]
     if (tier || head || (n >= 4 && theme.sign)) {
-      setCard({ id: uid++, tier, streak: st, head, sign: n >= 4 && theme.sign ? theme.sign : null })
+      setCard({ id: uid++, tier, streak: st, head, sign: n >= 4 && theme.sign ? 'dg.sign.' + theme.id : null })
       later(() => setCard(null), 1500)
     }
     setMood('celebrando')
-    say(st >= 3 ? '¡Imparable!' : n >= 2 ? '¡Increíble!' : CHEERS[(Math.random() * CHEERS.length) | 0])
+    say(st >= 3 ? 'dg.say.unstoppable' : n >= 2 ? 'dg.say.incredible' : CHEERS[(Math.random() * CHEERS.length) | 0])
     later(() => setMood('feliz'), 1500)
 
     const total = 90 + slow * 1000 + Math.max(...map.values()) * 1000 + 380
@@ -341,7 +343,7 @@ export default function DemoGame() {
     const fill = grid.filter(Boolean).length / (N * N)
     const danger = fill >= 0.56 || (fits <= 1 && live.length > 1 && fill >= 0.4)
     setMood((m) => (m === 'celebrando' ? m : danger ? 'preocupado' : 'feliz'))
-    if (danger) say('¡Cuidado!')
+    if (danger) say('dg.say.careful')
   }, [grid, pieces, clearing, phase, later, reduced, say])
 
   const reset = () => {
@@ -350,7 +352,7 @@ export default function DemoGame() {
     bestAtStart.current = best
     setGrid(Array(N * N).fill(null)); setPieces(refill(Array(N * N).fill(null)))
     setScore(0); setStreak(0); setPhase('play'); setClearing(null); setBeams([]); setFloats([]); setCard(null)
-    setMood('feliz'); setRecord(false); setHand(null); say('¡A darle!')
+    setMood('feliz'); setRecord(false); setHand(null); say('dg.say.again')
     setWave((w) => ({ n: w.n + 1, seq: seq.current }))
   }
 
@@ -465,7 +467,7 @@ export default function DemoGame() {
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
-          aria-label="Demo jugable de Blokku: arrastra las piezas al tablero"
+          aria-label={tx('dg.aria')}
         >
           <ThemeBg id={themeId} />
 
@@ -473,18 +475,18 @@ export default function DemoGame() {
           <div className="dg-hud">
             <div className={`dg-best${record ? ' is-rec' : ''}`}>
               <span className="dg-best-ic"><Trophy size={14} strokeWidth={2.6} /></span>
-              {record ? '¡RÉCORD!' : `RÉCORD ${best.toLocaleString('es-MX')}`}
+              {record ? tx('dg.recordHud') : tx('dg.best', { n: tx.n(best) })}
             </div>
             <div className="dg-score display" ref={scoreRef} aria-live="polite">0</div>
             <div className="dg-combo-slot">
               {streak >= 2 && (
                 <div className="dg-combo" key={streak} style={{ '--c1': tierNow?.ramp[0] ?? '#ffd54f' }}>
                   <span className="dg-combo-ic"><Zap size={14} strokeWidth={2.8} fill="currentColor" /></span>
-                  COMBO ×{streak}
+                  {tx('dg.combo', { n: streak })}
                 </div>
               )}
             </div>
-            <button className="dg-reset" onClick={reset} aria-label="Reiniciar partida"><RotateCcw size={20} strokeWidth={2.6} /></button>
+            <button className="dg-reset" onClick={reset} aria-label={tx('dg.reset')}><RotateCcw size={20} strokeWidth={2.6} /></button>
           </div>
 
           {/* Tablero */}
@@ -493,7 +495,7 @@ export default function DemoGame() {
               <img src={`${BASE}media/blokki/${MASCOT[mood]}.webp`} alt="" width="120" height="120" draggable="false" />
             </div>
             {bubble.text && phase !== 'over' && streak < 2 && (
-              <div className="dg-bubble" key={bubble.id}>{bubble.text}</div>
+              <div className="dg-bubble" key={bubble.id}>{bubble.theme ? tx('dg.say.theme', { name: tx(bubble.key) }) : tx(bubble.key)}</div>
             )}
             <div className="dg-frame" ref={frameRef}>
               <i className="dg-stud s1" /><i className="dg-stud s2" /><i className="dg-stud s3" /><i className="dg-stud s4" />
@@ -545,7 +547,7 @@ export default function DemoGame() {
                   className={`dg-slot${p && !fits ? ' nofit' : ''}${dragIdx === idx ? ' lifted' : ''}`}
                   onPointerDown={p ? onDown(idx) : undefined}
                   role={p ? 'button' : undefined}
-                  aria-label={p ? `Pieza ${idx + 1}` : undefined}
+                  aria-label={p ? tx('dg.piece', { n: idx + 1 }) : undefined}
                 >
                   {p && (
                     <div className="dg-pc" key={`${p.id}-${wave.n}`} style={{ '--d': `${idx * 0.08}s` }}>
@@ -574,7 +576,7 @@ export default function DemoGame() {
             <GameOver score={score} isRecord={score > bestAtStart.current && bestAtStart.current > 0} onAgain={reset} />
           )}
         </div>
-        <p className="dg-hint">Arrastra las piezas · completa filas o columnas para reventarlas</p>
+        <p className="dg-hint">{tx('dg.hint')}</p>
       </div>
 
       {dragPiece && createPortal(
@@ -602,16 +604,18 @@ function PieceView({ piece, size, vars, theme, lifted }) {
 }
 
 function ComboCard({ card }) {
+  const tx = useT()
   const t = card.tier
   return (
     <div className={`dg-card${card.sign ? ' has-sign' : ''}`} aria-live="polite">
       {t?.rays && <div className="dg-rays" style={{ '--rc': t.ramp[1] }} />}
-      {card.sign && <div className="dg-sign display">{card.sign.split('').map((ch, i) => <span key={i} style={{ '--i': i }}>{ch}</span>)}</div>}
-      {card.head && <div className="dg-head display">{card.head}</div>}
+      {card.sign && <div className="dg-sign display">{/* letra a letra salvo en árabe, donde separar las letras rompe la escritura */}
+        {/[\u0600-\u06FF]/.test(tx(card.sign)) ? tx(card.sign) : tx(card.sign).split('').map((ch, i) => <span key={i} style={{ '--i': i }}>{ch}</span>)}</div>}
+      {card.head && <div className="dg-head display">{tx(card.head)}</div>}
       {t && !card.sign && (
         <>
           <div className="dg-num display" style={{ '--r0': t.ramp[0], '--r1': t.ramp[1] }}>×{card.streak}</div>
-          <div className="dg-tier display" style={{ color: t.ramp[1] }}>{t.label}</div>
+          <div className="dg-tier display" style={{ color: t.ramp[1] }}>{tx(`combo${t.key}`)}</div>
         </>
       )}
     </div>
@@ -619,30 +623,31 @@ function ComboCard({ card }) {
 }
 
 function GameOver({ score, isRecord, onAgain }) {
+  const tx = useT()
   const ref = useRef(null)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    if (reducedMotion()) { el.textContent = score.toLocaleString('es-MX'); return }
+    if (reducedMotion()) { el.textContent = getT().n(score); return }
     const t0 = performance.now()
     let raf
     const step = (now) => {
       const k = Math.min(1, (now - t0) / 900)
-      el.textContent = Math.round(score * (1 - Math.pow(1 - k, 3))).toLocaleString('es-MX')
+      el.textContent = getT().n(Math.round(score * (1 - Math.pow(1 - k, 3))))
       if (k < 1) raf = requestAnimationFrame(step)
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [score])
   return (
-    <div className="dg-over" role="dialog" aria-label="Fin de la partida">
+    <div className="dg-over" role="dialog" aria-label={tx('dg.overAria')}>
       <img className="dg-over-blokki" src={`${BASE}media/blokki/${isRecord ? 'celebrando' : 'triste'}.webp`} alt="" width="110" height="110" />
-      <div className="dg-over-title display">{isRecord ? '¡NUEVO RÉCORD!' : '¡SE ACABÓ!'}</div>
+      <div className="dg-over-title display">{isRecord ? tx('dg.newRecord') : tx('dg.over')}</div>
       <div className="dg-over-score display" ref={ref}>0</div>
-      <div className="dg-over-pts">puntos</div>
-      <p className="dg-over-cta"><strong>¿Puedes más?</strong> Descarga Blokku gratis: 4 modos, poderes, retos diarios y todos estos estilos.</p>
+      <div className="dg-over-pts">{tx('dg.pts')}</div>
+      <p className="dg-over-cta">{tx.rich('dg.cta')}</p>
       <div className="dg-over-badges">{isIOS ? <><AppStoreBadge /><PlayBadge /></> : <><PlayBadge /><AppStoreBadge /></>}</div>
-      <button className="btn3d ghost dg-over-again" onClick={onAgain}><Play size={16} strokeWidth={3} fill="currentColor" /> Jugar otra vez</button>
+      <button className="btn3d ghost dg-over-again" onClick={onAgain}><Play size={16} strokeWidth={3} fill="currentColor" /> {tx('dg.again')}</button>
     </div>
   )
 }
@@ -668,10 +673,11 @@ const AllGlyphDefs = memo(function AllGlyphDefs() {
 const PICKER_VARS = Object.fromEntries(THEMES.map((t) => [t.id, t.colors.map(gemVars)]))
 
 const ThemePicker = memo(function ThemePicker({ themeId, onPick }) {
+  const tx = useT()
   return (
     <div className="dg-picker">
-      <div className="dg-picker-title display">ELIGE UN ESTILO</div>
-      <div className="dg-picker-list" role="radiogroup" aria-label="Estilo del tablero">
+      <div className="dg-picker-title display">{tx('dg.pick')}</div>
+      <div className="dg-picker-list" role="radiogroup" aria-label={tx('dg.pickAria')}>
         {THEMES.map((t) => {
           const v = PICKER_VARS[t.id]
           return (
@@ -689,15 +695,15 @@ const ThemePicker = memo(function ThemePicker({ themeId, onPick }) {
                 ))}
               </span>
               <span className="dg-chip-txt">
-                <span className="dg-chip-name">{t.name}</span>
-                <span className={`dg-tag t-${t.tagKind}`}>{t.tag}</span>
+                <span className="dg-chip-name">{tx(`dg.th.${t.id}`)}</span>
+                <span className={`dg-tag t-${t.tagKind}`}>{tx(`dg.tag.${t.tagKind}`)}</span>
               </span>
               {t.id === themeId && <span className="dg-chip-ok"><Check size={13} strokeWidth={3.4} /></span>}
             </button>
           )
         })}
       </div>
-      <p className="dg-picker-note">Así se ven algunos paquetes de la app: cada uno trae su tablero, su marco y su efecto al reventar líneas.</p>
+      <p className="dg-picker-note">{tx('dg.pickNote')}</p>
     </div>
   )
 })
